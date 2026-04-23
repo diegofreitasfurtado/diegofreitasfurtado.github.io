@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @font-face { font-family: 'JetBrainsMono'; src: url('../fonts/JetBrainsMono-VariableFont_wght.ttf'); }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #111; color: #fff; padding: 20px 24px; font-family: 'JetBrainsMono', monospace; display: flex; flex-direction: column; gap: 10px; }
+  .row { display: flex; align-items: center; gap: 12px; }
+  .bar { background: #1B2585; height: 14px; flex-shrink: 0; }
+  .token { font-size: 9px; font-weight: 700; color: #9494C8; letter-spacing: 0.15em; text-transform: uppercase; width: 80px; }
+  .val { font-size: 9px; color: #FFEE00; width: 30px; }
+</style>
+</head>
+<body>
+  <div class="row"><div class="token">--space-1</div><div class="val">4px</div><div class="bar" style="width:4px"></div></div>
+  <div class="row"><div class="token">--space-2</div><div class="val">8px</div><div class="bar" style="width:8px"></div></div>
+  <div class="row"><div class="token">--space-3</div><div class="val">12px</div><div class="bar" style="width:12px"></div></div>
+  <div class="row"><div class="token">--space-4</div><div class="val">16px</div><div class="bar" style="width:16px"></div></div>
+  <div class="row"><div class="token">--space-5</div><div class="val">24px</div><div class="bar" style="width:24px"></div></div>
+  <div class="row"><div class="token">--space-6</div><div class="val">32px</div><div class="bar" style="width:32px"></div></div>
+  <div class="row"><div class="token">--space-7</div><div class="val">48px</div><div class="bar" style="width:48px"></div></div>
+  <div class="row"><div class="token">--space-8</div><div class="val">64px</div><div class="bar" style="width:64px; background:#E0003D"></div></div>
+  <div class="row"><div class="token">--space-9</div><div class="val">96px</div><div class="bar" style="width:96px; background:#E0003D"></div></div>
+</body>
+</html>

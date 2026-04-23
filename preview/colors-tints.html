@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @font-face { font-family: 'JetBrainsMono'; src: url('../fonts/JetBrainsMono-VariableFont_wght.ttf'); }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #111; font-family: 'JetBrainsMono', monospace; padding: 20px; }
+  .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+  .col { display: flex; flex-direction: column; gap: 4px; }
+  .swatch { height: 60px; }
+  .swatch-sm { height: 44px; }
+  .label { font-size: 8px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #9494C8; margin-top: 2px; }
+</style>
+</head>
+<body>
+<div class="grid">
+  <div class="col">
+    <div class="swatch" style="background:#1B2585"></div>
+    <div class="swatch-sm" style="background:#4A52A0"></div>
+    <div class="swatch-sm" style="background:#C5CCEB; border:1px solid #333"></div>
+    <div class="label">Blue</div>
+  </div>
+  <div class="col">
+    <div class="swatch" style="background:#9494C8"></div>
+    <div class="swatch-sm" style="background:#BCBCDF"></div>
+    <div class="swatch-sm" style="background:#E8E8F5; border:1px solid #333"></div>
+    <div class="label">Lavender</div>
+  </div>
+  <div class="col">
+    <div class="swatch" style="background:#E0003D"></div>
+    <div class="swatch-sm" style="background:#D45E7A"></div>
+    <div class="swatch-sm" style="background:#F5A8B8; border:1px solid #333"></div>
+    <div class="label">Red</div>
+  </div>
+  <div class="col">
+    <div class="swatch" style="background:#F07090"></div>
+    <div class="swatch-sm" style="background:#F5A8B8"></div>
+    <div class="swatch-sm" style="background:#FDE0E8; border:1px solid #333"></div>
+    <div class="label">Pink</div>
+  </div>
+  <div class="col">
+    <div class="swatch" style="background:#FFEE00"></div>
+    <div class="swatch-sm" style="background:#FFF28C"></div>
+    <div class="swatch-sm" style="background:#FFFBD6; border:1px solid #333"></div>
+    <div class="label">Yellow</div>
+  </div>
+  <div class="col">
+    <div class="swatch" style="background:#0C0D2A"></div>
+    <div class="swatch-sm" style="background:#2B3038"></div>
+    <div class="swatch-sm" style="background:#6B7280"></div>
+    <div class="label">Dark</div>
+  </div>
+  <div class="col">
+    <div class="swatch" style="background:#FFF5CC; border:1px solid #333"></div>
+    <div class="swatch-sm" style="background:#FFF8EE; border:1px solid #333"></div>
+    <div class="swatch-sm" style="background:#FFFFFF; border:1px solid #333"></div>
+    <div class="label">Light</div>
+  </div>
+</div>
+</body>
+</html>

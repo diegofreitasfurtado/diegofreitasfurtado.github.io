@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @font-face { font-family: 'JetBrainsMono'; src: url('../fonts/JetBrainsMono-VariableFont_wght.ttf'); }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #FFF8EE; font-family: 'JetBrainsMono', monospace; padding: 20px; display: flex; gap: 20px; }
+  .panel { flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 8px; border: 1px solid #e8ddd0; }
+  .row { display: flex; align-items: center; gap: 10px; }
+  .dot { width: 20px; height: 20px; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.08); }
+  .token { font-size: 9px; font-weight: 700; letter-spacing: 0.08em; color: #9494C8; flex: 1; }
+  .val { font-size: 9px; opacity: 0.5; color: #2B3038; }
+  .head { font-size: 9px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #E0003D; margin-bottom: 4px; }
+  .panel-dark { background: #0C0D2A; border-color: #1B2585; }
+  .panel-dark .token { color: #9494C8; }
+  .panel-dark .val { color: rgba(255,255,255,0.4); }
+  .panel-dark .head { color: #FFEE00; }
+</style>
+</head>
+<body>
+
+  <!-- LIGHT / DEFAULT THEME -->
+  <div class="panel">
+    <div class="head">Light — padrão</div>
+    <div class="row"><div class="dot" style="background:#FFF8EE"></div><div class="token">--bg-primary</div><div class="val">#FFF8EE</div></div>
+    <div class="row"><div class="dot" style="background:#FFF5CC"></div><div class="token">--bg-tint</div><div class="val">#FFF5CC</div></div>
+    <div class="row"><div class="dot" style="background:#2B3038"></div><div class="token">--fg-primary</div><div class="val">#2B3038</div></div>
+    <div class="row"><div class="dot" style="background:#9494C8"></div><div class="token">--fg-muted</div><div class="val">#9494C8</div></div>
+    <div class="row"><div class="dot" style="background:#FFEE00"></div><div class="token">--accent-cta</div><div class="val">#FFEE00</div></div>
+    <div class="row"><div class="dot" style="background:#E0003D"></div><div class="token">--accent-alert</div><div class="val">#E0003D</div></div>
+    <div class="row"><div class="dot" style="background:#1B2585"></div><div class="token">--accent-cool</div><div class="val">#1B2585</div></div>
+  </div>
+
+  <!-- DARK / CONTRASTE THEME -->
+  <div class="panel panel-dark">
+    <div class="head">Dark — contraste</div>
+    <div class="row"><div class="dot" style="background:#000"></div><div class="token">--bg-primary</div><div class="val">#000000</div></div>
+    <div class="row"><div class="dot" style="background:#0C0D2A"></div><div class="token">--bg-secondary</div><div class="val">#0C0D2A</div></div>
+    <div class="row"><div class="dot" style="background:#fff; border-color:#333"></div><div class="token">--fg-primary</div><div class="val">#FFFFFF</div></div>
+    <div class="row"><div class="dot" style="background:#9494C8"></div><div class="token">--fg-muted</div><div class="val">#9494C8</div></div>
+    <div class="row"><div class="dot" style="background:#FFEE00"></div><div class="token">--accent-cta</div><div class="val">#FFEE00</div></div>
+    <div class="row"><div class="dot" style="background:#E0003D"></div><div class="token">--accent-alert</div><div class="val">#E0003D</div></div>
+    <div class="row"><div class="dot" style="background:#1B2585"></div><div class="token">--border-strong</div><div class="val">#1B2585</div></div>
+  </div>
+
+</body>
+</html>

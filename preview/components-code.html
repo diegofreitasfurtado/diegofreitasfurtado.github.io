@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @font-face { font-family: 'JetBrainsMono'; src: url('../fonts/JetBrainsMono-VariableFont_wght.ttf'); font-style: normal; }
+  @font-face { font-family: 'JetBrainsMono'; src: url('../fonts/JetBrainsMono-Italic-VariableFont_wght.ttf'); font-style: italic; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #000; padding: 24px 28px; font-family: 'JetBrainsMono', monospace; display: flex; flex-direction: column; gap: 16px; }
+  .head { font-size: 9px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #FFEE00; }
+  .code-block {
+    background: #0C0D2A; border: 1px solid #1B2585; padding: 14px 16px;
+    font-size: 12px; line-height: 1.7; color: #fff;
+  }
+  .kw { color: #9494C8; }
+  .fn { color: #FFEE00; }
+  .str { color: #F07090; }
+  .cm { color: #4A52A0; font-style: italic; }
+  .num { color: #E0003D; }
+  .inline-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .chip { background: #0C0D2A; color: #FFEE00; padding: 3px 8px; font-size: 11px; border: 1px solid #1B2585; }
+</style>
+</head>
+<body>
+  <div class="head">Code Block</div>
+  <div class="code-block">
+    <span class="cm"># agrupando por categoria e somando</span><br>
+    resultado = df.<span class="fn">groupby</span>(<span class="str">'categoria'</span>)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;.<span class="fn">agg</span>({<span class="str">'valor'</span>: <span class="str">'sum'</span>, <span class="str">'id'</span>: <span class="str">'count'</span>})<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;.<span class="fn">rename</span>(columns={<span class="str">'id'</span>: <span class="str">'total'</span>})<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;.<span class="fn">sort_values</span>(<span class="str">'valor'</span>, ascending=<span class="kw">False</span>)
+  </div>
+  <div class="head">Inline Code</div>
+  <div class="inline-row">
+    <span class="chip">df.shape</span>
+    <span class="chip">pd.read_csv()</span>
+    <span class="chip">GROUP BY</span>
+    <span class="chip">SELECT *</span>
+    <span class="chip">LEFT JOIN</span>
+  </div>
+</body>
+</html>

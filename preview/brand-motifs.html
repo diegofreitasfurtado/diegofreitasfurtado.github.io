@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @font-face { font-family: 'JetBrainsMono'; src: url('../fonts/JetBrainsMono-VariableFont_wght.ttf'); }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #F5F0E8; font-family: 'JetBrainsMono', monospace; padding: 20px; display: flex; gap: 12px; }
+  .cell { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px;
+    background: #fff; border: 1px solid rgba(26,26,26,0.1); padding: 16px 12px; position: relative; }
+  .tl, .tr, .bl, .br { position: absolute; width: 8px; height: 8px; }
+  .tl { top: 5px; left: 5px; border-top: 1px solid rgba(26,26,26,0.25); border-left: 1px solid rgba(26,26,26,0.25); }
+  .tr { top: 5px; right: 5px; border-top: 1px solid rgba(26,26,26,0.25); border-right: 1px solid rgba(26,26,26,0.25); }
+  .bl { bottom: 5px; left: 5px; border-bottom: 1px solid rgba(26,26,26,0.25); border-left: 1px solid rgba(26,26,26,0.25); }
+  .br { bottom: 5px; right: 5px; border-bottom: 1px solid rgba(26,26,26,0.25); border-right: 1px solid rgba(26,26,26,0.25); }
+  .label { font-size: 8px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(26,26,26,0.4); text-align: center; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; }
+</style>
+</head>
+<body>
+
+  <!-- Concentric Circles -->
+  <div class="cell">
+    <div class="tl"></div><div class="tr"></div><div class="bl"></div><div class="br"></div>
+    <svg width="80" height="80" viewBox="0 0 80 80">
+      <circle cx="40" cy="40" r="36" fill="none" stroke="#1B2585" stroke-width="1"/>
+      <circle cx="40" cy="40" r="27" fill="none" stroke="#1B2585" stroke-width="1"/>
+      <circle cx="40" cy="40" r="18" fill="none" stroke="#1B2585" stroke-width="1"/>
+      <circle cx="40" cy="40" r="9"  fill="none" stroke="#1B2585" stroke-width="1"/>
+      <circle cx="40" cy="40" r="3"  fill="#1B2585"/>
+    </svg>
+    <div class="label">Círculos<br/>Concêntricos</div>
+  </div>
+
+  <!-- Nested Triangles -->
+  <div class="cell">
+    <div class="tl"></div><div class="tr"></div><div class="bl"></div><div class="br"></div>
+    <svg width="80" height="80" viewBox="0 0 80 80">
+      <polygon points="40,6  74,70 6,70"  fill="none" stroke="#E0003D" stroke-width="1"/>
+      <polygon points="40,16 64,62 16,62" fill="none" stroke="#E0003D" stroke-width="1"/>
+      <polygon points="40,26 54,54 26,54" fill="none" stroke="#E0003D" stroke-width="1"/>
+      <polygon points="40,36 44,46 36,46" fill="none" stroke="#E0003D" stroke-width="1"/>
+    </svg>
+    <div class="label">Triângulos<br/>Aninhados</div>
+  </div>
+
+  <!-- Overlapping Circles (Venn) -->
+  <div class="cell">
+    <div class="tl"></div><div class="tr"></div><div class="bl"></div><div class="br"></div>
+    <svg width="80" height="80" viewBox="0 0 80 80">
+      <circle cx="30" cy="34" r="22" fill="none" stroke="#9494C8" stroke-width="1"/>
+      <circle cx="50" cy="34" r="22" fill="none" stroke="#9494C8" stroke-width="1"/>
+      <circle cx="40" cy="50" r="22" fill="none" stroke="#9494C8" stroke-width="1"/>
+    </svg>
+    <div class="label">Venn /<br/>Sobreposição</div>
+  </div>
+
+  <!-- Rotating Squares -->
+  <div class="cell">
+    <div class="tl"></div><div class="tr"></div><div class="bl"></div><div class="br"></div>
+    <svg width="80" height="80" viewBox="0 0 80 80">
+      <rect x="6"  y="6"  width="68" height="68" fill="none" stroke="#FFEE00" stroke-width="1" transform="rotate(0  40 40)"/>
+      <rect x="12" y="12" width="56" height="56" fill="none" stroke="#FFEE00" stroke-width="1" transform="rotate(10 40 40)"/>
+      <rect x="18" y="18" width="44" height="44" fill="none" stroke="#FFEE00" stroke-width="1" transform="rotate(20 40 40)"/>
+      <rect x="24" y="24" width="32" height="32" fill="none" stroke="#FFEE00" stroke-width="1" transform="rotate(30 40 40)"/>
+      <rect x="30" y="30" width="20" height="20" fill="none" stroke="#FFEE00" stroke-width="1" transform="rotate(40 40 40)"/>
+    </svg>
+    <div class="label">Quadrados<br/>Rotativos</div>
+  </div>
+
+  <!-- Line Grid -->
+  <div class="cell">
+    <div class="tl"></div><div class="tr"></div><div class="bl"></div><div class="br"></div>
+    <svg width="80" height="80" viewBox="0 0 80 80">
+      <!-- horizontal -->
+      <line x1="0" y1="10" x2="80" y2="10" stroke="#E8607A" stroke-width="1"/>
+      <line x1="0" y1="25" x2="80" y2="25" stroke="#E8607A" stroke-width="1"/>
+      <line x1="0" y1="40" x2="80" y2="40" stroke="#E8607A" stroke-width="1"/>
+      <line x1="0" y1="55" x2="80" y2="55" stroke="#E8607A" stroke-width="1"/>
+      <line x1="0" y1="70" x2="80" y2="70" stroke="#E8607A" stroke-width="1"/>
+      <!-- vertical -->
+      <line x1="10" y1="0" x2="10" y2="80" stroke="#E8607A" stroke-width="1" stroke-dasharray="2 4"/>
+      <line x1="40" y1="0" x2="40" y2="80" stroke="#E8607A" stroke-width="1" stroke-dasharray="2 4"/>
+      <line x1="70" y1="0" x2="70" y2="80" stroke="#E8607A" stroke-width="1" stroke-dasharray="2 4"/>
+      <!-- crosshair -->
+      <circle cx="40" cy="40" r="4" fill="none" stroke="#E8607A" stroke-width="1"/>
+      <line x1="36" y1="40" x2="44" y2="40" stroke="#E8607A" stroke-width="1"/>
+      <line x1="40" y1="36" x2="40" y2="44" stroke="#E8607A" stroke-width="1"/>
+    </svg>
+    <div class="label">Linhas &amp;<br/>Grid</div>
+  </div>
+
+  <!-- Starburst (original Ativo 9 redrawn) -->
+  <div class="cell">
+    <div class="tl"></div><div class="tr"></div><div class="bl"></div><div class="br"></div>
+    <svg width="80" height="80" viewBox="0 0 80 80">
+      <line x1="40" y1="4"  x2="40" y2="76" stroke="#0C0D2A" stroke-width="1"/>
+      <line x1="4"  y1="40" x2="76" y2="40" stroke="#0C0D2A" stroke-width="1"/>
+      <line x1="12" y1="12" x2="68" y2="68" stroke="#0C0D2A" stroke-width="1"/>
+      <line x1="68" y1="12" x2="12" y2="68" stroke="#0C0D2A" stroke-width="1"/>
+      <line x1="6"  y1="24" x2="74" y2="56" stroke="#0C0D2A" stroke-width="1" opacity="0.5"/>
+      <line x1="24" y1="6"  x2="56" y2="74" stroke="#0C0D2A" stroke-width="1" opacity="0.5"/>
+      <line x1="6"  y1="56" x2="74" y2="24" stroke="#0C0D2A" stroke-width="1" opacity="0.5"/>
+      <line x1="56" y1="6"  x2="24" y2="74" stroke="#0C0D2A" stroke-width="1" opacity="0.5"/>
+      <circle cx="40" cy="40" r="5" fill="none" stroke="#0C0D2A" stroke-width="1"/>
+      <circle cx="40" cy="40" r="2" fill="#0C0D2A"/>
+    </svg>
+    <div class="label">Starburst<br/>Ativo 9</div>
+  </div>
+
+</body>
+</html>

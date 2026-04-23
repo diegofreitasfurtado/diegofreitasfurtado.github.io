@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @font-face { font-family: 'BebasNeue'; src: url('../fonts/BebasNeue-Regular.ttf'); }
+  @font-face { font-family: 'JetBrainsMono'; src: url('../fonts/JetBrainsMono-VariableFont_wght.ttf'); }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #FFF8EE; font-family: 'JetBrainsMono', monospace; padding: 20px; }
+
+  .section-label {
+    font-size: 8px; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase;
+    color: #9494C8; margin-bottom: 8px;
+  }
+  .row { display: flex; gap: 6px; margin-bottom: 14px; }
+
+  .swatch {
+    flex: 1; height: 72px; display: flex; flex-direction: column;
+    justify-content: flex-end; padding: 7px 8px;
+  }
+  .swatch-sm {
+    flex: 1; height: 44px; display: flex; flex-direction: column;
+    justify-content: flex-end; padding: 5px 8px;
+  }
+  .sw-label { font-size: 8px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+  .sw-hex   { font-size: 8px; opacity: 0.6; }
+  .on-dark  { color: #fff; }
+  .on-cream { color: #3a2e1e; }
+  .on-navy  { color: #fff; }
+</style>
+</head>
+<body>
+
+  <!-- BASE -->
+  <div class="section-label">Base — leitura longa &amp; sobriedade</div>
+  <div class="row">
+    <div class="swatch on-cream" style="background:#FFF8EE; border:1px solid #e8ddd0;">
+      <div class="sw-label">Cream</div><div class="sw-hex">#FFF8EE</div>
+    </div>
+    <div class="swatch on-cream" style="background:#FFF5CC; border:1px solid #e8ddd0;">
+      <div class="sw-label">Cream Warm</div><div class="sw-hex">#FFF5CC</div>
+    </div>
+    <div class="swatch on-cream" style="background:#FFFFFF; border:1px solid #e8ddd0;">
+      <div class="sw-label">White</div><div class="sw-hex">#FFFFFF</div>
+    </div>
+    <div class="swatch on-dark" style="background:#2B3038;">
+      <div class="sw-label">Ink</div><div class="sw-hex">#2B3038</div>
+    </div>
+    <div class="swatch on-dark" style="background:#0C0D2A;">
+      <div class="sw-label">Navy</div><div class="sw-hex">#0C0D2A</div>
+    </div>
+  </div>
+
+  <!-- ACCENT / CONTRAST -->
+  <div class="section-label">Acento — contraste &amp; destaque</div>
+  <div class="row">
+    <div class="swatch on-cream" style="background:#FFEE00; border:1px solid #e8c800;">
+      <div class="sw-label">Yellow</div><div class="sw-hex">#FFEE00</div>
+    </div>
+    <div class="swatch on-dark" style="background:#E0003D;">
+      <div class="sw-label">Red</div><div class="sw-hex">#E0003D</div>
+    </div>
+    <div class="swatch on-dark" style="background:#1B2585;">
+      <div class="sw-label">Blue</div><div class="sw-hex">#1B2585</div>
+    </div>
+    <div class="swatch on-dark" style="background:#9494C8;">
+      <div class="sw-label">Lavender</div><div class="sw-hex">#9494C8</div>
+    </div>
+    <div class="swatch on-dark" style="background:#F07090;">
+      <div class="sw-label">Pink</div><div class="sw-hex">#F07090</div>
+    </div>
+  </div>
+
+  <!-- USAGE STRIP -->
+  <div class="section-label">Uso combinado</div>
+  <div class="row">
+    <div class="swatch-sm on-cream" style="background:#FFF8EE; border:1px solid #e8ddd0; flex:2;">
+      <div class="sw-label">Fundo padrão</div>
+    </div>
+    <div class="swatch-sm on-dark" style="background:#0C0D2A; flex:1;">
+      <div class="sw-label">Header / hero escuro</div>
+    </div>
+    <div class="swatch-sm on-cream" style="background:#FFEE00; border:1px solid #e8c800; flex:1;">
+      <div class="sw-label">CTA</div>
+    </div>
+    <div class="swatch-sm on-dark" style="background:#E0003D; flex:1;">
+      <div class="sw-label">Alerta / destaque</div>
+    </div>
+  </div>
+
+</body>
+</html>

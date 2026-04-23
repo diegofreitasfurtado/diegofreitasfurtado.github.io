@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @font-face { font-family: 'BebasNeue'; src: url('../fonts/BebasNeue-Regular.ttf'); }
+  @font-face { font-family: 'JetBrainsMono'; src: url('../fonts/JetBrainsMono-VariableFont_wght.ttf'); font-style: normal; }
+  @font-face { font-family: 'JetBrainsMono'; src: url('../fonts/JetBrainsMono-Italic-VariableFont_wght.ttf'); font-style: italic; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #111; color: #fff; padding: 20px 24px; font-family: 'JetBrainsMono', monospace; }
+  .scale-row { display: flex; align-items: baseline; gap: 16px; border-bottom: 1px solid #1B2585; padding: 7px 0; }
+  .size-label { font-size: 9px; font-weight: 700; color: #9494C8; letter-spacing: 0.15em; text-transform: uppercase; width: 80px; flex-shrink: 0; }
+  .sample-bebas { font-family: 'BebasNeue', sans-serif; letter-spacing: 0.05em; line-height: 1; }
+  .sample-mono { font-family: 'JetBrainsMono', monospace; line-height: 1; }
+  .px { font-size: 9px; color: #FFEE00; width: 30px; flex-shrink: 0; }
+</style>
+</head>
+<body>
+  <div class="scale-row"><div class="size-label">hero</div><div class="px">96px</div><div class="sample-bebas" style="font-size:40px">DF</div></div>
+  <div class="scale-row"><div class="size-label">5xl</div><div class="px">96px</div><div class="sample-bebas" style="font-size:34px">Análise de Dados</div></div>
+  <div class="scale-row"><div class="size-label">3xl / h1</div><div class="px">48px</div><div class="sample-bebas" style="font-size:26px">Jornalismo Visual</div></div>
+  <div class="scale-row"><div class="size-label">xl / h2</div><div class="px">24px</div><div class="sample-bebas" style="font-size:18px">Design de Conteúdo</div></div>
+  <div class="scale-row"><div class="size-label">lg / h3</div><div class="px">20px</div><div class="sample-mono" style="font-size:14px; font-style:italic; font-weight:700">Não é magia, é método.</div></div>
+  <div class="scale-row"><div class="size-label">md / body</div><div class="px">16px</div><div class="sample-mono" style="font-size:12px">Dados têm contexto e argumento.</div></div>
+  <div class="scale-row"><div class="size-label">sm / caption</div><div class="px">12px</div><div class="sample-mono" style="font-size:10px; letter-spacing:0.15em; text-transform:uppercase">Publicado · 23 Abr 2026</div></div>
+  <div class="scale-row"><div class="size-label">xs / label</div><div class="px">10px</div><div class="sample-mono" style="font-size:9px; letter-spacing:0.2em; text-transform:uppercase; font-weight:700; color:#FFEE00">tag · categoria</div></div>
+</body>
+</html>

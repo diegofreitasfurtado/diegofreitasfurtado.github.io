@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @font-face { font-family: 'BebasNeue'; src: url('../fonts/BebasNeue-Regular.ttf'); }
+  @font-face { font-family: 'JetBrainsMono'; src: url('../fonts/JetBrainsMono-VariableFont_wght.ttf'); }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #F5F0E8; font-family: 'JetBrainsMono', monospace; padding: 16px 20px; display: flex; gap: 12px; }
+  .card { flex: 1; background: #fff; border: 1px solid rgba(26,26,26,0.1); padding: 20px; position: relative; display: flex; flex-direction: column; gap: 8px; }
+  .brk { position: absolute; }
+  .brk.tl { top:5px; left:5px; width:10px; height:10px; border-top:1px solid; border-left:1px solid; }
+  .brk.br { bottom:5px; right:5px; width:10px; height:10px; border-bottom:1px solid; border-right:1px solid; }
+  .tag { font-size: 8px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; }
+  .title { font-family: 'BebasNeue', sans-serif; font-size: 20px; letter-spacing: 0.04em; text-transform: uppercase; color: #1A1A1A; line-height: 1.1; }
+  .body { font-size: 10px; line-height: 1.7; color: rgba(26,26,26,0.55); }
+  .meta { font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(26,26,26,0.3); border-top: 1px solid rgba(26,26,26,0.07); padding-top: 8px; margin-top: auto; }
+  /* Dark card */
+  .card-dark { background: #0C0D2A; border-color: #1B2585; }
+  .card-dark .title { color: #fff; }
+  .card-dark .body { color: rgba(255,255,255,0.5); }
+  .card-dark .meta { color: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.08); }
+</style>
+</head>
+<body>
+  <!-- Blue accent card -->
+  <div class="card">
+    <div class="brk tl" style="color:#1B2585"></div>
+    <div class="brk br" style="color:#1B2585"></div>
+    <div class="tag" style="color:#1B2585">Dados · Processo</div>
+    <div class="title">Por que processos falham</div>
+    <div class="body">847 ocorrências, 3 meses, 1 padrão inesperado.</div>
+    <div class="meta">Abr 2026 · 8 min</div>
+  </div>
+  <!-- Red accent card -->
+  <div class="card" style="background:#E0003D; border-color:#E0003D;">
+    <div class="brk tl" style="color:rgba(255,255,255,0.3)"></div>
+    <div class="brk br" style="color:rgba(255,255,255,0.3)"></div>
+    <div class="tag" style="color:rgba(255,255,255,0.6)">Jornalismo · Visual</div>
+    <div class="title" style="color:#fff">Design é argumento</div>
+    <div class="body" style="color:rgba(255,255,255,0.7)">A escolha do gráfico certo muda a conclusão.</div>
+    <div class="meta" style="color:rgba(255,255,255,0.4); border-color:rgba(255,255,255,0.15)">Mar 2026 · 5 min</div>
+  </div>
+  <!-- Dark navy card -->
+  <div class="card card-dark">
+    <div class="brk tl" style="color:#9494C8"></div>
+    <div class="brk br" style="color:#9494C8"></div>
+    <div class="tag" style="color:#9494C8">Marca · Conteúdo</div>
+    <div class="title">Como uma marca perde a voz</div>
+    <div class="body">50 pontos de contato, 2 anos de dados.</div>
+    <div class="meta">Fev 2026 · 12 min</div>
+  </div>
+</body>
+</html>

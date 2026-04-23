@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @font-face { font-family: 'JetBrainsMono'; src: url('../fonts/JetBrainsMono-VariableFont_wght.ttf'); }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #F5F0E8; font-family: 'JetBrainsMono', monospace; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; }
+  .head { font-size: 8px; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(26,26,26,0.4); }
+  .row { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  /* Section tags — one color per section */
+  .tag { font-size: 9px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; padding: 4px 10px; }
+  /* Pill */
+  .pill { font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 3px 10px; border-radius: 999px; }
+</style>
+</head>
+<body>
+  <div class="head">Tags por seção — cor de destaque única</div>
+  <div class="row">
+    <span class="tag" style="background:#1B2585; color:#fff">Dados</span>
+    <span class="tag" style="background:#E0003D; color:#fff">Jornalismo</span>
+    <span class="tag" style="background:#9494C8; color:#fff">Marca</span>
+    <span class="tag" style="background:#E8607A; color:#fff">Contato</span>
+    <span class="tag" style="background:#FFEE00; color:#1A1A1A">Destaque</span>
+    <span class="tag" style="background:#0C0D2A; color:#FFEE00">Python</span>
+  </div>
+  <div class="head">Outline · Pill</div>
+  <div class="row">
+    <span class="tag" style="border:1px solid #1B2585; color:#1B2585">SQL</span>
+    <span class="tag" style="border:1px solid #E0003D; color:#E0003D">Análise</span>
+    <span class="tag" style="border:1px solid rgba(26,26,26,0.25); color:rgba(26,26,26,0.5)">Em progresso</span>
+    <span class="pill" style="border:1px solid #1B2585; color:#1B2585">Novo</span>
+    <span class="pill" style="border:1px solid #E0003D; color:#E0003D">Urgente</span>
+    <span class="pill" style="background:#9494C8; color:#fff">Design</span>
+  </div>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @font-face { font-family: 'BebasNeue'; src: url('../fonts/BebasNeue-Regular.ttf'); }
+  @font-face { font-family: 'JetBrainsMono'; src: url('../fonts/JetBrainsMono-VariableFont_wght.ttf'); }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #F5F0E8; font-family: 'JetBrainsMono', monospace; padding: 20px 22px; display: flex; flex-direction: column; gap: 16px; }
+
+  .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .head { font-size: 8px; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(26,26,26,0.35); }
+
+  /* Retro card-style wrapper */
+  .btn-wrap { position: relative; display: inline-block; }
+  .btn-wrap .tl { position:absolute; top:4px; left:4px; width:7px; height:7px; border-top:1px solid; border-left:1px solid; pointer-events:none; }
+  .btn-wrap .br { position:absolute; bottom:4px; right:4px; width:7px; height:7px; border-bottom:1px solid; border-right:1px solid; pointer-events:none; }
+
+  /* Base button */
+  .btn { border: none; padding: 11px 24px; font-family: 'BebasNeue', sans-serif; font-size: 18px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; display: block; }
+
+  /* Variants */
+  .btn-navy  { background: #0C0D2A; color: #FFEE00; }
+  .btn-yellow{ background: #FFEE00; color: #0C0D2A; }
+  .btn-red   { background: #E0003D; color: #fff; }
+  .btn-blue  { background: #1B2585; color: #fff; }
+  .btn-white { background: #fff; color: #0C0D2A; border: 1px solid rgba(26,26,26,0.15); }
+  .btn-outline-ink  { background: transparent; color: #1A1A1A; border: 1px solid #1A1A1A; }
+  .btn-outline-red  { background: transparent; color: #E0003D; border: 1px solid #E0003D; }
+  .btn-outline-blue { background: transparent; color: #1B2585; border: 1px solid #1B2585; }
+
+  /* Small label */
+  .btn-sm { border: none; padding: 5px 11px; font-family: 'JetBrainsMono', monospace; font-size: 9px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; }
+</style>
+</head>
+<body>
+
+  <div class="head">Primários — fundo preenchido</div>
+  <div class="row">
+    <!-- Navy + Yellow -->
+    <div class="btn-wrap">
+      <div class="tl" style="color:#FFEE00; opacity:0.4"></div>
+      <div class="br" style="color:#FFEE00; opacity:0.4"></div>
+      <button class="btn btn-navy">Ver análise</button>
+    </div>
+    <!-- Yellow + Navy -->
+    <div class="btn-wrap">
+      <div class="tl" style="color:#0C0D2A; opacity:0.3"></div>
+      <div class="br" style="color:#0C0D2A; opacity:0.3"></div>
+      <button class="btn btn-yellow">Destaque</button>
+    </div>
+    <!-- Red + White -->
+    <div class="btn-wrap">
+      <div class="tl" style="color:#fff; opacity:0.4"></div>
+      <div class="br" style="color:#fff; opacity:0.4"></div>
+      <button class="btn btn-red">Alerta</button>
+    </div>
+    <!-- Blue + White -->
+    <div class="btn-wrap">
+      <div class="tl" style="color:#fff; opacity:0.4"></div>
+      <div class="br" style="color:#fff; opacity:0.4"></div>
+      <button class="btn btn-blue">Projetos</button>
+    </div>
+    <!-- White + Navy -->
+    <div class="btn-wrap">
+      <div class="tl" style="color:#0C0D2A; opacity:0.25"></div>
+      <div class="br" style="color:#0C0D2A; opacity:0.25"></div>
+      <button class="btn btn-white">Download</button>
+    </div>
+  </div>
+
+  <div class="head">Outline — sem preenchimento</div>
+  <div class="row">
+    <div class="btn-wrap">
+      <div class="tl" style="color:#1A1A1A; opacity:0.3"></div>
+      <div class="br" style="color:#1A1A1A; opacity:0.3"></div>
+      <button class="btn btn-outline-ink">Saiba mais</button>
+    </div>
+    <div class="btn-wrap">
+      <div class="tl" style="color:#E0003D; opacity:0.4"></div>
+      <div class="br" style="color:#E0003D; opacity:0.4"></div>
+      <button class="btn btn-outline-red">Ver dados</button>
+    </div>
+    <div class="btn-wrap">
+      <div class="tl" style="color:#1B2585; opacity:0.4"></div>
+      <div class="br" style="color:#1B2585; opacity:0.4"></div>
+      <button class="btn btn-outline-blue">Análise</button>
+    </div>
+  </div>
+
+  <div class="head">Small — tags &amp; labels</div>
+  <div class="row">
+    <button class="btn-sm" style="background:#0C0D2A; color:#FFEE00">Python</button>
+    <button class="btn-sm" style="background:#E0003D; color:#fff">SQL</button>
+    <button class="btn-sm" style="background:#1B2585; color:#fff">Dados</button>
+    <button class="btn-sm" style="background:#FFEE00; color:#0C0D2A">Novo</button>
+    <button class="btn-sm" style="background:#fff; color:#1A1A1A; border:1px solid rgba(26,26,26,0.2)">Outro</button>
+  </div>
+
+</body>
+</html>

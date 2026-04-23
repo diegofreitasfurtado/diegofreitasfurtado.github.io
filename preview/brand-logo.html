@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @font-face { font-family: 'JetBrainsMono'; src: url('../fonts/JetBrainsMono-VariableFont_wght.ttf'); }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #F5F0E8; font-family: 'JetBrainsMono', monospace; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .row { display: flex; gap: 8px; }
+  .cell { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 20px 12px 14px; position: relative; }
+  .label { font-size: 7px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; text-align: center; opacity: 0.55; }
+  .tl { position:absolute; top:5px; left:5px; width:8px; height:8px; border-top:1px solid; border-left:1px solid; opacity:0.3; }
+  .br { position:absolute; bottom:5px; right:5px; width:8px; height:8px; border-bottom:1px solid; border-right:1px solid; opacity:0.3; }
+</style>
+</head>
+<body>
+
+<div class="row">
+  <!-- Navy bg, Yellow logo -->
+  <div class="cell" style="background:#0C0D2A; color:#FFEE00">
+    <div class="tl" style="color:#FFEE00"></div><div class="br" style="color:#FFEE00"></div>
+    <svg width="36" height="54" viewBox="0 0 48.43 71.95"><path fill="#FFEE00" d="m48.43,71.95H0V0h48.43v71.95Zm-46.06-2.18h43.69V2.18H2.37v67.6Z"/><path fill="#FFEE00" d="m31.55,47.78h4.91v3h-4.91v8.68h-3.8v-21.02h10.06v3h-6.26v6.34Z"/><path fill="#FFEE00" d="m10.62,12.49h5.22c3.3,0,4.92,1.83,4.92,5.19v10.63c0,3.36-1.62,5.19-4.92,5.19h-5.22V12.49Zm3.3,3v15.01h1.86c1.05,0,1.68-.54,1.68-2.04v-10.93c0-1.5-.63-2.04-1.68-2.04h-1.86Z"/><path fill="#FFEE00" d="m12.92,59.46l-1.92-1.39L35.51,12.49l1.92,1.39L12.92,59.46Z"/></svg>
+    <div class="label" style="color:#FFEE00">Navy + Yellow</div>
+  </div>
+  <!-- Black bg, White logo -->
+  <div class="cell" style="background:#000; color:#fff">
+    <div class="tl" style="color:#fff"></div><div class="br" style="color:#fff"></div>
+    <svg width="36" height="54" viewBox="0 0 48.43 71.95"><path fill="#fff" d="m48.43,71.95H0V0h48.43v71.95Zm-46.06-2.18h43.69V2.18H2.37v67.6Z"/><path fill="#fff" d="m31.55,47.78h4.91v3h-4.91v8.68h-3.8v-21.02h10.06v3h-6.26v6.34Z"/><path fill="#fff" d="m10.62,12.49h5.22c3.3,0,4.92,1.83,4.92,5.19v10.63c0,3.36-1.62,5.19-4.92,5.19h-5.22V12.49Zm3.3,3v15.01h1.86c1.05,0,1.68-.54,1.68-2.04v-10.93c0-1.5-.63-2.04-1.68-2.04h-1.86Z"/><path fill="#fff" d="m12.92,59.46l-1.92-1.39L35.51,12.49l1.92,1.39L12.92,59.46Z"/></svg>
+    <div class="label" style="color:rgba(255,255,255,0.5)">Black + White</div>
+  </div>
+  <!-- Cream bg, Ink logo -->
+  <div class="cell" style="background:#F5F0E8; border:1px solid rgba(26,26,26,0.1)">
+    <div class="tl" style="color:#1A1A1A"></div><div class="br" style="color:#1A1A1A"></div>
+    <svg width="36" height="54" viewBox="0 0 48.43 71.95"><path fill="#1A1A1A" d="m48.43,71.95H0V0h48.43v71.95Zm-46.06-2.18h43.69V2.18H2.37v67.6Z"/><path fill="#1A1A1A" d="m31.55,47.78h4.91v3h-4.91v8.68h-3.8v-21.02h10.06v3h-6.26v6.34Z"/><path fill="#1A1A1A" d="m10.62,12.49h5.22c3.3,0,4.92,1.83,4.92,5.19v10.63c0,3.36-1.62,5.19-4.92,5.19h-5.22V12.49Zm3.3,3v15.01h1.86c1.05,0,1.68-.54,1.68-2.04v-10.93c0-1.5-.63-2.04-1.68-2.04h-1.86Z"/><path fill="#1A1A1A" d="m12.92,59.46l-1.92-1.39L35.51,12.49l1.92,1.39L12.92,59.46Z"/></svg>
+    <div class="label">Cream + Ink</div>
+  </div>
+  <!-- Red bg, White logo -->
+  <div class="cell" style="background:#E0003D">
+    <div class="tl" style="color:#fff"></div><div class="br" style="color:#fff"></div>
+    <svg width="36" height="54" viewBox="0 0 48.43 71.95"><path fill="#fff" d="m48.43,71.95H0V0h48.43v71.95Zm-46.06-2.18h43.69V2.18H2.37v67.6Z"/><path fill="#fff" d="m31.55,47.78h4.91v3h-4.91v8.68h-3.8v-21.02h10.06v3h-6.26v6.34Z"/><path fill="#fff" d="m10.62,12.49h5.22c3.3,0,4.92,1.83,4.92,5.19v10.63c0,3.36-1.62,5.19-4.92,5.19h-5.22V12.49Zm3.3,3v15.01h1.86c1.05,0,1.68-.54,1.68-2.04v-10.93c0-1.5-.63-2.04-1.68-2.04h-1.86Z"/><path fill="#fff" d="m12.92,59.46l-1.92-1.39L35.51,12.49l1.92,1.39L12.92,59.46Z"/></svg>
+    <div class="label" style="color:rgba(255,255,255,0.7)">Red + White</div>
+  </div>
+</div>
+
+<div class="row">
+  <!-- Blue bg, Yellow logo -->
+  <div class="cell" style="background:#1B2585">
+    <div class="tl" style="color:#FFEE00"></div><div class="br" style="color:#FFEE00"></div>
+    <svg width="36" height="54" viewBox="0 0 48.43 71.95"><path fill="#FFEE00" d="m48.43,71.95H0V0h48.43v71.95Zm-46.06-2.18h43.69V2.18H2.37v67.6Z"/><path fill="#FFEE00" d="m31.55,47.78h4.91v3h-4.91v8.68h-3.8v-21.02h10.06v3h-6.26v6.34Z"/><path fill="#FFEE00" d="m10.62,12.49h5.22c3.3,0,4.92,1.83,4.92,5.19v10.63c0,3.36-1.62,5.19-4.92,5.19h-5.22V12.49Zm3.3,3v15.01h1.86c1.05,0,1.68-.54,1.68-2.04v-10.93c0-1.5-.63-2.04-1.68-2.04h-1.86Z"/><path fill="#FFEE00" d="m12.92,59.46l-1.92-1.39L35.51,12.49l1.92,1.39L12.92,59.46Z"/></svg>
+    <div class="label" style="color:rgba(255,255,255,0.5)">Blue + Yellow</div>
+  </div>
+  <!-- Lavender bg, Navy logo -->
+  <div class="cell" style="background:#9494C8">
+    <div class="tl" style="color:#0C0D2A"></div><div class="br" style="color:#0C0D2A"></div>
+    <svg width="36" height="54" viewBox="0 0 48.43 71.95"><path fill="#0C0D2A" d="m48.43,71.95H0V0h48.43v71.95Zm-46.06-2.18h43.69V2.18H2.37v67.6Z"/><path fill="#0C0D2A" d="m31.55,47.78h4.91v3h-4.91v8.68h-3.8v-21.02h10.06v3h-6.26v6.34Z"/><path fill="#0C0D2A" d="m10.62,12.49h5.22c3.3,0,4.92,1.83,4.92,5.19v10.63c0,3.36-1.62,5.19-4.92,5.19h-5.22V12.49Zm3.3,3v15.01h1.86c1.05,0,1.68-.54,1.68-2.04v-10.93c0-1.5-.63-2.04-1.68-2.04h-1.86Z"/><path fill="#0C0D2A" d="m12.92,59.46l-1.92-1.39L35.51,12.49l1.92,1.39L12.92,59.46Z"/></svg>
+    <div class="label" style="color:rgba(12,13,42,0.6)">Lavender + Navy</div>
+  </div>
+  <!-- Yellow bg, Navy logo -->
+  <div class="cell" style="background:#FFEE00">
+    <div class="tl" style="color:#0C0D2A"></div><div class="br" style="color:#0C0D2A"></div>
+    <svg width="36" height="54" viewBox="0 0 48.43 71.95"><path fill="#0C0D2A" d="m48.43,71.95H0V0h48.43v71.95Zm-46.06-2.18h43.69V2.18H2.37v67.6Z"/><path fill="#0C0D2A" d="m31.55,47.78h4.91v3h-4.91v8.68h-3.8v-21.02h10.06v3h-6.26v6.34Z"/><path fill="#0C0D2A" d="m10.62,12.49h5.22c3.3,0,4.92,1.83,4.92,5.19v10.63c0,3.36-1.62,5.19-4.92,5.19h-5.22V12.49Zm3.3,3v15.01h1.86c1.05,0,1.68-.54,1.68-2.04v-10.93c0-1.5-.63-2.04-1.68-2.04h-1.86Z"/><path fill="#0C0D2A" d="m12.92,59.46l-1.92-1.39L35.51,12.49l1.92,1.39L12.92,59.46Z"/></svg>
+    <div class="label" style="color:rgba(12,13,42,0.5)">Yellow + Navy</div>
+  </div>
+  <!-- Pink bg, White logo -->
+  <div class="cell" style="background:#E8607A">
+    <div class="tl" style="color:#fff"></div><div class="br" style="color:#fff"></div>
+    <svg width="36" height="54" viewBox="0 0 48.43 71.95"><path fill="#fff" d="m48.43,71.95H0V0h48.43v71.95Zm-46.06-2.18h43.69V2.18H2.37v67.6Z"/><path fill="#fff" d="m31.55,47.78h4.91v3h-4.91v8.68h-3.8v-21.02h10.06v3h-6.26v6.34Z"/><path fill="#fff" d="m10.62,12.49h5.22c3.3,0,4.92,1.83,4.92,5.19v10.63c0,3.36-1.62,5.19-4.92,5.19h-5.22V12.49Zm3.3,3v15.01h1.86c1.05,0,1.68-.54,1.68-2.04v-10.93c0-1.5-.63-2.04-1.68-2.04h-1.86Z"/><path fill="#fff" d="m12.92,59.46l-1.92-1.39L35.51,12.49l1.92,1.39L12.92,59.46Z"/></svg>
+    <div class="label" style="color:rgba(255,255,255,0.7)">Pink + White</div>
+  </div>
+</div>
+
+</body>
+</html>

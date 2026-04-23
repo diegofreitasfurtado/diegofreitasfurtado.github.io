@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diego Furtado</title>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+@font-face { font-family: 'BebasNeue'; src: url('../../fonts/BebasNeue-Regular.ttf'); }
+@font-face { font-family: 'JetBrainsMono'; src: url('../../fonts/JetBrainsMono-VariableFont_wght.ttf'); font-style: normal; font-weight: 100 900; }
+@font-face { font-family: 'JetBrainsMono'; src: url('../../fonts/JetBrainsMono-Italic-VariableFont_wght.ttf'); font-style: italic; font-weight: 100 900; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --cream: #F5F0E8; --cream-dk: #EDE7DA;
+  --ink: #1A1A1A; --navy: #0C0D2A;
+  --blue: #1B2585; --lav: #9494C8;
+  --red: #E0003D; --pink: #E8607A;
+  --yellow: #FFEE00; --white: #FFFFFF;
+  --D: 'BebasNeue', sans-serif;
+  --M: 'JetBrainsMono', monospace;
+}
+html, body, #root { height: 100%; }
+body { background: var(--cream); color: var(--ink); font-family: var(--M); overflow-x: hidden; }
+button { font-family: var(--M); cursor: pointer; }
+input, textarea, select { font-family: var(--M); }
+::placeholder { color: rgba(26,26,26,0.35); }
+* { scrollbar-width: thin; scrollbar-color: var(--lav) var(--cream); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+/* ── Geometric elements ── */
+const ConcentricCircles = ({ color='#1B2585', size=120, rings=5 }) => {
+  const cx=size/2,cy=size/2,maxR=size/2-4;
+  return <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{display:'block'}}>
+    {Array.from({length:rings},(_,i)=><circle key={i} cx={cx} cy={cy} r={maxR*((rings-i)/rings)} fill="none" stroke={color} strokeWidth="1"/>)}
+    <circle cx={cx} cy={cy} r={3} fill={color}/>
+  </svg>;
+};
+const NestedTriangles = ({ color='#E0003D', size=120, count=5 }) => {
+  const triangles = Array.from({length:count},(_,i)=>{
+    const scale=(count-i)/count, h=(size-12)*scale, cx=size/2;
+    const base=size-6-(size-12)*(1-scale)/2-(size-12)*(1-scale);
+    return `${cx-h/2},${base} ${cx+h/2},${base} ${cx},${base-h}`;
+  });
+  return <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{display:'block'}}>
+    {triangles.map((pts,i)=><polygon key={i} points={pts} fill="none" stroke={color} strokeWidth="1"/>)}
+  </svg>;
+};
+const OverlappingCircles = ({ color='#9494C8', size=120 }) => {
+  const r=size*0.28,cx=size/2,cy=size/2,o=r*0.6;
+  return <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{display:'block'}}>
+    <circle cx={cx-o/2} cy={cy-o*0.4} r={r} fill="none" stroke={color} strokeWidth="1"/>
+    <circle cx={cx+o/2} cy={cy-o*0.4} r={r} fill="none" stroke={color} strokeWidth="1"/>
+    <circle cx={cx} cy={cy+o*0.5} r={r} fill="none" stroke={color} strokeWidth="1"/>
+  </svg>;
+};
+const RotatingSquares = ({ color='#FFEE00', size=120, count=5 }) => {
+  const cx=size/2,cy=size/2;
+  return <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{display:'block'}}>
+    {Array.from({length:count},(_,i)=>{const s=(size-8)*((count-i)/count);return(
+      <rect key={i} x={cx-s/2} y={cy-s/2} width={s} height={s} fill="none" stroke={color} strokeWidth="1" transform={`rotate(${i*8} ${cx} ${cy})`}/>
+    );})}
+  </svg>;
+};
+const LineGrid = ({ color='#1A1A1A', size=120, lines=6, opacity=0.12 }) => (
+  <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{display:'block'}}>
+    {Array.from({length:lines},(_,i)=>[
+      <line key={`h${i}`} x1="0" y1={size/(lines-1)*i} x2={size} y2={size/(lines-1)*i} stroke={color} strokeWidth="1" opacity={opacity}/>,
+      <line key={`v${i}`} x1={size/(lines-1)*i} y1="0" x2={size/(lines-1)*i} y2={size} stroke={color} strokeWidth="1" opacity={opacity}/>
+    ])}
+  </svg>
+);
+const Brackets = ({ color='#1A1A1A', size=12, opacity=0.4 }) => <>
+  <div style={{position:'absolute',top:6,left:6,width:size,height:size,borderTop:`1px solid ${color}`,borderLeft:`1px solid ${color}`,opacity}}/>
+  <div style={{position:'absolute',top:6,right:6,width:size,height:size,borderTop:`1px solid ${color}`,borderRight:`1px solid ${color}`,opacity}}/>
+  <div style={{position:'absolute',bottom:6,left:6,width:size,height:size,borderBottom:`1px solid ${color}`,borderLeft:`1px solid ${color}`,opacity}}/>
+  <div style={{position:'absolute',bottom:6,right:6,width:size,height:size,borderBottom:`1px solid ${color}`,borderRight:`1px solid ${color}`,opacity}}/>
+</>;
+const Logo = ({ color='#1A1A1A', size=38 }) => (
+  <svg width={size*(48.43/71.95)} height={size} viewBox="0 0 48.43 71.95">
+    <path fill={color} d="m48.43,71.95H0V0h48.43v71.95Zm-46.06-2.18h43.69V2.18H2.37v67.6Z"/>
+    <path fill={color} d="m31.55,47.78h4.91v3h-4.91v8.68h-3.8v-21.02h10.06v3h-6.26v6.34Z"/>
+    <path fill={color} d="m10.62,12.49h5.22c3.3,0,4.92,1.83,4.92,5.19v10.63c0,3.36-1.62,5.19-4.92,5.19h-5.22V12.49Zm3.3,3v15.01h1.86c1.05,0,1.68-.54,1.68-2.04v-10.93c0-1.5-.63-2.04-1.68-2.04h-1.86Z"/>
+    <path fill={color} d="m12.92,59.46l-1.92-1.39L35.51,12.49l1.92,1.39L12.92,59.46Z"/>
+  </svg>
+);
+const PanelLabel = ({ children, color='var(--ink)' }) => (
+  <div style={{display:'inline-flex',alignItems:'center',gap:6,marginBottom:16}}>
+    <div style={{width:6,height:6,background:color}}/>
+    <span style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.25em',textTransform:'uppercase',color}}>{children}</span>
+  </div>
+);
+const MotifEl = ({ type, color, size=80 }) => {
+  if(type==='circles') return <ConcentricCircles color={color} size={size} rings={4}/>;
+  if(type==='triangles') return <NestedTriangles color={color} size={size} count={4}/>;
+  if(type==='overlap') return <OverlappingCircles color={color} size={size}/>;
+  if(type==='squares') return <RotatingSquares color={color} size={size} count={4}/>;
+  return null;
+};
+
+/* ── Header ── */
+const Header = ({ page, setPage }) => {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(()=>{
+    const el=document.getElementById('scroll-root');
+    const fn=()=>setScrolled(el.scrollTop>20);
+    el?.addEventListener('scroll',fn);
+    return()=>el?.removeEventListener('scroll',fn);
+  },[]);
+  return (
+    <header style={{position:'fixed',top:0,left:0,right:0,zIndex:100,background:`rgba(245,240,232,${scrolled?0.97:0.92})`,borderBottom:`1px solid rgba(26,26,26,${scrolled?0.15:0.08})`,backdropFilter:'blur(12px)',padding:'0 40px',height:60,display:'flex',alignItems:'center',justifyContent:'space-between',transition:'border-color 200ms'}}>
+      <button onClick={()=>setPage('home')} style={{background:'none',border:'none',display:'flex',alignItems:'center',gap:10}}>
+        <Logo color="var(--ink)" size={34}/>
+        <span style={{fontFamily:'var(--D)',fontSize:18,letterSpacing:'0.12em',color:'var(--ink)'}}>DIEGO FURTADO</span>
+      </button>
+      <nav style={{display:'flex',gap:32,alignItems:'center'}}>
+        {[['home','Home'],['projetos','Projetos'],['sobre','Quem Sou']].map(([key,label])=>{
+          const active=page===key;
+          return <button key={key} onClick={()=>setPage(key)} style={{background:'none',border:'none',fontFamily:'var(--M)',fontSize:10,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:active?'var(--ink)':'rgba(26,26,26,0.45)',position:'relative',paddingBottom:2,transition:'color 120ms'}}>
+            {label}
+            {active&&<span style={{position:'absolute',bottom:-1,left:0,right:0,height:1,background:'var(--ink)'}}/>}
+          </button>;
+        })}
+        <button onClick={()=>window.open('mailto:diegoiribarrem@gmail.com')} style={{background:'var(--ink)',color:'var(--cream)',border:'none',fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',padding:'7px 14px'}}>Contato →</button>
+      </nav>
+    </header>
+  );
+};
+
+/* ── Footer ── */
+const Footer = () => (
+  <footer style={{background:'var(--navy)',padding:'36px 48px',display:'flex',justifyContent:'space-between',alignItems:'center',borderTop:'2px solid var(--yellow)'}}>
+    <div style={{display:'flex',alignItems:'center',gap:10}}>
+      <Logo color="var(--yellow)" size={30}/>
+      <span style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:'rgba(255,255,255,0.35)'}}>© 2026 Diego Furtado</span>
+    </div>
+    <div style={{opacity:0.12}}><LineGrid color="var(--yellow)" size={80} lines={5} opacity={1}/></div>
+    <div style={{display:'flex',gap:24}}>
+      {[['LinkedIn','https://linkedin.com/in/diegofreitasfurtado'],['GitHub','#'],['Medium','#']].map(([l,href])=>(
+        <a key={l} href={href} target="_blank" rel="noopener noreferrer" style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.18em',textTransform:'uppercase',color:'rgba(255,255,255,0.35)',textDecoration:'none',transition:'color 120ms'}}
+          onMouseEnter={e=>e.target.style.color='var(--yellow)'}
+          onMouseLeave={e=>e.target.style.color='rgba(255,255,255,0.35)'}>{l}</a>
+      ))}
+    </div>
+  </footer>
+);
+
+/* ════════ PROJECT CARD ════════ */
+const Card = ({ p, onClick }) => {
+  const [hov,setHov]=useState(false);
+  return (
+    <div onClick={onClick} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
+      style={{background:hov?p.accent:'var(--white)',border:'1px solid rgba(26,26,26,0.12)',padding:24,cursor:'pointer',position:'relative',overflow:'hidden',transition:'background 200ms',display:'flex',flexDirection:'column',gap:10}}>
+      <Brackets color={hov?'rgba(255,255,255,0.4)':'rgba(26,26,26,0.2)'}/>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+        <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:hov?'rgba(255,255,255,0.7)':p.accent}}>{p.tag}</div>
+        <div style={{opacity:0.5,flexShrink:0}}><MotifEl type={p.motif} color={hov?'rgba(255,255,255,0.4)':p.accent} size={52}/></div>
+      </div>
+      <div style={{fontFamily:'var(--D)',fontSize:24,letterSpacing:'0.04em',textTransform:'uppercase',color:hov?'var(--white)':'var(--ink)',lineHeight:1.1}}>{p.title}</div>
+      <div style={{fontFamily:'var(--M)',fontSize:11,lineHeight:1.7,color:hov?'rgba(255,255,255,0.75)':'rgba(26,26,26,0.55)',flex:1}}>{p.desc}</div>
+      <div style={{fontFamily:'var(--M)',fontSize:9,letterSpacing:'0.12em',textTransform:'uppercase',color:hov?'rgba(255,255,255,0.5)':'rgba(26,26,26,0.35)',borderTop:`1px solid ${hov?'rgba(255,255,255,0.2)':'rgba(26,26,26,0.08)'}`,paddingTop:10,marginTop:4}}>
+        {p.year} · {p.tool}
+      </div>
+    </div>
+  );
+};
+
+/* ════════ PROJECT MODAL (add new) ════════ */
+const ACCENTS = [
+  { label:'Azul', value:'var(--blue)', motif:'circles' },
+  { label:'Vermelho', value:'var(--red)', motif:'triangles' },
+  { label:'Lavanda', value:'var(--lav)', motif:'overlap' },
+  { label:'Rosa', value:'var(--pink)', motif:'squares' },
+];
+const AddProjectModal = ({ onClose, onSave }) => {
+  const [form, setForm] = useState({ title:'', tag:'', desc:'', year:'2026', tool:'', accentIdx:0 });
+  const set = (k,v) => setForm(f=>({...f,[k]:v}));
+  const inp = { width:'100%', background:'var(--cream)', border:'1px solid rgba(26,26,26,0.2)', color:'var(--ink)', fontFamily:'var(--M)', fontSize:11, padding:'9px 12px', outline:'none', marginBottom:10 };
+  const valid = form.title && form.tag && form.desc;
+  return (
+    <div style={{position:'fixed',inset:0,zIndex:200,background:'rgba(12,13,42,0.7)',display:'flex',alignItems:'center',justifyContent:'center'}} onClick={onClose}>
+      <div style={{background:'var(--cream)',padding:40,width:540,position:'relative',maxHeight:'90vh',overflowY:'auto'}} onClick={e=>e.stopPropagation()}>
+        <Brackets color="var(--blue)" size={14} opacity={0.4}/>
+        <PanelLabel color="var(--blue)">Novo projeto</PanelLabel>
+        <h2 style={{fontFamily:'var(--D)',fontSize:32,letterSpacing:'0.05em',textTransform:'uppercase',color:'var(--ink)',marginBottom:24}}>Adicionar Projeto</h2>
+        <input placeholder="Título do projeto" style={inp} value={form.title} onChange={e=>set('title',e.target.value)}/>
+        <input placeholder="Tags (ex: Power BI · SQL)" style={inp} value={form.tag} onChange={e=>set('tag',e.target.value)}/>
+        <textarea placeholder="Descrição breve" rows={3} style={{...inp,resize:'vertical'}} value={form.desc} onChange={e=>set('desc',e.target.value)}/>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}>
+          <input placeholder="Ano (ex: 2026)" style={{...inp,marginBottom:0}} value={form.year} onChange={e=>set('year',e.target.value)}/>
+          <input placeholder="Ferramenta principal" style={{...inp,marginBottom:0}} value={form.tool} onChange={e=>set('tool',e.target.value)}/>
+        </div>
+        <div style={{marginTop:16,marginBottom:20}}>
+          <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:'rgba(26,26,26,0.4)',marginBottom:10}}>Cor do card</div>
+          <div style={{display:'flex',gap:8}}>
+            {ACCENTS.map((a,i)=>(
+              <button key={i} onClick={()=>set('accentIdx',i)} style={{width:32,height:32,background:a.value.startsWith('var')? ({0:'#1B2585',1:'#E0003D',2:'#9494C8',3:'#E8607A'}[i]):a.value,border:form.accentIdx===i?'3px solid var(--ink)':'3px solid transparent',cursor:'pointer'}}/>
+            ))}
+          </div>
+        </div>
+        <div style={{display:'flex',gap:10}}>
+          <button onClick={onClose} style={{flex:1,background:'none',border:'1px solid rgba(26,26,26,0.2)',padding:'11px',fontFamily:'var(--M)',fontSize:10,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',color:'rgba(26,26,26,0.5)'}}>Cancelar</button>
+          <button disabled={!valid} onClick={()=>{if(valid){const ac=ACCENTS[form.accentIdx];onSave({...form,id:Date.now(),accent:ac.value,motif:ac.motif}); onClose();}}} style={{flex:2,background:valid?'var(--blue)':'rgba(26,26,26,0.2)',color:'var(--white)',border:'none',padding:'11px',fontFamily:'var(--D)',fontSize:20,letterSpacing:'0.1em',textTransform:'uppercase',transition:'background 150ms',cursor:valid?'pointer':'not-allowed'}}>Salvar Projeto</button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ════════════════════════════════
+   HOME
+════════════════════════════════ */
+const HomePage = ({ setPage }) => (
+  <div>
+    {/* HERO */}
+    <div style={{background:'var(--navy)',minHeight:'100vh',display:'flex',alignItems:'center',position:'relative',overflow:'hidden',padding:'80px 48px 60px'}}>
+      <div style={{position:'absolute',inset:0,opacity:0.04}}><LineGrid color="#fff" size={800} lines={16} opacity={1}/></div>
+      <div style={{position:'absolute',right:80,top:'50%',transform:'translateY(-50%)',opacity:0.1}}>
+        <ConcentricCircles color="var(--yellow)" size={320} rings={8}/>
+      </div>
+      <div style={{position:'absolute',right:340,bottom:60,opacity:0.06}}>
+        <NestedTriangles color="var(--yellow)" size={180} count={6}/>
+      </div>
+      <div style={{maxWidth:780,position:'relative',zIndex:1}}>
+        <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:24}}>
+          <div style={{width:24,height:1,background:'var(--yellow)'}}/>
+          <span style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.3em',textTransform:'uppercase',color:'var(--yellow)'}}>Data Analytics · Business Intelligence</span>
+        </div>
+        <h1 style={{fontFamily:'var(--D)',fontSize:'clamp(72px,9vw,128px)',letterSpacing:'0.03em',textTransform:'uppercase',lineHeight:0.92,color:'var(--white)',marginBottom:28}}>
+          Diego<br/><span style={{color:'var(--yellow)'}}>Furtado</span>
+        </h1>
+        <p style={{fontFamily:'var(--M)',fontSize:13,lineHeight:1.85,color:'rgba(255,255,255,0.55)',maxWidth:480,marginBottom:40}}>
+          Analista de dados e jornalista. Transformo dados dispersos em decisões claras — com pipelines automatizados, dashboards orientados a KPI e narrativa visual precisa.
+        </p>
+        <div style={{display:'flex',gap:12}}>
+          <button onClick={()=>setPage('projetos')} style={{background:'var(--yellow)',color:'var(--ink)',border:'none',padding:'12px 28px',fontFamily:'var(--D)',fontSize:18,letterSpacing:'0.1em',textTransform:'uppercase'}}>Ver Projetos</button>
+          <button onClick={()=>setPage('sobre')} style={{background:'transparent',color:'rgba(255,255,255,0.6)',border:'1px solid rgba(255,255,255,0.2)',padding:'11px 28px',fontFamily:'var(--D)',fontSize:18,letterSpacing:'0.1em',textTransform:'uppercase',transition:'color 150ms,border-color 150ms'}}
+            onMouseEnter={e=>{e.currentTarget.style.color='#fff';e.currentTarget.style.borderColor='rgba(255,255,255,0.5)';}}
+            onMouseLeave={e=>{e.currentTarget.style.color='rgba(255,255,255,0.6)';e.currentTarget.style.borderColor='rgba(255,255,255,0.2)';}}>Quem Sou</button>
+        </div>
+        <div style={{display:'flex',gap:40,marginTop:64,paddingTop:32,borderTop:'1px solid rgba(255,255,255,0.08)'}}>
+          {[['4×','Redução de refresh Power BI'],['30h','Economizadas/mês via automação'],['50%','Mais velocidade em propostas']].map(([n,l])=>(
+            <div key={l}>
+              <div style={{fontFamily:'var(--D)',fontSize:36,color:'var(--yellow)',lineHeight:1}}>{n}</div>
+              <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',color:'rgba(255,255,255,0.35)',marginTop:4,maxWidth:120}}>{l}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    {/* PROJETOS PREVIEW */}
+    <div style={{background:'var(--cream)',padding:'72px 48px'}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline',marginBottom:40}}>
+        <div>
+          <PanelLabel color="var(--blue)">Portfólio</PanelLabel>
+          <h2 style={{fontFamily:'var(--D)',fontSize:48,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)'}}>Projetos recentes</h2>
+        </div>
+        <button onClick={()=>setPage('projetos')} style={{background:'none',border:'1px solid rgba(26,26,26,0.2)',fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:'var(--blue)',padding:'8px 14px'}}>Ver todos →</button>
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
+        {DEFAULT_PROJECTS.slice(0,2).map(p=><Card key={p.id} p={p} onClick={()=>setPage('projetos')}/>)}
+      </div>
+    </div>
+
+    {/* SOBRE STRIP */}
+    <div style={{background:'var(--cream-dk)',borderTop:'1px solid rgba(26,26,26,0.08)',borderBottom:'1px solid rgba(26,26,26,0.08)',padding:'56px 48px',display:'flex',gap:64,alignItems:'center'}}>
+      <div style={{flex:'0 0 140px',opacity:0.6}}>
+        <OverlappingCircles color="var(--lav)" size={140}/>
+      </div>
+      <div style={{flex:1}}>
+        <PanelLabel color="var(--lav)">Quem sou</PanelLabel>
+        <p style={{fontFamily:'var(--D)',fontSize:30,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)',lineHeight:1.15,maxWidth:560}}>
+          Analista de dados sênior em Lisboa. Mestre em Mídia e Tecnologias Visuais. Background em jornalismo investigativo.
+        </p>
+      </div>
+      <button onClick={()=>setPage('sobre')} style={{background:'var(--lav)',color:'var(--white)',border:'none',padding:'12px 20px',fontFamily:'var(--D)',fontSize:16,letterSpacing:'0.1em',textTransform:'uppercase',flexShrink:0}}>Leia mais</button>
+    </div>
+  </div>
+);
+
+/* ════════════════════════════════
+   PROJETOS
+════════════════════════════════ */
+const DEFAULT_PROJECTS = [
+  { id:1, tag:'Power BI · DAX', title:'Fonte Única de Verdade', desc:'Unificação de dados SQL, Excel e APIs em um SSOT para a área comercial da MOP. Reduziu inconsistências e acelerou tomada de decisão em toda a liderança de vendas.', year:'2024–2025', tool:'Power BI · SQL · Excel', accent:'var(--blue)', motif:'circles' },
+  { id:2, tag:'Python · Power Query', title:'Automação de ETL', desc:'Pipelines ETL automáticos com Python e M (Power Query) que eliminaram ~30 horas de trabalho manual por mês e reduziram o tempo de atualização comercial em 4×.', year:'2024', tool:'Python · Power Query', accent:'var(--red)', motif:'triangles' },
+  { id:3, tag:'Dashboards · KPI', title:'Painel de Vendas & Marketing', desc:'Dashboards executivos no Power BI para rastreamento de KPIs de vendas e marketing. Construídos para a liderança da MOP com foco em clareza decisória.', year:'2024–2025', tool:'Power BI · DAX', accent:'var(--lav)', motif:'overlap' },
+  { id:4, tag:'Social Media · Analytics', title:'Audiência Institucional PUCRS', desc:'Consolidação de relatórios multiplataforma em um único dashboard SSOT. Apoiou aumento de 3× no orçamento de mídias sociais com base em resultados mensuráveis.', year:'2019–2023', tool:'Google Analytics · Sheets', accent:'var(--pink)', motif:'squares' },
+  { id:5, tag:'Estratégia · Precificação', title:'Benchmarking & Precificação', desc:'Análise competitiva e insights de precificação para suportar estratégia de propostas comerciais. Ferramentas de proposta que aumentaram a velocidade de entrega em 50%.', year:'2024', tool:'Excel · SQL · Power BI', accent:'var(--blue)', motif:'triangles' },
+];
+
+const ProjetosPage = () => {
+  const [projects, setProjects] = useState(()=>{
+    try { const s=localStorage.getItem('df_projects'); return s?JSON.parse(s):DEFAULT_PROJECTS; } catch{ return DEFAULT_PROJECTS; }
+  });
+  const [showModal,setShowModal]=useState(false);
+  const [filter,setFilter]=useState('Todos');
+
+  const saveProjects = (list) => { setProjects(list); localStorage.setItem('df_projects',JSON.stringify(list)); };
+  const addProject = (p) => saveProjects([...projects, p]);
+  const deleteProject = (id) => saveProjects(projects.filter(p=>p.id!==id));
+
+  const tags = ['Todos',...[...new Set(projects.map(p=>p.tag.split('·')[0].trim()))]];
+  const filtered = filter==='Todos' ? projects : projects.filter(p=>p.tag.includes(filter));
+
+  return (
+    <div>
+      {showModal&&<AddProjectModal onClose={()=>setShowModal(false)} onSave={addProject}/>}
+      {/* header */}
+      <div style={{background:'var(--blue)',padding:'80px 48px 40px',position:'relative',overflow:'hidden'}}>
+        <div style={{position:'absolute',right:48,bottom:-20,opacity:0.1}}>
+          <RotatingSquares color="var(--yellow)" size={240} count={7}/>
+        </div>
+        <PanelLabel color="rgba(255,255,255,0.5)">Portfólio</PanelLabel>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-end',position:'relative',zIndex:1}}>
+          <h1 style={{fontFamily:'var(--D)',fontSize:64,letterSpacing:'0.05em',textTransform:'uppercase',color:'var(--white)'}}>Projetos</h1>
+          <button onClick={()=>setShowModal(true)} style={{background:'var(--yellow)',color:'var(--ink)',border:'none',padding:'12px 20px',fontFamily:'var(--D)',fontSize:18,letterSpacing:'0.1em',textTransform:'uppercase',flexShrink:0}}>+ Novo Projeto</button>
+        </div>
+      </div>
+
+      {/* filter bar */}
+      <div style={{background:'var(--cream-dk)',borderBottom:'1px solid rgba(26,26,26,0.1)',padding:'0 48px',display:'flex',gap:4,alignItems:'center'}}>
+        {tags.map(t=>(
+          <button key={t} onClick={()=>setFilter(t)} style={{background:'none',border:'none',fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:filter===t?'var(--ink)':'rgba(26,26,26,0.38)',padding:'16px 10px',position:'relative',transition:'color 120ms'}}>
+            {t}
+            {filter===t&&<span style={{position:'absolute',bottom:0,left:0,right:0,height:2,background:'var(--ink)'}}/>}
+          </button>
+        ))}
+        <span style={{marginLeft:'auto',fontFamily:'var(--M)',fontSize:9,color:'rgba(26,26,26,0.35)',letterSpacing:'0.12em',textTransform:'uppercase'}}>{filtered.length} projetos</span>
+      </div>
+
+      {/* grid */}
+      <div style={{background:'var(--cream)',padding:'40px 48px'}}>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
+          {filtered.map(p=>(
+            <div key={p.id} style={{position:'relative'}}>
+              <Card p={p} onClick={()=>{}}/>
+              {p.id>5&&(
+                <button onClick={e=>{e.stopPropagation();deleteProject(p.id);}} title="Remover" style={{position:'absolute',top:10,right:10,background:'rgba(224,0,61,0.9)',color:'#fff',border:'none',width:22,height:22,fontSize:12,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',zIndex:2}}>×</button>
+              )}
+            </div>
+          ))}
+          {/* Add card */}
+          <div onClick={()=>setShowModal(true)} style={{border:'1px dashed rgba(26,26,26,0.2)',padding:24,cursor:'pointer',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:12,minHeight:200,transition:'border-color 150ms,background 150ms'}}
+            onMouseEnter={e=>{e.currentTarget.style.background='rgba(27,37,133,0.04)';e.currentTarget.style.borderColor='rgba(27,37,133,0.4)';}}
+            onMouseLeave={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.borderColor='rgba(26,26,26,0.2)';}}>
+            <div style={{width:40,height:40,border:'1px solid rgba(26,26,26,0.2)',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:'var(--D)',fontSize:28,color:'rgba(26,26,26,0.3)'}}>+</div>
+            <span style={{fontFamily:'var(--M)',fontSize:10,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:'rgba(26,26,26,0.3)'}}>Novo Projeto</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ════════════════════════════════
+   QUEM SOU
+════════════════════════════════ */
+const SobrePage = () => (
+  <div>
+    {/* header */}
+    <div style={{background:'var(--navy)',padding:'80px 48px 48px',position:'relative',overflow:'hidden'}}>
+      <div style={{position:'absolute',right:60,top:'50%',transform:'translateY(-50%)',opacity:0.08}}>
+        <OverlappingCircles color="var(--lav)" size={280}/>
+      </div>
+      <div style={{position:'absolute',right:220,bottom:20,opacity:0.05}}>
+        <NestedTriangles color="var(--yellow)" size={160} count={5}/>
+      </div>
+      <PanelLabel color="rgba(255,255,255,0.4)">Perfil</PanelLabel>
+      <h1 style={{fontFamily:'var(--D)',fontSize:64,letterSpacing:'0.05em',textTransform:'uppercase',color:'var(--white)',position:'relative',zIndex:1,marginBottom:20}}>Quem Sou</h1>
+      <p style={{fontFamily:'var(--M)',fontSize:13,lineHeight:1.85,color:'rgba(255,255,255,0.5)',maxWidth:560,position:'relative',zIndex:1}}>
+        Business & Data Analytics Consultant. Focado em Data Insights e Business Analytics — transformando dados em crescimento estratégico e performance de negócio.
+      </p>
+    </div>
+
+    {/* BIO + CONTATO */}
+    <div style={{display:'grid',gridTemplateColumns:'2fr 1fr',background:'var(--cream)',borderBottom:'1px solid rgba(26,26,26,0.08)'}}>
+      <div style={{padding:'56px 48px',borderRight:'1px solid rgba(26,26,26,0.08)'}}>
+        <PanelLabel color="var(--blue)">Sobre</PanelLabel>
+        <h2 style={{fontFamily:'var(--D)',fontSize:42,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)',marginBottom:20}}>Diego Freitas Furtado</h2>
+        <p style={{fontFamily:'var(--M)',fontSize:12,lineHeight:1.95,color:'rgba(26,26,26,0.65)',marginBottom:16}}>
+          Analista de dados e consultor baseado em Lisboa, Portugal. Tenho formação em jornalismo e pós-graduação em Ciência de Dados e IA — uma combinação que me permite transformar análises técnicas em narrativas claras para tomadores de decisão.
+        </p>
+        <p style={{fontFamily:'var(--M)',fontSize:12,lineHeight:1.95,color:'rgba(26,26,26,0.65)',marginBottom:16}}>
+          Atualmente na MOP (Multimédia Outdoors Portugal), onde unifiquei fontes de dados dispersas em um SSOT robusto, automatizei pipelines ETL e construí dashboards executivos para as lideranças de Vendas, Marketing, Operações e Financeiro.
+        </p>
+        <p style={{fontFamily:'var(--M)',fontSize:12,lineHeight:1.95,color:'rgba(26,26,26,0.65)'}}>
+          Acredito que todo dado é uma declaração sobre o mundo — e que a diferença entre um relatório e uma decisão está na forma como você conta a história.
+        </p>
+      </div>
+      <div style={{padding:'56px 32px',background:'var(--cream-dk)',display:'flex',flexDirection:'column',gap:24}}>
+        <PanelLabel color="var(--blue)">Contato</PanelLabel>
+        {[
+          ['Email','diegoiribarrem@gmail.com'],
+          ['Telefone','+351 929 023 731'],
+          ['Localização','Lisboa, Portugal'],
+          ['LinkedIn','/diegofreitasfurtado'],
+        ].map(([label,value])=>(
+          <div key={label} style={{paddingBottom:18,borderBottom:'1px solid rgba(26,26,26,0.08)'}}>
+            <div style={{fontFamily:'var(--M)',fontSize:8,fontWeight:700,letterSpacing:'0.25em',textTransform:'uppercase',color:'rgba(26,26,26,0.38)',marginBottom:4}}>{label}</div>
+            <div style={{fontFamily:'var(--M)',fontSize:11,color:'var(--ink)',wordBreak:'break-all'}}>{value}</div>
+          </div>
+        ))}
+        <div style={{opacity:0.25,marginTop:8}}><RotatingSquares color="var(--blue)" size={60} count={4}/></div>
+      </div>
+    </div>
+
+    {/* EXPERIÊNCIA */}
+    <div style={{background:'var(--cream)',padding:'56px 48px',borderBottom:'1px solid rgba(26,26,26,0.08)'}}>
+      <PanelLabel color="var(--red)">Trajetória</PanelLabel>
+      <h2 style={{fontFamily:'var(--D)',fontSize:42,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)',marginBottom:36}}>Experiência</h2>
+      <div style={{display:'flex',flexDirection:'column',gap:0}}>
+        {[
+          {
+            role:'Business Development Consultant',
+            company:'MOP — Multimédia Outdoors Portugal',
+            period:'Abr 2024 – Presente',
+            location:'Lisboa, Portugal',
+            accent:'var(--blue)',
+            bullets:[
+              'Unificação de dados SQL, Excel e API em um SSOT, melhorando qualidade e alinhamento de dados',
+              'Automação de pipelines ETL com Power Query (M) e Python — economia de ~30h/mês',
+              'Redução de 4× no tempo de refresh do dashboard comercial Power BI',
+              'Dashboards de KPI para lideranças de Vendas e Marketing',
+              'Ferramentas de proposta que aumentaram a velocidade de entrega em 50%',
+              'Mapeamento end-to-end de processos em Vendas, Operações e Financeiro',
+            ]
+          },
+          {
+            role:'Assistente de Comunicação & Social Media Insights',
+            company:'PUCRS — Pontifícia Universidade Católica do RS',
+            period:'Mai 2017 – Out 2023',
+            location:'Porto Alegre, Brasil',
+            accent:'var(--lav)',
+            bullets:[
+              'Análise de alcance, engajamento e performance de audiência em canais institucionais',
+              'Dashboards e relatórios de KPI para planejamento de conteúdo e decisões de campanha',
+              'Consolidação de relatórios multiplataforma em um único dashboard SSOT',
+              'Apoio a aumento de 3× no orçamento de mídias sociais com base em resultados entregues',
+              'Progressão: Estagiário (2017) → Assistente (2019) → Associado de Comunicação (2021)',
+            ]
+          },
+        ].map((exp,i)=>(
+          <div key={i} style={{display:'grid',gridTemplateColumns:'200px 1fr',borderTop:'1px solid rgba(26,26,26,0.1)',paddingTop:28,paddingBottom:28}}>
+            <div>
+              <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',color:exp.accent,marginBottom:6}}>{exp.period}</div>
+              <div style={{fontFamily:'var(--M)',fontSize:9,color:'rgba(26,26,26,0.4)',letterSpacing:'0.08em',textTransform:'uppercase'}}>{exp.location}</div>
+            </div>
+            <div>
+              <div style={{fontFamily:'var(--D)',fontSize:22,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)',marginBottom:4}}>{exp.role}</div>
+              <div style={{fontFamily:'var(--M)',fontSize:10,fontWeight:700,color:'rgba(26,26,26,0.5)',letterSpacing:'0.12em',textTransform:'uppercase',marginBottom:16}}>{exp.company}</div>
+              <div style={{display:'flex',flexDirection:'column',gap:6}}>
+                {exp.bullets.map((b,j)=>(
+                  <div key={j} style={{display:'flex',gap:10,alignItems:'flex-start'}}>
+                    <span style={{width:4,height:4,background:exp.accent,display:'inline-block',flexShrink:0,marginTop:5}}/>
+                    <span style={{fontFamily:'var(--M)',fontSize:11,lineHeight:1.75,color:'rgba(26,26,26,0.65)'}}>{b}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* FORMAÇÃO + HABILIDADES */}
+    <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',background:'var(--cream-dk)'}}>
+      {/* Formação */}
+      <div style={{padding:'56px 48px',borderRight:'1px solid rgba(26,26,26,0.08)'}}>
+        <PanelLabel color="var(--lav)">Formação acadêmica</PanelLabel>
+        <h3 style={{fontFamily:'var(--D)',fontSize:32,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)',marginBottom:28}}>Educação</h3>
+        {[
+          { title:'Mestrado em Mídia, Cultura e Tecnologias Visuais', school:'PUCRS', period:'2020–2022', note:'Aprovado com louvor', accent:'var(--lav)' },
+          { title:'Pós-graduação em Ciência de Dados e IA', school:'PUCRS', period:'2021–2022', note:'Bolsa por mérito acadêmico', accent:'var(--blue)' },
+          { title:'Bacharelado em Jornalismo', school:'PUCRS', period:'2015–2019', note:'Porto Alegre, Brasil', accent:'var(--red)' },
+        ].map((e,i)=>(
+          <div key={i} style={{paddingBottom:22,marginBottom:22,borderBottom:i<2?'1px solid rgba(26,26,26,0.08)':'none'}}>
+            <div style={{fontFamily:'var(--D)',fontSize:18,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)',lineHeight:1.2,marginBottom:6}}>{e.title}</div>
+            <div style={{display:'flex',gap:12,alignItems:'center'}}>
+              <span style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',color:e.accent}}>{e.school} · {e.period}</span>
+            </div>
+            <div style={{fontFamily:'var(--M)',fontSize:9,color:'rgba(26,26,26,0.4)',letterSpacing:'0.1em',textTransform:'uppercase',marginTop:4}}>{e.note}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Habilidades */}
+      <div style={{padding:'56px 48px'}}>
+        <PanelLabel color="var(--blue)">Ferramentas & competências</PanelLabel>
+        <h3 style={{fontFamily:'var(--D)',fontSize:32,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)',marginBottom:28}}>Habilidades</h3>
+        {[
+          { area:'BI & Visualização', items:['Power BI (DAX, M language)','Tableau','Looker','Microsoft Excel avançado'], accent:'var(--blue)' },
+          { area:'Dados & Engenharia', items:['SQL · BigQuery','Python (Pandas, NumPy)','ETL · Power Query','Integração multifonte'], accent:'var(--red)' },
+          { area:'Estratégia & Negócios', items:['KPI Design','Market & Competitor Analysis','Data Storytelling','Process Optimization & Automation'], accent:'var(--lav)' },
+          { area:'Idiomas', items:['Português (nativo)','Inglês (profissional)'], accent:'var(--pink)' },
+        ].map(({ area, items, accent })=>(
+          <div key={area} style={{marginBottom:22}}>
+            <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8}}>
+              <div style={{width:12,height:1,background:accent}}/>
+              <div style={{fontFamily:'var(--D)',fontSize:16,letterSpacing:'0.06em',textTransform:'uppercase',color:'var(--ink)'}}>{area}</div>
+            </div>
+            <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
+              {items.map(item=>(
+                <span key={item} style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.12em',textTransform:'uppercase',background:'var(--white)',color:accent,border:`1px solid ${accent}33`,padding:'4px 8px'}}>{item}</span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
+/* ════════════════════════════════
+   APP
+════════════════════════════════ */
+const App = () => {
+  const [page,setPage]=useState('home');
+  const ref=useRef(null);
+  useEffect(()=>{if(ref.current)ref.current.scrollTop=0;},[page]);
+  const pages = { home:<HomePage setPage={setPage}/>, projetos:<ProjetosPage/>, sobre:<SobrePage/> };
+  return (
+    <div id="scroll-root" style={{height:'100vh',overflowY:'auto'}} ref={ref}>
+      <Header page={page} setPage={setPage}/>
+      <main style={{paddingTop:60}}>{pages[page]||pages.home}</main>
+      <Footer/>
+    </div>
+  );
+};
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
