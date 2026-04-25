@@ -7,34 +7,131 @@
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="projects-data.js"></script>
 <style>
-@font-face { font-family: 'BebasNeue'; src: url('../../fonts/BebasNeue-Regular.ttf'); }
-@font-face { font-family: 'JetBrainsMono'; src: url('../../fonts/JetBrainsMono-VariableFont_wght.ttf'); font-style: normal; font-weight: 100 900; }
-@font-face { font-family: 'JetBrainsMono'; src: url('../../fonts/JetBrainsMono-Italic-VariableFont_wght.ttf'); font-style: italic; font-weight: 100 900; }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --cream: #F5F0E8; --cream-dk: #EDE7DA;
-  --ink: #1A1A1A; --navy: #0C0D2A;
-  --blue: #1B2585; --lav: #9494C8;
-  --red: #E0003D; --pink: #E8607A;
-  --yellow: #FFEE00; --white: #FFFFFF;
-  --D: 'BebasNeue', sans-serif;
-  --M: 'JetBrainsMono', monospace;
+@font-face{font-family:'BebasNeue';src:url('../../fonts/BebasNeue-Regular.ttf');}
+@font-face{font-family:'JetBrainsMono';src:url('../../fonts/JetBrainsMono-VariableFont_wght.ttf');font-style:normal;font-weight:100 900;}
+@font-face{font-family:'JetBrainsMono';src:url('../../fonts/JetBrainsMono-Italic-VariableFont_wght.ttf');font-style:italic;font-weight:100 900;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --cream:#F5F0E8;--cream-dk:#EDE7DA;
+  --ink:#1A1A1A;--navy:#0C0D2A;
+  --blue:#1B2585;--lav:#9494C8;
+  --red:#E0003D;--pink:#E8607A;
+  --yellow:#FFEE00;--white:#FFFFFF;
+  --D:'BebasNeue',sans-serif;--M:'JetBrainsMono',monospace;
 }
-html, body, #root { height: 100%; }
-body { background: var(--cream); color: var(--ink); font-family: var(--M); overflow-x: hidden; }
-button { font-family: var(--M); cursor: pointer; }
-input, textarea, select { font-family: var(--M); }
-::placeholder { color: rgba(26,26,26,0.35); }
-* { scrollbar-width: thin; scrollbar-color: var(--lav) var(--cream); }
+html,body,#root{height:100%;}
+body{background:var(--cream);color:var(--ink);font-family:var(--M);overflow-x:hidden;}
+button,input,textarea{font-family:var(--M);}
+::placeholder{color:rgba(26,26,26,0.35);}
+*{scrollbar-width:thin;scrollbar-color:var(--lav) var(--cream);}
 </style>
 </head>
 <body>
 <div id="root"></div>
+<script type="text/babel" src="project-templates.jsx"></script>
 <script type="text/babel">
 const { useState, useEffect, useRef } = React;
 
-/* ── Geometric elements ── */
+/* ══ TRANSLATIONS ══════════════════════════════════════════ */
+const T = {
+  pt: {
+    nav_home:'Home', nav_projects:'Projetos', nav_about:'Quem Sou', nav_contact:'Contato →', lang_btn:'EN',
+    hero_tag:'Data Analytics · Business Intelligence · Lisboa',
+    hero_desc:'Analista de dados e jornalista. Transformo dados dispersos em decisões claras — com pipelines automáticos, dashboards KPI e narrativa visual precisa.',
+    hero_cta1:'Ver Projetos', hero_cta2:'Quem Sou',
+    stat1:'Redução de refresh Power BI', stat2:'Economizadas/mês via automação', stat3:'Mais velocidade em propostas',
+    portfolio_label:'Portfólio', featured_heading:'Projetos em destaque', see_all:'Ver todos →',
+    about_label:'Quem sou',
+    about_quote:'Analista de dados sênior em Lisboa. Mestre em Mídia e Tecnologias Visuais. Background em jornalismo investigativo.',
+    read_more:'Leia mais',
+    spotify_label:'O que estou ouvindo',
+    spotify_empty:'Playlist não configurada',
+    spotify_hint:'Abra projects-data.js e preencha spotifyPlaylistId com o ID da sua playlist.',
+    projects_heading:'Projetos', portfolio_tag:'Portfólio',
+    no_projects:'Nenhum projeto nesta categoria ainda.',
+    edit_hint:'Para adicionar projetos, edite projects-data.js no VS Code',
+    cat_experimentos:'Experimentos', cat_pesquisa:'Pesquisa',
+    catdesc_powerbi:'Business Intelligence e visualização executiva com Power BI e DAX.',
+    catdesc_tableau:'Dashboards analíticos e exploração visual de dados com Tableau.',
+    catdesc_python:'Automação, ETL, análise exploratória e engenharia de dados com Python.',
+    catdesc_experimentos:'Projetos com tecnologias emergentes, ideias experimentais e prototipagem.',
+    catdesc_pesquisa:'Ensaios, análises e documentação de pesquisas em dados, mídia e comunicação.',
+    profile_label:'Perfil', about_title:'Quem Sou',
+    about_subtitle:'Business & Data Analytics Consultant. Focado em transformar dados em crescimento estratégico e performance de negócio.',
+    bio_label:'Bio', bio_name:'Diego Freitas Furtado',
+    bio_p1:'Analista de dados e consultor baseado em Lisboa, Portugal. Formação em Jornalismo e pós-graduação em Ciência de Dados e IA pela PUCRS — uma combinação que me permite transformar análises técnicas em narrativas claras para tomadores de decisão.',
+    bio_p2:'Atualmente na MOP (Multimédia Outdoors Portugal), unificando fontes de dados em SSOT, automatizando pipelines ETL e construindo dashboards executivos para Vendas, Marketing, Operações e Financeiro.',
+    bio_p3:'Acredito que todo dado é uma declaração sobre o mundo — e que a diferença entre um relatório e uma decisão está em como você conta a história.',
+    contact_label:'Contato',
+    f_email:'Email', f_tel:'Tel.', f_city:'Cidade', f_linkedin:'LinkedIn',
+    exp_label:'Trajetória', exp_heading:'Experiência',
+    exp1_role:'Business Development Consultant', exp1_co:'MOP — Multimédia Outdoors Portugal', exp1_period:'Abr 2024 – Presente', exp1_loc:'Lisboa, Portugal',
+    exp1_b:['Unificação de dados SQL, Excel e API em SSOT — melhorando qualidade e alinhamento','Automação ETL com Python e Power Query (M) — economia de ~30h/mês','Redução de 4× no tempo de refresh do dashboard Power BI comercial','Dashboards de KPI para lideranças de Vendas e Marketing','Ferramentas de proposta com 50% mais velocidade de entrega','Mapeamento end-to-end de processos em Vendas, Operações e Financeiro'],
+    exp2_role:'Assistente de Comunicação & Social Media Insights', exp2_co:'PUCRS — Pontifícia Universidade Católica do RS', exp2_period:'Mai 2017 – Out 2023', exp2_loc:'Porto Alegre, Brasil',
+    exp2_b:['Análise de alcance, engajamento e performance em canais institucionais','Dashboards e KPI para planejamento de conteúdo e campanhas','Consolidação de relatórios multiplataforma em dashboard único','Apoio a aumento de 3× no orçamento de mídias sociais','Progressão: Estagiário (2017) → Assistente (2019) → Associado (2021)'],
+    edu_label:'Formação', edu_heading:'Educação',
+    edu1:'Mestrado em Mídia, Cultura e Tecnologias Visuais', edu1_note:'Aprovado com louvor',
+    edu2:'Pós-graduação em Ciência de Dados e IA', edu2_note:'Bolsa por mérito acadêmico',
+    edu3:'Bacharelado em Jornalismo', edu3_note:'Porto Alegre, Brasil',
+    skills_label:'Ferramentas & Competências', skills_heading:'Habilidades',
+    sk1:'BI & Visualização', sk2:'Dados & Engenharia', sk3:'Estratégia', sk4:'Idiomas',
+    sk3_items:['KPI Design','Análise competitiva','Data Storytelling','Automação de processos'],
+    sk4_items:['Português (nativo)','Inglês (profissional)'],
+    footer_copy:'© 2026 Diego Furtado · Lisboa',
+  },
+  en: {
+    nav_home:'Home', nav_projects:'Projects', nav_about:'About', nav_contact:'Contact →', lang_btn:'PT',
+    hero_tag:'Data Analytics · Business Intelligence · Lisbon',
+    hero_desc:'Data analyst and journalist. I transform scattered data into clear decisions — with automated pipelines, KPI dashboards and precise visual storytelling.',
+    hero_cta1:'See Projects', hero_cta2:'About Me',
+    stat1:'Power BI refresh reduction', stat2:'Hours saved/month via automation', stat3:'Faster proposal delivery',
+    portfolio_label:'Portfolio', featured_heading:'Featured Projects', see_all:'See all →',
+    about_label:'About me',
+    about_quote:'Senior data analyst based in Lisbon. Master\'s in Media and Visual Technologies. Background in investigative journalism.',
+    read_more:'Read more',
+    spotify_label:'What I\'m listening to',
+    spotify_empty:'Playlist not configured',
+    spotify_hint:'Open projects-data.js and fill in spotifyPlaylistId with your playlist ID.',
+    projects_heading:'Projects', portfolio_tag:'Portfolio',
+    no_projects:'No projects in this category yet.',
+    edit_hint:'To add projects, edit projects-data.js in VS Code',
+    cat_experimentos:'Experiments', cat_pesquisa:'Research',
+    catdesc_powerbi:'Business Intelligence and executive visualization with Power BI and DAX.',
+    catdesc_tableau:'Analytical dashboards and visual data exploration with Tableau.',
+    catdesc_python:'Automation, ETL, exploratory analysis and data engineering with Python.',
+    catdesc_experimentos:'Projects with emerging technologies, experimental ideas and prototyping.',
+    catdesc_pesquisa:'Essays, analyses and research documentation in data, media and communication.',
+    profile_label:'Profile', about_title:'About Me',
+    about_subtitle:'Business & Data Analytics Consultant. Focused on transforming data into strategic growth and business performance.',
+    bio_label:'Bio', bio_name:'Diego Freitas Furtado',
+    bio_p1:'Data analyst and consultant based in Lisbon, Portugal. Background in Journalism and postgraduate degree in Data Science and AI from PUCRS — a combination that allows me to transform technical analyses into clear narratives for decision-makers.',
+    bio_p2:'Currently at MOP (Multimédia Outdoors Portugal), unifying data sources into a SSOT, automating ETL pipelines and building executive dashboards for Sales, Marketing, Operations and Finance.',
+    bio_p3:'I believe every data point is a statement about the world — and that the difference between a report and a decision lies in how you tell the story.',
+    contact_label:'Contact',
+    f_email:'Email', f_tel:'Phone', f_city:'Location', f_linkedin:'LinkedIn',
+    exp_label:'Career', exp_heading:'Experience',
+    exp1_role:'Business Development Consultant', exp1_co:'MOP — Multimédia Outdoors Portugal', exp1_period:'Apr 2024 – Present', exp1_loc:'Lisbon, Portugal',
+    exp1_b:['Unified SQL, Excel and API data into a SSOT — improving quality and alignment','ETL automation with Python and Power Query (M) — ~30h/month saved','4× reduction in commercial Power BI dashboard refresh time','KPI dashboards for Sales and Marketing leadership','Proposal tools with 50% faster delivery speed','End-to-end process mapping across Sales, Operations and Finance'],
+    exp2_role:'Communication & Social Media Insights Assistant', exp2_co:'PUCRS — Pontifical Catholic University of RS', exp2_period:'May 2017 – Oct 2023', exp2_loc:'Porto Alegre, Brazil',
+    exp2_b:['Analysis of reach, engagement and performance on institutional channels','KPI dashboards to guide content planning and campaign decisions','Consolidated multi-platform reporting into a single SSOT dashboard','Supported a 3× increase in social media budget based on results delivered','Career progression: Intern (2017) → Assistant (2019) → Communication Associate (2021)'],
+    edu_label:'Education', edu_heading:'Education',
+    edu1:'Master\'s in Media, Culture and Visual Technologies', edu1_note:'Approved with honors',
+    edu2:'Postgraduate in Data Science and AI', edu2_note:'Merit-based scholarship',
+    edu3:'Bachelor\'s in Journalism', edu3_note:'Porto Alegre, Brazil',
+    skills_label:'Tools & Skills', skills_heading:'Skills',
+    sk1:'BI & Visualization', sk2:'Data & Engineering', sk3:'Strategy', sk4:'Languages',
+    sk3_items:['KPI Design','Competitive analysis','Data Storytelling','Process automation'],
+    sk4_items:['Portuguese (native)','English (professional)'],
+    footer_copy:'© 2026 Diego Furtado · Lisbon',
+  }
+};
+
+/* ── helper: accent safe on light bg (yellow → navy) ── */
+const la = (cat) => cat?.color === '#FFEE00' ? cat.colorDark : cat.color;
+
+/* ══ GEOMETRIC COMPONENTS ════════════════════════════════ */
 const ConcentricCircles = ({ color='#1B2585', size=120, rings=5 }) => {
   const cx=size/2,cy=size/2,maxR=size/2-4;
   return <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{display:'block'}}>
@@ -43,13 +140,13 @@ const ConcentricCircles = ({ color='#1B2585', size=120, rings=5 }) => {
   </svg>;
 };
 const NestedTriangles = ({ color='#E0003D', size=120, count=5 }) => {
-  const triangles = Array.from({length:count},(_,i)=>{
-    const scale=(count-i)/count, h=(size-12)*scale, cx=size/2;
+  const tris=Array.from({length:count},(_,i)=>{
+    const scale=(count-i)/count,h=(size-12)*scale,cx=size/2;
     const base=size-6-(size-12)*(1-scale)/2-(size-12)*(1-scale);
     return `${cx-h/2},${base} ${cx+h/2},${base} ${cx},${base-h}`;
   });
   return <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{display:'block'}}>
-    {triangles.map((pts,i)=><polygon key={i} points={pts} fill="none" stroke={color} strokeWidth="1"/>)}
+    {tris.map((pts,i)=><polygon key={i} points={pts} fill="none" stroke={color} strokeWidth="1"/>)}
   </svg>;
 };
 const OverlappingCircles = ({ color='#9494C8', size=120 }) => {
@@ -77,10 +174,10 @@ const LineGrid = ({ color='#1A1A1A', size=120, lines=6, opacity=0.12 }) => (
   </svg>
 );
 const Brackets = ({ color='#1A1A1A', size=12, opacity=0.4 }) => <>
-  <div style={{position:'absolute',top:6,left:6,width:size,height:size,borderTop:`1px solid ${color}`,borderLeft:`1px solid ${color}`,opacity}}/>
-  <div style={{position:'absolute',top:6,right:6,width:size,height:size,borderTop:`1px solid ${color}`,borderRight:`1px solid ${color}`,opacity}}/>
-  <div style={{position:'absolute',bottom:6,left:6,width:size,height:size,borderBottom:`1px solid ${color}`,borderLeft:`1px solid ${color}`,opacity}}/>
-  <div style={{position:'absolute',bottom:6,right:6,width:size,height:size,borderBottom:`1px solid ${color}`,borderRight:`1px solid ${color}`,opacity}}/>
+  <div style={{position:'absolute',top:6,left:6,width:size,height:size,borderTop:`1px solid ${color}`,borderLeft:`1px solid ${color}`,opacity,pointerEvents:'none'}}/>
+  <div style={{position:'absolute',top:6,right:6,width:size,height:size,borderTop:`1px solid ${color}`,borderRight:`1px solid ${color}`,opacity,pointerEvents:'none'}}/>
+  <div style={{position:'absolute',bottom:6,left:6,width:size,height:size,borderBottom:`1px solid ${color}`,borderLeft:`1px solid ${color}`,opacity,pointerEvents:'none'}}/>
+  <div style={{position:'absolute',bottom:6,right:6,width:size,height:size,borderBottom:`1px solid ${color}`,borderRight:`1px solid ${color}`,opacity,pointerEvents:'none'}}/>
 </>;
 const Logo = ({ color='#1A1A1A', size=38 }) => (
   <svg width={size*(48.43/71.95)} height={size} viewBox="0 0 48.43 71.95">
@@ -96,371 +193,356 @@ const PanelLabel = ({ children, color='var(--ink)' }) => (
     <span style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.25em',textTransform:'uppercase',color}}>{children}</span>
   </div>
 );
-const MotifEl = ({ type, color, size=80 }) => {
-  if(type==='circles') return <ConcentricCircles color={color} size={size} rings={4}/>;
-  if(type==='triangles') return <NestedTriangles color={color} size={size} count={4}/>;
-  if(type==='overlap') return <OverlappingCircles color={color} size={size}/>;
-  if(type==='squares') return <RotatingSquares color={color} size={size} count={4}/>;
-  return null;
-};
 
-/* ── Header ── */
-const Header = ({ page, setPage }) => {
-  const [scrolled, setScrolled] = useState(false);
+/* ══ HEADER ═══════════════════════════════════════════════ */
+const Header = ({ page, setPage, lang, setLang }) => {
+  const t=k=>T[lang][k]??T.pt[k]??k;
+  const [scrolled,setScrolled]=useState(false);
   useEffect(()=>{
     const el=document.getElementById('scroll-root');
-    const fn=()=>setScrolled(el.scrollTop>20);
+    const fn=()=>setScrolled((el?.scrollTop||0)>20);
     el?.addEventListener('scroll',fn);
     return()=>el?.removeEventListener('scroll',fn);
   },[]);
   return (
-    <header style={{position:'fixed',top:0,left:0,right:0,zIndex:100,background:`rgba(245,240,232,${scrolled?0.97:0.92})`,borderBottom:`1px solid rgba(26,26,26,${scrolled?0.15:0.08})`,backdropFilter:'blur(12px)',padding:'0 40px',height:60,display:'flex',alignItems:'center',justifyContent:'space-between',transition:'border-color 200ms'}}>
-      <button onClick={()=>setPage('home')} style={{background:'none',border:'none',display:'flex',alignItems:'center',gap:10}}>
+    <header style={{position:'fixed',top:0,left:0,right:0,zIndex:200,background:`rgba(245,240,232,${scrolled?0.97:0.92})`,borderBottom:`1px solid rgba(26,26,26,${scrolled?0.14:0.07})`,backdropFilter:'blur(12px)',padding:'0 40px',height:60,display:'flex',alignItems:'center',justifyContent:'space-between',transition:'border-color 200ms'}}>
+      <button onClick={()=>setPage('home')} style={{background:'none',border:'none',display:'flex',alignItems:'center',gap:10,cursor:'pointer'}}>
         <Logo color="var(--ink)" size={34}/>
         <span style={{fontFamily:'var(--D)',fontSize:18,letterSpacing:'0.12em',color:'var(--ink)'}}>DIEGO FURTADO</span>
       </button>
-      <nav style={{display:'flex',gap:32,alignItems:'center'}}>
-        {[['home','Home'],['projetos','Projetos'],['sobre','Quem Sou']].map(([key,label])=>{
-          const active=page===key;
-          return <button key={key} onClick={()=>setPage(key)} style={{background:'none',border:'none',fontFamily:'var(--M)',fontSize:10,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:active?'var(--ink)':'rgba(26,26,26,0.45)',position:'relative',paddingBottom:2,transition:'color 120ms'}}>
-            {label}
-            {active&&<span style={{position:'absolute',bottom:-1,left:0,right:0,height:1,background:'var(--ink)'}}/>}
+      <nav style={{display:'flex',gap:24,alignItems:'center'}}>
+        {[['home',t('nav_home')],['projetos',t('nav_projects')],['sobre',t('nav_about')]].map(([key,label])=>{
+          const active=page===key||(page==='projeto'&&key==='projetos');
+          return <button key={key} onClick={()=>setPage(key)} style={{background:'none',border:'none',fontFamily:'var(--M)',fontSize:10,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:active?'var(--ink)':'rgba(26,26,26,0.42)',position:'relative',paddingBottom:2,cursor:'pointer',transition:'color 120ms'}}>
+            {label}{active&&<span style={{position:'absolute',bottom:-1,left:0,right:0,height:1,background:'var(--ink)'}}/>}
           </button>;
         })}
-        <button onClick={()=>window.open('mailto:diegoiribarrem@gmail.com')} style={{background:'var(--ink)',color:'var(--cream)',border:'none',fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',padding:'7px 14px'}}>Contato →</button>
+        {/* Lang toggle */}
+        <button onClick={()=>setLang(l=>l==='pt'?'en':'pt')} style={{background:'none',border:'1px solid rgba(26,26,26,0.22)',fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.18em',textTransform:'uppercase',color:'rgba(26,26,26,0.55)',padding:'5px 10px',cursor:'pointer',transition:'all 120ms'}}
+          onMouseEnter={e=>{e.currentTarget.style.background='var(--ink)';e.currentTarget.style.color='var(--cream)';}}
+          onMouseLeave={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color='rgba(26,26,26,0.55)';}}>
+          {t('lang_btn')}
+        </button>
+        <a href="mailto:diegoiribarrem@gmail.com" style={{background:'var(--ink)',color:'var(--cream)',fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',padding:'7px 14px',textDecoration:'none'}}>{t('nav_contact')}</a>
       </nav>
     </header>
   );
 };
 
-/* ── Footer ── */
-const Footer = () => (
-  <footer style={{background:'var(--navy)',padding:'36px 48px',display:'flex',justifyContent:'space-between',alignItems:'center',borderTop:'2px solid var(--yellow)'}}>
-    <div style={{display:'flex',alignItems:'center',gap:10}}>
-      <Logo color="var(--yellow)" size={30}/>
-      <span style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:'rgba(255,255,255,0.35)'}}>© 2026 Diego Furtado</span>
-    </div>
-    <div style={{opacity:0.12}}><LineGrid color="var(--yellow)" size={80} lines={5} opacity={1}/></div>
-    <div style={{display:'flex',gap:24}}>
-      {[['LinkedIn','https://linkedin.com/in/diegofreitasfurtado'],['GitHub','#'],['Medium','#']].map(([l,href])=>(
-        <a key={l} href={href} target="_blank" rel="noopener noreferrer" style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.18em',textTransform:'uppercase',color:'rgba(255,255,255,0.35)',textDecoration:'none',transition:'color 120ms'}}
-          onMouseEnter={e=>e.target.style.color='var(--yellow)'}
-          onMouseLeave={e=>e.target.style.color='rgba(255,255,255,0.35)'}>{l}</a>
-      ))}
-    </div>
-  </footer>
-);
+/* ══ FOOTER ═══════════════════════════════════════════════ */
+const Footer = ({ lang }) => {
+  const t=k=>T[lang][k]??T.pt[k]??k;
+  return (
+    <footer style={{background:'var(--navy)',padding:'36px 48px',display:'flex',justifyContent:'space-between',alignItems:'center',borderTop:'2px solid var(--yellow)'}}>
+      <div style={{display:'flex',alignItems:'center',gap:10}}>
+        <Logo color="var(--yellow)" size={30}/>
+        <span style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:'rgba(255,255,255,0.28)'}}>{t('footer_copy')}</span>
+      </div>
+      <div style={{opacity:0.09}}><LineGrid color="var(--yellow)" size={80} lines={5} opacity={1}/></div>
+      <div style={{display:'flex',gap:24}}>
+        {[['LinkedIn','https://linkedin.com/in/diegofreitasfurtado'],['GitHub','#'],['Medium','#']].map(([l,h])=>(
+          <a key={l} href={h} target="_blank" rel="noopener noreferrer" style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.18em',textTransform:'uppercase',color:'rgba(255,255,255,0.28)',textDecoration:'none',transition:'color 120ms'}}
+            onMouseEnter={e=>e.target.style.color='var(--yellow)'}
+            onMouseLeave={e=>e.target.style.color='rgba(255,255,255,0.28)'}>{l}</a>
+        ))}
+      </div>
+    </footer>
+  );
+};
 
-/* ════════ PROJECT CARD ════════ */
-const Card = ({ p, onClick }) => {
+/* ══ HOME PAGE ════════════════════════════════════════════ */
+const HomeProjectCard = ({ project, category, onClick }) => {
   const [hov,setHov]=useState(false);
+  const accent=la(category); // safe on light bg
   return (
     <div onClick={onClick} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
-      style={{background:hov?p.accent:'var(--white)',border:'1px solid rgba(26,26,26,0.12)',padding:24,cursor:'pointer',position:'relative',overflow:'hidden',transition:'background 200ms',display:'flex',flexDirection:'column',gap:10}}>
-      <Brackets color={hov?'rgba(255,255,255,0.4)':'rgba(26,26,26,0.2)'}/>
+      style={{background:hov?category.colorDark:'var(--white)',border:'1px solid rgba(26,26,26,0.1)',borderTop:`3px solid ${accent}`,padding:24,cursor:'pointer',position:'relative',overflow:'hidden',transition:'background 200ms',display:'flex',flexDirection:'column',gap:10}}>
+      <Brackets color={hov?`${accent}50`:'rgba(26,26,26,0.14)'}/>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
-        <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:hov?'rgba(255,255,255,0.7)':p.accent}}>{p.tag}</div>
-        <div style={{opacity:0.5,flexShrink:0}}><MotifEl type={p.motif} color={hov?'rgba(255,255,255,0.4)':p.accent} size={52}/></div>
+        <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:hov?category.color:accent}}>{category.label}</div>
+        <div style={{opacity:0.35,flexShrink:0}}>
+          {project.category==='powerbi'&&<ConcentricCircles color={hov?category.color:accent} size={50} rings={4}/>}
+          {project.category==='tableau'&&<RotatingSquares color={hov?category.color:accent} size={50} count={4}/>}
+          {project.category==='python'&&<NestedTriangles color={hov?category.color:accent} size={50} count={4}/>}
+          {project.category==='experimentos'&&<OverlappingCircles color={hov?category.color:accent} size={50}/>}
+          {project.category==='pesquisa'&&<ConcentricCircles color={hov?category.color:accent} size={50} rings={4}/>}
+        </div>
       </div>
-      <div style={{fontFamily:'var(--D)',fontSize:24,letterSpacing:'0.04em',textTransform:'uppercase',color:hov?'var(--white)':'var(--ink)',lineHeight:1.1}}>{p.title}</div>
-      <div style={{fontFamily:'var(--M)',fontSize:11,lineHeight:1.7,color:hov?'rgba(255,255,255,0.75)':'rgba(26,26,26,0.55)',flex:1}}>{p.desc}</div>
-      <div style={{fontFamily:'var(--M)',fontSize:9,letterSpacing:'0.12em',textTransform:'uppercase',color:hov?'rgba(255,255,255,0.5)':'rgba(26,26,26,0.35)',borderTop:`1px solid ${hov?'rgba(255,255,255,0.2)':'rgba(26,26,26,0.08)'}`,paddingTop:10,marginTop:4}}>
-        {p.year} · {p.tool}
+      <div style={{fontFamily:'var(--D)',fontSize:24,letterSpacing:'0.04em',textTransform:'uppercase',color:hov?'var(--white)':'var(--ink)',lineHeight:1.1}}>{project.title}</div>
+      <div style={{fontFamily:'var(--M)',fontSize:11,lineHeight:1.75,color:hov?'rgba(255,255,255,0.55)':'rgba(26,26,26,0.5)',flex:1}}>{project.subtitle}</div>
+      <div style={{fontFamily:'var(--M)',fontSize:9,letterSpacing:'0.12em',textTransform:'uppercase',color:hov?'rgba(255,255,255,0.35)':'rgba(26,26,26,0.28)',borderTop:`1px solid ${hov?'rgba(255,255,255,0.1)':'rgba(26,26,26,0.07)'}`,paddingTop:10,marginTop:4}}>
+        {project.year} · {(project.tools||[])[0]||''}
       </div>
     </div>
   );
 };
 
-/* ════════ PROJECT MODAL (add new) ════════ */
-const ACCENTS = [
-  { label:'Azul', value:'var(--blue)', motif:'circles' },
-  { label:'Vermelho', value:'var(--red)', motif:'triangles' },
-  { label:'Lavanda', value:'var(--lav)', motif:'overlap' },
-  { label:'Rosa', value:'var(--pink)', motif:'squares' },
-];
-const AddProjectModal = ({ onClose, onSave }) => {
-  const [form, setForm] = useState({ title:'', tag:'', desc:'', year:'2026', tool:'', accentIdx:0 });
-  const set = (k,v) => setForm(f=>({...f,[k]:v}));
-  const inp = { width:'100%', background:'var(--cream)', border:'1px solid rgba(26,26,26,0.2)', color:'var(--ink)', fontFamily:'var(--M)', fontSize:11, padding:'9px 12px', outline:'none', marginBottom:10 };
-  const valid = form.title && form.tag && form.desc;
+const HomePage = ({ setPage, lang }) => {
+  const t=k=>T[lang][k]??T.pt[k]??k;
+  const data=window.PROJECTS_DATA||{};
+  const featured=(data.projects||[]).filter(p=>p.featured).slice(0,2);
+  const cats=data.categories||{};
+  const cfg=window.SITE_CONFIG||{};
   return (
-    <div style={{position:'fixed',inset:0,zIndex:200,background:'rgba(12,13,42,0.7)',display:'flex',alignItems:'center',justifyContent:'center'}} onClick={onClose}>
-      <div style={{background:'var(--cream)',padding:40,width:540,position:'relative',maxHeight:'90vh',overflowY:'auto'}} onClick={e=>e.stopPropagation()}>
-        <Brackets color="var(--blue)" size={14} opacity={0.4}/>
-        <PanelLabel color="var(--blue)">Novo projeto</PanelLabel>
-        <h2 style={{fontFamily:'var(--D)',fontSize:32,letterSpacing:'0.05em',textTransform:'uppercase',color:'var(--ink)',marginBottom:24}}>Adicionar Projeto</h2>
-        <input placeholder="Título do projeto" style={inp} value={form.title} onChange={e=>set('title',e.target.value)}/>
-        <input placeholder="Tags (ex: Power BI · SQL)" style={inp} value={form.tag} onChange={e=>set('tag',e.target.value)}/>
-        <textarea placeholder="Descrição breve" rows={3} style={{...inp,resize:'vertical'}} value={form.desc} onChange={e=>set('desc',e.target.value)}/>
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}>
-          <input placeholder="Ano (ex: 2026)" style={{...inp,marginBottom:0}} value={form.year} onChange={e=>set('year',e.target.value)}/>
-          <input placeholder="Ferramenta principal" style={{...inp,marginBottom:0}} value={form.tool} onChange={e=>set('tool',e.target.value)}/>
-        </div>
-        <div style={{marginTop:16,marginBottom:20}}>
-          <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:'rgba(26,26,26,0.4)',marginBottom:10}}>Cor do card</div>
-          <div style={{display:'flex',gap:8}}>
-            {ACCENTS.map((a,i)=>(
-              <button key={i} onClick={()=>set('accentIdx',i)} style={{width:32,height:32,background:a.value.startsWith('var')? ({0:'#1B2585',1:'#E0003D',2:'#9494C8',3:'#E8607A'}[i]):a.value,border:form.accentIdx===i?'3px solid var(--ink)':'3px solid transparent',cursor:'pointer'}}/>
+    <div>
+      {/* HERO */}
+      <div style={{background:'var(--navy)',minHeight:'100vh',display:'flex',alignItems:'center',position:'relative',overflow:'hidden',padding:'80px 48px 60px'}}>
+        <div style={{position:'absolute',inset:0,opacity:0.03}}><LineGrid color="#fff" size={900} lines={18} opacity={1}/></div>
+        <div style={{position:'absolute',right:80,top:'50%',transform:'translateY(-50%)',opacity:0.08}}><ConcentricCircles color="var(--yellow)" size={340} rings={8}/></div>
+        <div style={{position:'absolute',right:340,bottom:60,opacity:0.05}}><NestedTriangles color="var(--yellow)" size={180} count={6}/></div>
+        <div style={{maxWidth:780,position:'relative',zIndex:1}}>
+          <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:24}}>
+            <div style={{width:24,height:1,background:'var(--yellow)'}}/>
+            <span style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.32em',textTransform:'uppercase',color:'var(--yellow)'}}>{t('hero_tag')}</span>
+          </div>
+          <h1 style={{fontFamily:'var(--D)',fontSize:'clamp(72px,9vw,128px)',letterSpacing:'0.03em',textTransform:'uppercase',lineHeight:0.92,color:'var(--white)',marginBottom:28}}>
+            Diego<br/><span style={{color:'var(--yellow)'}}>Furtado</span>
+          </h1>
+          <p style={{fontFamily:'var(--M)',fontSize:13,lineHeight:1.85,color:'rgba(255,255,255,0.5)',maxWidth:480,marginBottom:40}}>{t('hero_desc')}</p>
+          <div style={{display:'flex',gap:12,marginBottom:60}}>
+            <button onClick={()=>setPage('projetos')} style={{background:'var(--yellow)',color:'var(--navy)',border:'none',padding:'12px 28px',fontFamily:'var(--D)',fontSize:18,letterSpacing:'0.1em',textTransform:'uppercase',cursor:'pointer',fontWeight:700}}>{t('hero_cta1')}</button>
+            <button onClick={()=>setPage('sobre')} style={{background:'transparent',color:'rgba(255,255,255,0.55)',border:'1px solid rgba(255,255,255,0.2)',padding:'11px 28px',fontFamily:'var(--D)',fontSize:18,letterSpacing:'0.1em',textTransform:'uppercase',cursor:'pointer',transition:'all 150ms'}}
+              onMouseEnter={e=>{e.currentTarget.style.color='#fff';e.currentTarget.style.borderColor='rgba(255,255,255,0.5)';}}
+              onMouseLeave={e=>{e.currentTarget.style.color='rgba(255,255,255,0.55)';e.currentTarget.style.borderColor='rgba(255,255,255,0.2)';}}>
+              {t('hero_cta2')}
+            </button>
+          </div>
+          <div style={{display:'flex',gap:40,paddingTop:32,borderTop:'1px solid rgba(255,255,255,0.07)'}}>
+            {[['4×','stat1'],['~30h','stat2'],['50%','stat3']].map(([n,sk])=>(
+              <div key={sk}>
+                <div style={{fontFamily:'var(--D)',fontSize:36,color:'var(--yellow)',lineHeight:1}}>{n}</div>
+                <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.14em',textTransform:'uppercase',color:'rgba(255,255,255,0.28)',marginTop:4,maxWidth:130,lineHeight:1.5}}>{t(sk)}</div>
+              </div>
             ))}
           </div>
         </div>
-        <div style={{display:'flex',gap:10}}>
-          <button onClick={onClose} style={{flex:1,background:'none',border:'1px solid rgba(26,26,26,0.2)',padding:'11px',fontFamily:'var(--M)',fontSize:10,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',color:'rgba(26,26,26,0.5)'}}>Cancelar</button>
-          <button disabled={!valid} onClick={()=>{if(valid){const ac=ACCENTS[form.accentIdx];onSave({...form,id:Date.now(),accent:ac.value,motif:ac.motif}); onClose();}}} style={{flex:2,background:valid?'var(--blue)':'rgba(26,26,26,0.2)',color:'var(--white)',border:'none',padding:'11px',fontFamily:'var(--D)',fontSize:20,letterSpacing:'0.1em',textTransform:'uppercase',transition:'background 150ms',cursor:valid?'pointer':'not-allowed'}}>Salvar Projeto</button>
+      </div>
+
+      {/* FEATURED PROJECTS */}
+      <div style={{background:'var(--cream)',padding:'72px 48px'}}>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline',marginBottom:40}}>
+          <div>
+            <PanelLabel color="var(--blue)">{t('portfolio_label')}</PanelLabel>
+            <h2 style={{fontFamily:'var(--D)',fontSize:48,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)'}}>{t('featured_heading')}</h2>
+          </div>
+          <button onClick={()=>setPage('projetos')} style={{background:'none',border:'1px solid rgba(26,26,26,0.2)',fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:'var(--blue)',padding:'8px 14px',cursor:'pointer'}}>{t('see_all')}</button>
         </div>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
+          {featured.map(p=>{
+            const cat=cats[p.category]||{color:'var(--blue)',label:p.category,colorDark:'var(--navy)'};
+            return <HomeProjectCard key={p.id} project={p} category={cat} onClick={()=>setPage('projetos')}/>;
+          })}
+        </div>
+      </div>
+
+      {/* ABOUT STRIP */}
+      <div style={{borderTop:'1px solid rgba(26,26,26,0.08)',borderBottom:'1px solid rgba(26,26,26,0.08)',padding:'56px 48px',display:'flex',gap:64,alignItems:'center',background:'var(--cream-dk)'}}>
+        <div style={{flex:'0 0 130px',opacity:0.5}}><OverlappingCircles color="var(--lav)" size={130}/></div>
+        <div style={{flex:1}}>
+          <PanelLabel color="var(--lav)">{t('about_label')}</PanelLabel>
+          <p style={{fontFamily:'var(--D)',fontSize:28,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)',lineHeight:1.15,maxWidth:560}}>{t('about_quote')}</p>
+        </div>
+        <button onClick={()=>setPage('sobre')} style={{background:'var(--lav)',color:'var(--white)',border:'none',padding:'12px 20px',fontFamily:'var(--D)',fontSize:16,letterSpacing:'0.1em',textTransform:'uppercase',flexShrink:0,cursor:'pointer'}}>{t('read_more')}</button>
+      </div>
+
+      {/* SPOTIFY */}
+      <div style={{background:'var(--navy)',padding:'64px 48px'}}>
+        <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:28}}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" stroke="#1DB954" strokeWidth="1.5"/><path d="M7 9.5c2.8-1 6.2-1 9 .5M7.5 12c2.4-.9 5.4-.9 8 .5M8 14.5c2-.7 4.4-.7 6.5.5" stroke="#1DB954" strokeWidth="1.5" strokeLinecap="round"/></svg>
+          <PanelLabel color="rgba(255,255,255,0.38)">{t('spotify_label')}</PanelLabel>
+        </div>
+        {cfg.spotifyPlaylistId ? (
+          <iframe src={`https://open.spotify.com/embed/playlist/${cfg.spotifyPlaylistId}?utm_source=generator&theme=0`} width="100%" height="152" frameBorder="0" allow="autoplay;clipboard-write;encrypted-media;fullscreen;picture-in-picture" style={{display:'block'}} title="Spotify"/>
+        ) : (
+          <div style={{border:'1px solid rgba(255,255,255,0.07)',padding:'28px 24px',display:'flex',alignItems:'center',gap:20,maxWidth:600}}>
+            <svg width="36" height="36" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="19" stroke="#1DB954" strokeWidth="1"/><path d="M12 16c4.7-1.7 10.3-1.7 15 0M12.8 20c4-1.4 9-1.4 13.8 0M13.7 24c3.2-1.1 7.4-1.1 11.1 0" stroke="#1DB954" strokeWidth="1.5" strokeLinecap="round"/></svg>
+            <div>
+              <div style={{fontFamily:'var(--D)',fontSize:18,color:'rgba(255,255,255,0.4)',letterSpacing:'0.08em',textTransform:'uppercase',marginBottom:5}}>{t('spotify_empty')}</div>
+              <div style={{fontFamily:'var(--M)',fontSize:10,color:'rgba(255,255,255,0.22)',lineHeight:1.6}}>{t('spotify_hint')}</div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-/* ════════════════════════════════
-   HOME
-════════════════════════════════ */
-const HomePage = ({ setPage }) => (
-  <div>
-    {/* HERO */}
-    <div style={{background:'var(--navy)',minHeight:'100vh',display:'flex',alignItems:'center',position:'relative',overflow:'hidden',padding:'80px 48px 60px'}}>
-      <div style={{position:'absolute',inset:0,opacity:0.04}}><LineGrid color="#fff" size={800} lines={16} opacity={1}/></div>
-      <div style={{position:'absolute',right:80,top:'50%',transform:'translateY(-50%)',opacity:0.1}}>
-        <ConcentricCircles color="var(--yellow)" size={320} rings={8}/>
-      </div>
-      <div style={{position:'absolute',right:340,bottom:60,opacity:0.06}}>
-        <NestedTriangles color="var(--yellow)" size={180} count={6}/>
-      </div>
-      <div style={{maxWidth:780,position:'relative',zIndex:1}}>
-        <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:24}}>
-          <div style={{width:24,height:1,background:'var(--yellow)'}}/>
-          <span style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.3em',textTransform:'uppercase',color:'var(--yellow)'}}>Data Analytics · Business Intelligence</span>
+/* ══ PROJETOS PAGE ════════════════════════════════════════ */
+const ProjetoCard = ({ project, category, onClick, isSelected }) => {
+  const [hov,setHov]=useState(false);
+  const accent=la(category);
+  // State hierarchy: selected > hover > normal
+  const bgColor = isSelected ? category.color : hov ? category.colorDark : 'var(--white)';
+  const textColor = isSelected
+    ? (category.color==='#FFEE00' ? category.colorDark : '#fff')
+    : hov ? '#fff' : 'var(--ink)';
+  const subColor = isSelected
+    ? (category.color==='#FFEE00' ? `${category.colorDark}cc` : 'rgba(255,255,255,0.6)')
+    : hov ? 'rgba(255,255,255,0.5)' : 'rgba(26,26,26,0.48)';
+  const tagAccent = isSelected ? (category.color==='#FFEE00' ? category.colorDark : '#fff') : hov ? category.color : accent;
+
+  return (
+    <div onClick={onClick} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
+      style={{background:bgColor,border:`1px solid ${isSelected?'transparent':'rgba(26,26,26,0.09)'}`,borderTop:`3px solid ${isSelected?(category.color==='#FFEE00'?category.colorDark:category.color):accent}`,padding:24,cursor:'pointer',position:'relative',overflow:'hidden',transition:'background 160ms,border-color 160ms',display:'flex',flexDirection:'column',gap:12}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+        <div style={{flex:1}}>
+          <div style={{fontFamily:'var(--M)',fontSize:8,fontWeight:700,letterSpacing:'0.22em',textTransform:'uppercase',color:tagAccent,marginBottom:10}}>{category.label}</div>
+          <div style={{fontFamily:'var(--D)',fontSize:22,letterSpacing:'0.04em',textTransform:'uppercase',color:textColor,lineHeight:1.05,marginBottom:5}}>{project.title}</div>
+          <div style={{fontFamily:'var(--M)',fontSize:10,fontStyle:'italic',color:subColor}}>{project.subtitle}</div>
         </div>
-        <h1 style={{fontFamily:'var(--D)',fontSize:'clamp(72px,9vw,128px)',letterSpacing:'0.03em',textTransform:'uppercase',lineHeight:0.92,color:'var(--white)',marginBottom:28}}>
-          Diego<br/><span style={{color:'var(--yellow)'}}>Furtado</span>
-        </h1>
-        <p style={{fontFamily:'var(--M)',fontSize:13,lineHeight:1.85,color:'rgba(255,255,255,0.55)',maxWidth:480,marginBottom:40}}>
-          Analista de dados e jornalista. Transformo dados dispersos em decisões claras — com pipelines automatizados, dashboards orientados a KPI e narrativa visual precisa.
-        </p>
-        <div style={{display:'flex',gap:12}}>
-          <button onClick={()=>setPage('projetos')} style={{background:'var(--yellow)',color:'var(--ink)',border:'none',padding:'12px 28px',fontFamily:'var(--D)',fontSize:18,letterSpacing:'0.1em',textTransform:'uppercase'}}>Ver Projetos</button>
-          <button onClick={()=>setPage('sobre')} style={{background:'transparent',color:'rgba(255,255,255,0.6)',border:'1px solid rgba(255,255,255,0.2)',padding:'11px 28px',fontFamily:'var(--D)',fontSize:18,letterSpacing:'0.1em',textTransform:'uppercase',transition:'color 150ms,border-color 150ms'}}
-            onMouseEnter={e=>{e.currentTarget.style.color='#fff';e.currentTarget.style.borderColor='rgba(255,255,255,0.5)';}}
-            onMouseLeave={e=>{e.currentTarget.style.color='rgba(255,255,255,0.6)';e.currentTarget.style.borderColor='rgba(255,255,255,0.2)';}}>Quem Sou</button>
+        <div style={{opacity:0.3,flexShrink:0,marginLeft:12}}>
+          {project.category==='powerbi'&&<ConcentricCircles color={tagAccent} size={46} rings={4}/>}
+          {project.category==='tableau'&&<RotatingSquares color={tagAccent} size={46} count={4}/>}
+          {project.category==='python'&&<NestedTriangles color={tagAccent} size={46} count={4}/>}
+          {project.category==='experimentos'&&<OverlappingCircles color={tagAccent} size={46}/>}
+          {project.category==='pesquisa'&&<ConcentricCircles color={tagAccent} size={46} rings={4}/>}
         </div>
-        <div style={{display:'flex',gap:40,marginTop:64,paddingTop:32,borderTop:'1px solid rgba(255,255,255,0.08)'}}>
-          {[['4×','Redução de refresh Power BI'],['30h','Economizadas/mês via automação'],['50%','Mais velocidade em propostas']].map(([n,l])=>(
-            <div key={l}>
-              <div style={{fontFamily:'var(--D)',fontSize:36,color:'var(--yellow)',lineHeight:1}}>{n}</div>
-              <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',color:'rgba(255,255,255,0.35)',marginTop:4,maxWidth:120}}>{l}</div>
-            </div>
+      </div>
+      <div style={{fontFamily:'var(--M)',fontSize:10,lineHeight:1.75,color:subColor,display:'-webkit-box',WebkitLineClamp:2,WebkitBoxOrient:'vertical',overflow:'hidden'}}>
+        {project.desc.split('\n')[0]}
+      </div>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',paddingTop:10,marginTop:'auto',borderTop:`1px solid ${isSelected?'rgba(0,0,0,0.1)':hov?'rgba(255,255,255,0.08)':'rgba(26,26,26,0.07)'}`}}>
+        <div style={{display:'flex',flexWrap:'wrap',gap:4}}>
+          {(project.tools||[]).slice(0,3).map(t=>(
+            <span key={t} style={{fontFamily:'var(--M)',fontSize:8,fontWeight:700,letterSpacing:'0.1em',textTransform:'uppercase',background:`${tagAccent}20`,color:tagAccent,border:`1px solid ${tagAccent}40`,padding:'3px 7px'}}>{t}</span>
           ))}
         </div>
+        <span style={{fontFamily:'var(--M)',fontSize:8,color:subColor,letterSpacing:'0.1em',textTransform:'uppercase',flexShrink:0}}>{project.year}</span>
       </div>
     </div>
+  );
+};
 
-    {/* PROJETOS PREVIEW */}
-    <div style={{background:'var(--cream)',padding:'72px 48px'}}>
-      <div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline',marginBottom:40}}>
-        <div>
-          <PanelLabel color="var(--blue)">Portfólio</PanelLabel>
-          <h2 style={{fontFamily:'var(--D)',fontSize:48,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)'}}>Projetos recentes</h2>
-        </div>
-        <button onClick={()=>setPage('projetos')} style={{background:'none',border:'1px solid rgba(26,26,26,0.2)',fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:'var(--blue)',padding:'8px 14px'}}>Ver todos →</button>
-      </div>
-      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
-        {DEFAULT_PROJECTS.slice(0,2).map(p=><Card key={p.id} p={p} onClick={()=>setPage('projetos')}/>)}
-      </div>
-    </div>
+const ProjetosPage = ({ onProjectClick, lang }) => {
+  const t=k=>T[lang][k]??T.pt[k]??k;
+  const data=window.PROJECTS_DATA||{};
+  const cats=data.categories||{};
+  const allProjects=data.projects||[];
+  const catKeys=Object.keys(cats);
+  const [activeTab,setActiveTab]=useState(catKeys[0]||'powerbi');
+  const [flashId,setFlashId]=useState(null);
 
-    {/* SOBRE STRIP */}
-    <div style={{background:'var(--cream-dk)',borderTop:'1px solid rgba(26,26,26,0.08)',borderBottom:'1px solid rgba(26,26,26,0.08)',padding:'56px 48px',display:'flex',gap:64,alignItems:'center'}}>
-      <div style={{flex:'0 0 140px',opacity:0.6}}>
-        <OverlappingCircles color="var(--lav)" size={140}/>
-      </div>
-      <div style={{flex:1}}>
-        <PanelLabel color="var(--lav)">Quem sou</PanelLabel>
-        <p style={{fontFamily:'var(--D)',fontSize:30,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)',lineHeight:1.15,maxWidth:560}}>
-          Analista de dados sênior em Lisboa. Mestre em Mídia e Tecnologias Visuais. Background em jornalismo investigativo.
-        </p>
-      </div>
-      <button onClick={()=>setPage('sobre')} style={{background:'var(--lav)',color:'var(--white)',border:'none',padding:'12px 20px',fontFamily:'var(--D)',fontSize:16,letterSpacing:'0.1em',textTransform:'uppercase',flexShrink:0}}>Leia mais</button>
-    </div>
-  </div>
-);
+  const filtered=allProjects.filter(p=>p.category===activeTab);
+  const cat=cats[activeTab]||{color:'var(--blue)',label:'',colorDark:'var(--navy)'};
+  const tabAccent=la(cat);
 
-/* ════════════════════════════════
-   PROJETOS
-════════════════════════════════ */
-const DEFAULT_PROJECTS = [
-  { id:1, tag:'Power BI · DAX', title:'Fonte Única de Verdade', desc:'Unificação de dados SQL, Excel e APIs em um SSOT para a área comercial da MOP. Reduziu inconsistências e acelerou tomada de decisão em toda a liderança de vendas.', year:'2024–2025', tool:'Power BI · SQL · Excel', accent:'var(--blue)', motif:'circles' },
-  { id:2, tag:'Python · Power Query', title:'Automação de ETL', desc:'Pipelines ETL automáticos com Python e M (Power Query) que eliminaram ~30 horas de trabalho manual por mês e reduziram o tempo de atualização comercial em 4×.', year:'2024', tool:'Python · Power Query', accent:'var(--red)', motif:'triangles' },
-  { id:3, tag:'Dashboards · KPI', title:'Painel de Vendas & Marketing', desc:'Dashboards executivos no Power BI para rastreamento de KPIs de vendas e marketing. Construídos para a liderança da MOP com foco em clareza decisória.', year:'2024–2025', tool:'Power BI · DAX', accent:'var(--lav)', motif:'overlap' },
-  { id:4, tag:'Social Media · Analytics', title:'Audiência Institucional PUCRS', desc:'Consolidação de relatórios multiplataforma em um único dashboard SSOT. Apoiou aumento de 3× no orçamento de mídias sociais com base em resultados mensuráveis.', year:'2019–2023', tool:'Google Analytics · Sheets', accent:'var(--pink)', motif:'squares' },
-  { id:5, tag:'Estratégia · Precificação', title:'Benchmarking & Precificação', desc:'Análise competitiva e insights de precificação para suportar estratégia de propostas comerciais. Ferramentas de proposta que aumentaram a velocidade de entrega em 50%.', year:'2024', tool:'Excel · SQL · Power BI', accent:'var(--blue)', motif:'triangles' },
-];
-
-const ProjetosPage = () => {
-  const [projects, setProjects] = useState(()=>{
-    try { const s=localStorage.getItem('df_projects'); return s?JSON.parse(s):DEFAULT_PROJECTS; } catch{ return DEFAULT_PROJECTS; }
-  });
-  const [showModal,setShowModal]=useState(false);
-  const [filter,setFilter]=useState('Todos');
-
-  const saveProjects = (list) => { setProjects(list); localStorage.setItem('df_projects',JSON.stringify(list)); };
-  const addProject = (p) => saveProjects([...projects, p]);
-  const deleteProject = (id) => saveProjects(projects.filter(p=>p.id!==id));
-
-  const tags = ['Todos',...[...new Set(projects.map(p=>p.tag.split('·')[0].trim()))]];
-  const filtered = filter==='Todos' ? projects : projects.filter(p=>p.tag.includes(filter));
+  const handleCardClick=(id)=>{
+    setFlashId(id);
+    setTimeout(()=>{ onProjectClick(id); setFlashId(null); }, 180);
+  };
 
   return (
     <div>
-      {showModal&&<AddProjectModal onClose={()=>setShowModal(false)} onSave={addProject}/>}
-      {/* header */}
-      <div style={{background:'var(--blue)',padding:'80px 48px 40px',position:'relative',overflow:'hidden'}}>
-        <div style={{position:'absolute',right:48,bottom:-20,opacity:0.1}}>
-          <RotatingSquares color="var(--yellow)" size={240} count={7}/>
-        </div>
-        <PanelLabel color="rgba(255,255,255,0.5)">Portfólio</PanelLabel>
-        <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-end',position:'relative',zIndex:1}}>
-          <h1 style={{fontFamily:'var(--D)',fontSize:64,letterSpacing:'0.05em',textTransform:'uppercase',color:'var(--white)'}}>Projetos</h1>
-          <button onClick={()=>setShowModal(true)} style={{background:'var(--yellow)',color:'var(--ink)',border:'none',padding:'12px 20px',fontFamily:'var(--D)',fontSize:18,letterSpacing:'0.1em',textTransform:'uppercase',flexShrink:0}}>+ Novo Projeto</button>
-        </div>
+      {/* Header */}
+      <div style={{background:'var(--navy)',padding:'80px 48px 40px',position:'relative',overflow:'hidden'}}>
+        <div style={{position:'absolute',right:48,bottom:-30,opacity:0.07}}><RotatingSquares color="var(--yellow)" size={260} count={7}/></div>
+        <PanelLabel color="rgba(255,255,255,0.38)">{t('portfolio_tag')}</PanelLabel>
+        <h1 style={{fontFamily:'var(--D)',fontSize:64,letterSpacing:'0.05em',textTransform:'uppercase',color:'var(--white)',position:'relative',zIndex:1}}>{t('projects_heading')}</h1>
       </div>
 
-      {/* filter bar */}
-      <div style={{background:'var(--cream-dk)',borderBottom:'1px solid rgba(26,26,26,0.1)',padding:'0 48px',display:'flex',gap:4,alignItems:'center'}}>
-        {tags.map(t=>(
-          <button key={t} onClick={()=>setFilter(t)} style={{background:'none',border:'none',fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:filter===t?'var(--ink)':'rgba(26,26,26,0.38)',padding:'16px 10px',position:'relative',transition:'color 120ms'}}>
-            {t}
-            {filter===t&&<span style={{position:'absolute',bottom:0,left:0,right:0,height:2,background:'var(--ink)'}}/>}
-          </button>
-        ))}
-        <span style={{marginLeft:'auto',fontFamily:'var(--M)',fontSize:9,color:'rgba(26,26,26,0.35)',letterSpacing:'0.12em',textTransform:'uppercase'}}>{filtered.length} projetos</span>
+      {/* Category tabs */}
+      <div style={{background:'var(--cream-dk)',borderBottom:'1px solid rgba(26,26,26,0.1)',padding:'0 48px',display:'flex',gap:0,overflowX:'auto'}}>
+        {catKeys.map(key=>{
+          const c=cats[key];
+          const isActive=activeTab===key;
+          const tAccent=la(c);
+          const count=allProjects.filter(p=>p.category===key).length;
+          const catLabel=key==='experimentos'?t('cat_experimentos'):key==='pesquisa'?t('cat_pesquisa'):c.label;
+          return (
+            <button key={key} onClick={()=>setActiveTab(key)} style={{background:'none',border:'none',borderBottom:`2px solid ${isActive?tAccent:'transparent'}`,fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:isActive?tAccent:'rgba(26,26,26,0.36)',padding:'18px 16px 16px',cursor:'pointer',transition:'all 150ms',whiteSpace:'nowrap',display:'flex',alignItems:'center',gap:7}}>
+              {catLabel}
+              <span style={{background:isActive?tAccent:'rgba(26,26,26,0.1)',color:isActive?c.colorDark:'rgba(26,26,26,0.38)',fontFamily:'var(--M)',fontSize:8,padding:'2px 6px',letterSpacing:'0.1em',fontWeight:700}}>{count}</span>
+            </button>
+          );
+        })}
       </div>
 
-      {/* grid */}
-      <div style={{background:'var(--cream)',padding:'40px 48px'}}>
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
-          {filtered.map(p=>(
-            <div key={p.id} style={{position:'relative'}}>
-              <Card p={p} onClick={()=>{}}/>
-              {p.id>5&&(
-                <button onClick={e=>{e.stopPropagation();deleteProject(p.id);}} title="Remover" style={{position:'absolute',top:10,right:10,background:'rgba(224,0,61,0.9)',color:'#fff',border:'none',width:22,height:22,fontSize:12,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',zIndex:2}}>×</button>
-              )}
-            </div>
-          ))}
-          {/* Add card */}
-          <div onClick={()=>setShowModal(true)} style={{border:'1px dashed rgba(26,26,26,0.2)',padding:24,cursor:'pointer',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:12,minHeight:200,transition:'border-color 150ms,background 150ms'}}
-            onMouseEnter={e=>{e.currentTarget.style.background='rgba(27,37,133,0.04)';e.currentTarget.style.borderColor='rgba(27,37,133,0.4)';}}
-            onMouseLeave={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.borderColor='rgba(26,26,26,0.2)';}}>
-            <div style={{width:40,height:40,border:'1px solid rgba(26,26,26,0.2)',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:'var(--D)',fontSize:28,color:'rgba(26,26,26,0.3)'}}>+</div>
-            <span style={{fontFamily:'var(--M)',fontSize:10,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:'rgba(26,26,26,0.3)'}}>Novo Projeto</span>
+      {/* Category desc strip */}
+      <div style={{background:cat.colorDark,padding:'14px 48px',display:'flex',alignItems:'center',gap:10}}>
+        <div style={{width:5,height:5,background:la(cat)}}/>
+        <span style={{fontFamily:'var(--M)',fontSize:10,color:`${la(cat)}88`,letterSpacing:'0.08em'}}>{t('catdesc_'+activeTab)}</span>
+      </div>
+
+      {/* Grid */}
+      <div style={{background:'var(--cream)',padding:'40px 48px 64px'}}>
+        {filtered.length===0 ? (
+          <div style={{padding:'64px 0',textAlign:'center',fontFamily:'var(--M)',fontSize:11,color:'rgba(26,26,26,0.32)',letterSpacing:'0.15em',textTransform:'uppercase'}}>{t('no_projects')}</div>
+        ) : (
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
+            {filtered.map(p=><ProjetoCard key={p.id} project={p} category={cats[p.category]||{color:'var(--blue)',label:p.category,colorDark:'var(--navy)'}} onClick={()=>handleCardClick(p.id)} isSelected={flashId===p.id}/>)}
           </div>
+        )}
+        <div style={{marginTop:36,padding:'20px 24px',border:'1px dashed rgba(26,26,26,0.13)',fontFamily:'var(--M)',fontSize:9,color:'rgba(26,26,26,0.32)',letterSpacing:'0.15em',textTransform:'uppercase',textAlign:'center'}}>
+          {t('edit_hint')} — <code style={{background:'rgba(26,26,26,0.05)',padding:'2px 6px',color:'rgba(26,26,26,0.5)',letterSpacing:'0.05em'}}>projects-data.js</code>
         </div>
       </div>
     </div>
   );
 };
 
-/* ════════════════════════════════
-   QUEM SOU
-════════════════════════════════ */
-const SobrePage = () => (
-  <div>
-    {/* header */}
-    <div style={{background:'var(--navy)',padding:'80px 48px 48px',position:'relative',overflow:'hidden'}}>
-      <div style={{position:'absolute',right:60,top:'50%',transform:'translateY(-50%)',opacity:0.08}}>
-        <OverlappingCircles color="var(--lav)" size={280}/>
+/* ══ QUEM SOU PAGE ════════════════════════════════════════ */
+const SobrePage = ({ lang }) => {
+  const t=k=>T[lang][k]??T.pt[k]??k;
+  return (
+    <div>
+      {/* Header */}
+      <div style={{background:'var(--navy)',padding:'80px 48px 48px',position:'relative',overflow:'hidden'}}>
+        <div style={{position:'absolute',right:60,top:'50%',transform:'translateY(-50%)',opacity:0.06}}><OverlappingCircles color="var(--lav)" size={300}/></div>
+        <div style={{position:'absolute',right:280,bottom:10,opacity:0.035}}><NestedTriangles color="var(--yellow)" size={160} count={5}/></div>
+        <PanelLabel color="rgba(255,255,255,0.35)">{t('profile_label')}</PanelLabel>
+        <h1 style={{fontFamily:'var(--D)',fontSize:64,letterSpacing:'0.05em',textTransform:'uppercase',color:'var(--white)',position:'relative',zIndex:1,marginBottom:14}}>{t('about_title')}</h1>
+        <p style={{fontFamily:'var(--M)',fontSize:12,lineHeight:1.85,color:'rgba(255,255,255,0.4)',maxWidth:540,position:'relative',zIndex:1}}>{t('about_subtitle')}</p>
       </div>
-      <div style={{position:'absolute',right:220,bottom:20,opacity:0.05}}>
-        <NestedTriangles color="var(--yellow)" size={160} count={5}/>
-      </div>
-      <PanelLabel color="rgba(255,255,255,0.4)">Perfil</PanelLabel>
-      <h1 style={{fontFamily:'var(--D)',fontSize:64,letterSpacing:'0.05em',textTransform:'uppercase',color:'var(--white)',position:'relative',zIndex:1,marginBottom:20}}>Quem Sou</h1>
-      <p style={{fontFamily:'var(--M)',fontSize:13,lineHeight:1.85,color:'rgba(255,255,255,0.5)',maxWidth:560,position:'relative',zIndex:1}}>
-        Business & Data Analytics Consultant. Focado em Data Insights e Business Analytics — transformando dados em crescimento estratégico e performance de negócio.
-      </p>
-    </div>
 
-    {/* BIO + CONTATO */}
-    <div style={{display:'grid',gridTemplateColumns:'2fr 1fr',background:'var(--cream)',borderBottom:'1px solid rgba(26,26,26,0.08)'}}>
-      <div style={{padding:'56px 48px',borderRight:'1px solid rgba(26,26,26,0.08)'}}>
-        <PanelLabel color="var(--blue)">Sobre</PanelLabel>
-        <h2 style={{fontFamily:'var(--D)',fontSize:42,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)',marginBottom:20}}>Diego Freitas Furtado</h2>
-        <p style={{fontFamily:'var(--M)',fontSize:12,lineHeight:1.95,color:'rgba(26,26,26,0.65)',marginBottom:16}}>
-          Analista de dados e consultor baseado em Lisboa, Portugal. Tenho formação em jornalismo e pós-graduação em Ciência de Dados e IA — uma combinação que me permite transformar análises técnicas em narrativas claras para tomadores de decisão.
-        </p>
-        <p style={{fontFamily:'var(--M)',fontSize:12,lineHeight:1.95,color:'rgba(26,26,26,0.65)',marginBottom:16}}>
-          Atualmente na MOP (Multimédia Outdoors Portugal), onde unifiquei fontes de dados dispersas em um SSOT robusto, automatizei pipelines ETL e construí dashboards executivos para as lideranças de Vendas, Marketing, Operações e Financeiro.
-        </p>
-        <p style={{fontFamily:'var(--M)',fontSize:12,lineHeight:1.95,color:'rgba(26,26,26,0.65)'}}>
-          Acredito que todo dado é uma declaração sobre o mundo — e que a diferença entre um relatório e uma decisão está na forma como você conta a história.
-        </p>
-      </div>
-      <div style={{padding:'56px 32px',background:'var(--cream-dk)',display:'flex',flexDirection:'column',gap:24}}>
-        <PanelLabel color="var(--blue)">Contato</PanelLabel>
-        {[
-          ['Email','diegoiribarrem@gmail.com'],
-          ['Telefone','+351 929 023 731'],
-          ['Localização','Lisboa, Portugal'],
-          ['LinkedIn','/diegofreitasfurtado'],
-        ].map(([label,value])=>(
-          <div key={label} style={{paddingBottom:18,borderBottom:'1px solid rgba(26,26,26,0.08)'}}>
-            <div style={{fontFamily:'var(--M)',fontSize:8,fontWeight:700,letterSpacing:'0.25em',textTransform:'uppercase',color:'rgba(26,26,26,0.38)',marginBottom:4}}>{label}</div>
-            <div style={{fontFamily:'var(--M)',fontSize:11,color:'var(--ink)',wordBreak:'break-all'}}>{value}</div>
+      {/* BIO + FOTO + CONTATO */}
+      <div style={{background:'var(--cream)',borderBottom:'1px solid rgba(26,26,26,0.08)'}}>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 320px'}}>
+          <div style={{padding:'56px 48px',borderRight:'1px solid rgba(26,26,26,0.08)'}}>
+            <PanelLabel color="var(--blue)">{t('bio_label')}</PanelLabel>
+            <h2 style={{fontFamily:'var(--D)',fontSize:40,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)',marginBottom:20}}>{t('bio_name')}</h2>
+            {['bio_p1','bio_p2','bio_p3'].map(k=><p key={k} style={{fontFamily:'var(--M)',fontSize:12,lineHeight:1.95,color:'rgba(26,26,26,0.63)',marginBottom:16}}>{t(k)}</p>)}
           </div>
-        ))}
-        <div style={{opacity:0.25,marginTop:8}}><RotatingSquares color="var(--blue)" size={60} count={4}/></div>
+          <div style={{background:'var(--cream-dk)',padding:'56px 32px',display:'flex',flexDirection:'column',gap:0}}>
+            <div style={{position:'relative',marginBottom:24}}>
+              <div style={{position:'absolute',top:-5,left:-5,right:-5,bottom:-5,border:'1px solid var(--lav)',opacity:0.35,pointerEvents:'none'}}/>
+              <img src="foto-diego.jpg" alt="Diego Furtado" style={{width:'100%',aspectRatio:'3/4',objectFit:'cover',objectPosition:'center top',display:'block'}}
+                onError={e=>{e.currentTarget.style.display='none';e.currentTarget.nextSibling&&(e.currentTarget.nextSibling.style.display='flex');}}/>
+              <div style={{display:'none',width:'100%',aspectRatio:'3/4',background:'var(--lav)',alignItems:'center',justifyContent:'center'}}>
+                <span style={{fontFamily:'var(--D)',fontSize:48,color:'rgba(255,255,255,0.4)',letterSpacing:'0.1em'}}>DF</span>
+              </div>
+            </div>
+            <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.22em',textTransform:'uppercase',color:'rgba(26,26,26,0.3)',marginBottom:14}}>{t('contact_label')}</div>
+            {[['f_email','diegoiribarrem@gmail.com'],['f_tel','+351 929 023 731'],['f_city','Lisboa, Portugal'],['f_linkedin','/diegofreitasfurtado']].map(([lk,val])=>(
+              <div key={lk} style={{paddingBottom:13,marginBottom:13,borderBottom:'1px solid rgba(26,26,26,0.08)'}}>
+                <div style={{fontFamily:'var(--M)',fontSize:8,fontWeight:700,letterSpacing:'0.22em',textTransform:'uppercase',color:'rgba(26,26,26,0.32)',marginBottom:2}}>{t(lk)}</div>
+                <div style={{fontFamily:'var(--M)',fontSize:10,color:'var(--ink)',wordBreak:'break-all'}}>{val}</div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-    </div>
 
-    {/* EXPERIÊNCIA */}
-    <div style={{background:'var(--cream)',padding:'56px 48px',borderBottom:'1px solid rgba(26,26,26,0.08)'}}>
-      <PanelLabel color="var(--red)">Trajetória</PanelLabel>
-      <h2 style={{fontFamily:'var(--D)',fontSize:42,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)',marginBottom:36}}>Experiência</h2>
-      <div style={{display:'flex',flexDirection:'column',gap:0}}>
+      {/* EXPERIÊNCIA */}
+      <div style={{background:'var(--cream)',padding:'56px 48px',borderBottom:'1px solid rgba(26,26,26,0.08)'}}>
+        <PanelLabel color="var(--red)">{t('exp_label')}</PanelLabel>
+        <h2 style={{fontFamily:'var(--D)',fontSize:40,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)',marginBottom:36}}>{t('exp_heading')}</h2>
         {[
-          {
-            role:'Business Development Consultant',
-            company:'MOP — Multimédia Outdoors Portugal',
-            period:'Abr 2024 – Presente',
-            location:'Lisboa, Portugal',
-            accent:'var(--blue)',
-            bullets:[
-              'Unificação de dados SQL, Excel e API em um SSOT, melhorando qualidade e alinhamento de dados',
-              'Automação de pipelines ETL com Power Query (M) e Python — economia de ~30h/mês',
-              'Redução de 4× no tempo de refresh do dashboard comercial Power BI',
-              'Dashboards de KPI para lideranças de Vendas e Marketing',
-              'Ferramentas de proposta que aumentaram a velocidade de entrega em 50%',
-              'Mapeamento end-to-end de processos em Vendas, Operações e Financeiro',
-            ]
-          },
-          {
-            role:'Assistente de Comunicação & Social Media Insights',
-            company:'PUCRS — Pontifícia Universidade Católica do RS',
-            period:'Mai 2017 – Out 2023',
-            location:'Porto Alegre, Brasil',
-            accent:'var(--lav)',
-            bullets:[
-              'Análise de alcance, engajamento e performance de audiência em canais institucionais',
-              'Dashboards e relatórios de KPI para planejamento de conteúdo e decisões de campanha',
-              'Consolidação de relatórios multiplataforma em um único dashboard SSOT',
-              'Apoio a aumento de 3× no orçamento de mídias sociais com base em resultados entregues',
-              'Progressão: Estagiário (2017) → Assistente (2019) → Associado de Comunicação (2021)',
-            ]
-          },
+          {role:'exp1_role',co:'exp1_co',period:'exp1_period',loc:'exp1_loc',bullets:'exp1_b',accent:'var(--blue)'},
+          {role:'exp2_role',co:'exp2_co',period:'exp2_period',loc:'exp2_loc',bullets:'exp2_b',accent:'var(--lav)'},
         ].map((exp,i)=>(
-          <div key={i} style={{display:'grid',gridTemplateColumns:'200px 1fr',borderTop:'1px solid rgba(26,26,26,0.1)',paddingTop:28,paddingBottom:28}}>
+          <div key={i} style={{display:'grid',gridTemplateColumns:'200px 1fr',borderTop:'1px solid rgba(26,26,26,0.08)',paddingTop:28,paddingBottom:28}}>
             <div>
-              <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',color:exp.accent,marginBottom:6}}>{exp.period}</div>
-              <div style={{fontFamily:'var(--M)',fontSize:9,color:'rgba(26,26,26,0.4)',letterSpacing:'0.08em',textTransform:'uppercase'}}>{exp.location}</div>
+              <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.13em',textTransform:'uppercase',color:exp.accent,marginBottom:6}}>{t(exp.period)}</div>
+              <div style={{fontFamily:'var(--M)',fontSize:9,color:'rgba(26,26,26,0.32)',letterSpacing:'0.06em',textTransform:'uppercase'}}>{t(exp.loc)}</div>
             </div>
             <div>
-              <div style={{fontFamily:'var(--D)',fontSize:22,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)',marginBottom:4}}>{exp.role}</div>
-              <div style={{fontFamily:'var(--M)',fontSize:10,fontWeight:700,color:'rgba(26,26,26,0.5)',letterSpacing:'0.12em',textTransform:'uppercase',marginBottom:16}}>{exp.company}</div>
-              <div style={{display:'flex',flexDirection:'column',gap:6}}>
-                {exp.bullets.map((b,j)=>(
+              <div style={{fontFamily:'var(--D)',fontSize:22,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)',marginBottom:4}}>{t(exp.role)}</div>
+              <div style={{fontFamily:'var(--M)',fontSize:10,fontWeight:700,color:'rgba(26,26,26,0.42)',letterSpacing:'0.1em',textTransform:'uppercase',marginBottom:16}}>{t(exp.co)}</div>
+              <div style={{display:'flex',flexDirection:'column',gap:7}}>
+                {(T[lang][exp.bullets]||T.pt[exp.bullets]||[]).map((b,j)=>(
                   <div key={j} style={{display:'flex',gap:10,alignItems:'flex-start'}}>
                     <span style={{width:4,height:4,background:exp.accent,display:'inline-block',flexShrink:0,marginTop:5}}/>
-                    <span style={{fontFamily:'var(--M)',fontSize:11,lineHeight:1.75,color:'rgba(26,26,26,0.65)'}}>{b}</span>
+                    <span style={{fontFamily:'var(--M)',fontSize:11,lineHeight:1.75,color:'rgba(26,26,26,0.6)'}}>{b}</span>
                   </div>
                 ))}
               </div>
@@ -468,69 +550,77 @@ const SobrePage = () => (
           </div>
         ))}
       </div>
-    </div>
 
-    {/* FORMAÇÃO + HABILIDADES */}
-    <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',background:'var(--cream-dk)'}}>
-      {/* Formação */}
-      <div style={{padding:'56px 48px',borderRight:'1px solid rgba(26,26,26,0.08)'}}>
-        <PanelLabel color="var(--lav)">Formação acadêmica</PanelLabel>
-        <h3 style={{fontFamily:'var(--D)',fontSize:32,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)',marginBottom:28}}>Educação</h3>
-        {[
-          { title:'Mestrado em Mídia, Cultura e Tecnologias Visuais', school:'PUCRS', period:'2020–2022', note:'Aprovado com louvor', accent:'var(--lav)' },
-          { title:'Pós-graduação em Ciência de Dados e IA', school:'PUCRS', period:'2021–2022', note:'Bolsa por mérito acadêmico', accent:'var(--blue)' },
-          { title:'Bacharelado em Jornalismo', school:'PUCRS', period:'2015–2019', note:'Porto Alegre, Brasil', accent:'var(--red)' },
-        ].map((e,i)=>(
-          <div key={i} style={{paddingBottom:22,marginBottom:22,borderBottom:i<2?'1px solid rgba(26,26,26,0.08)':'none'}}>
-            <div style={{fontFamily:'var(--D)',fontSize:18,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)',lineHeight:1.2,marginBottom:6}}>{e.title}</div>
-            <div style={{display:'flex',gap:12,alignItems:'center'}}>
-              <span style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',color:e.accent}}>{e.school} · {e.period}</span>
+      {/* FORMAÇÃO + HABILIDADES */}
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',background:'var(--cream-dk)'}}>
+        <div style={{padding:'56px 48px',borderRight:'1px solid rgba(26,26,26,0.08)'}}>
+          <PanelLabel color="var(--lav)">{t('edu_label')}</PanelLabel>
+          <h3 style={{fontFamily:'var(--D)',fontSize:32,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)',marginBottom:28}}>{t('edu_heading')}</h3>
+          {[
+            {tk:'edu1',note:'edu1_note',school:'PUCRS',period:'2020–2022',accent:'var(--lav)'},
+            {tk:'edu2',note:'edu2_note',school:'PUCRS',period:'2021–2022',accent:'var(--blue)'},
+            {tk:'edu3',note:'edu3_note',school:'PUCRS',period:'2015–2019',accent:'var(--red)'},
+          ].map((e,i)=>(
+            <div key={i} style={{paddingBottom:18,marginBottom:18,borderBottom:i<2?'1px solid rgba(26,26,26,0.08)':'none'}}>
+              <div style={{fontFamily:'var(--D)',fontSize:17,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)',lineHeight:1.2,marginBottom:5}}>{t(e.tk)}</div>
+              <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.14em',textTransform:'uppercase',color:e.accent}}>{e.school} · {e.period}</div>
+              <div style={{fontFamily:'var(--M)',fontSize:9,color:'rgba(26,26,26,0.35)',letterSpacing:'0.1em',textTransform:'uppercase',marginTop:3}}>{t(e.note)}</div>
             </div>
-            <div style={{fontFamily:'var(--M)',fontSize:9,color:'rgba(26,26,26,0.4)',letterSpacing:'0.1em',textTransform:'uppercase',marginTop:4}}>{e.note}</div>
-          </div>
-        ))}
-      </div>
-
-      {/* Habilidades */}
-      <div style={{padding:'56px 48px'}}>
-        <PanelLabel color="var(--blue)">Ferramentas & competências</PanelLabel>
-        <h3 style={{fontFamily:'var(--D)',fontSize:32,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)',marginBottom:28}}>Habilidades</h3>
-        {[
-          { area:'BI & Visualização', items:['Power BI (DAX, M language)','Tableau','Looker','Microsoft Excel avançado'], accent:'var(--blue)' },
-          { area:'Dados & Engenharia', items:['SQL · BigQuery','Python (Pandas, NumPy)','ETL · Power Query','Integração multifonte'], accent:'var(--red)' },
-          { area:'Estratégia & Negócios', items:['KPI Design','Market & Competitor Analysis','Data Storytelling','Process Optimization & Automation'], accent:'var(--lav)' },
-          { area:'Idiomas', items:['Português (nativo)','Inglês (profissional)'], accent:'var(--pink)' },
-        ].map(({ area, items, accent })=>(
-          <div key={area} style={{marginBottom:22}}>
-            <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8}}>
-              <div style={{width:12,height:1,background:accent}}/>
-              <div style={{fontFamily:'var(--D)',fontSize:16,letterSpacing:'0.06em',textTransform:'uppercase',color:'var(--ink)'}}>{area}</div>
-            </div>
-            <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
-              {items.map(item=>(
-                <span key={item} style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.12em',textTransform:'uppercase',background:'var(--white)',color:accent,border:`1px solid ${accent}33`,padding:'4px 8px'}}>{item}</span>
-              ))}
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
+        <div style={{padding:'56px 48px'}}>
+          <PanelLabel color="var(--blue)">{t('skills_label')}</PanelLabel>
+          <h3 style={{fontFamily:'var(--D)',fontSize:32,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)',marginBottom:28}}>{t('skills_heading')}</h3>
+          {[
+            {akey:'sk1',items:['Power BI (DAX, M)','Tableau','Looker','Excel avançado'],accent:'var(--blue)'},
+            {akey:'sk2',items:['SQL · BigQuery','Python · Pandas','ETL · Power Query','Integração multifonte'],accent:'var(--red)'},
+            {akey:'sk3',itemsKey:'sk3_items',accent:'var(--lav)'},
+            {akey:'sk4',itemsKey:'sk4_items',accent:'var(--pink)'},
+          ].map(({akey,items,itemsKey,accent})=>{
+            const resolvedItems=itemsKey?(T[lang][itemsKey]||T.pt[itemsKey]||[]):items;
+            return (
+              <div key={akey} style={{marginBottom:18}}>
+                <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:7}}>
+                  <div style={{width:16,height:1,background:accent}}/>
+                  <div style={{fontFamily:'var(--D)',fontSize:15,letterSpacing:'0.06em',textTransform:'uppercase',color:'var(--ink)'}}>{t(akey)}</div>
+                </div>
+                <div style={{display:'flex',flexWrap:'wrap',gap:5}}>
+                  {resolvedItems.map(item=><span key={item} style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.1em',textTransform:'uppercase',background:'var(--white)',color:accent,border:`1px solid ${accent}33`,padding:'3px 8px'}}>{item}</span>)}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
-/* ════════════════════════════════
-   APP
-════════════════════════════════ */
+/* ══ APP ══════════════════════════════════════════════════ */
 const App = () => {
   const [page,setPage]=useState('home');
+  const [selectedId,setSelectedId]=useState(null);
+  const [lang,setLang]=useState('pt');
   const ref=useRef(null);
-  useEffect(()=>{if(ref.current)ref.current.scrollTop=0;},[page]);
-  const pages = { home:<HomePage setPage={setPage}/>, projetos:<ProjetosPage/>, sobre:<SobrePage/> };
+  useEffect(()=>{ if(ref.current) ref.current.scrollTop=0; },[page]);
+  const handleProjectClick=(id)=>{ setSelectedId(id); setPage('projeto'); };
+
+  const renderPage=()=>{
+    if(page==='home') return <HomePage setPage={setPage} lang={lang}/>;
+    if(page==='projetos') return <ProjetosPage onProjectClick={handleProjectClick} lang={lang}/>;
+    if(page==='sobre') return <SobrePage lang={lang}/>;
+    if(page==='projeto'){
+      const ProjPage=window.ProjectPage;
+      return ProjPage?<ProjPage projectId={selectedId} onBack={()=>setPage('projetos')}/>:<div style={{padding:80,fontFamily:'var(--M)'}}>Carregando…</div>;
+    }
+    return <HomePage setPage={setPage} lang={lang}/>;
+  };
+
   return (
     <div id="scroll-root" style={{height:'100vh',overflowY:'auto'}} ref={ref}>
-      <Header page={page} setPage={setPage}/>
-      <main style={{paddingTop:60}}>{pages[page]||pages.home}</main>
-      <Footer/>
+      <Header page={page} setPage={setPage} lang={lang} setLang={setLang}/>
+      <main style={{paddingTop:60}}>{renderPage()}</main>
+      <Footer lang={lang}/>
     </div>
   );
 };

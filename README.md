@@ -1,182 +1,141 @@
-# Diego Furtado — Design System
+# Diego Furtado — Portfolio
 
-**Version:** 1.0  
-**Author:** Diego Furtado  
-**Role:** Analista de dados, jornalista e curioso por análises orientadas pelo design de conteúdo.
+Portfólio pessoal de **Diego Freitas Furtado** — Business & Data Analytics Consultant — Lisboa, Portugal.
 
----
-
-## Sources
-
-Assets were provided directly as uploads:
-- Color palette image: `uploads/CORES@3x-50.jpg`
-- Logo (branco): `uploads/Logo - Branco - Diego Furtado.svg`
-- Logo (preto): `uploads/Logo - Preto - Diego Furtado.svg`
-- Decorative brand elements: `uploads/Ativo 9–14.svg`
-- Fonts: BebasNeue-Regular.ttf, JetBrainsMono (variable + italic variable)
-
-No codebase or Figma link was provided.
+> Este é o **README raiz**. Ele é o nó principal da hierarquia de regras do projeto.
+> Toda subpasta tem seu próprio `README.md` que **herda** estas regras e adiciona regras locais.
+> **Sempre comece a leitura por aqui.**
 
 ---
 
-## CONTENT FUNDAMENTALS
-
-### Tone & Voice
-Diego's brand communicates like a smart friend who happens to know data and journalism deeply — **informal, direct, and relaxed**. Never corporate, never stuffy.
-
-- **Language:** Portuguese (BR). English may appear in technical/data contexts.
-- **Person:** First-person ("Eu fiz", "Acredito que", "Olha que dado curioso…") — always human, never institutional.
-- **Casing:** Sentence case in body copy. ALL CAPS reserved for display headings and labels (Bebas Neue is designed for that).
-- **Punctuation:** Ellipses and em-dashes are welcome. Exclamations used sparingly, not performatively.
-- **Emoji:** Not part of the brand identity. The geometric aesthetic carries tone without them.
-- **Vibe keywords:** curioso, direto, analítico, descontraído, criativo, honesto.
-
-### Copy Examples
-- ✅ "Não é magia, é metodologia."
-- ✅ "Você sabe quantas vezes esse processo quebrou? Eu calculei."
-- ✅ "Design não é só bonito — é argumento visual."
-- ❌ "Olá! Sou Diego e estou apaixonado por dados!" ← muito corporativo/performático
-
----
-
-## VISUAL FOUNDATIONS
-
-### Color System
-Two palettes: **dark primaries** and **vivid accents**.
-
-| Token | Value | Role |
-|---|---|---|
-| `--color-black` | `#000000` | Primary background |
-| `--color-navy` | `#0C0D2A` | Secondary dark background |
-| `--color-blue` | `#1B2585` | Brand blue |
-| `--color-lavender` | `#9494C8` | Muted accent, borders |
-| `--color-red` | `#E0003D` | Alert, strong accent |
-| `--color-pink` | `#F07090` | Soft accent |
-| `--color-yellow` | `#FFEE00` | Primary highlight/CTA |
-| `--color-cream` | `#FFF5CC` | Warm light background |
-| `--color-white` | `#FFFFFF` | Light mode base |
-
-Each primary has a lighter tint counterpart (see `colors_and_type.css`).
-
-**Color Vibe:** High contrast. Dark backgrounds with yellow or red pops. Light mode uses cream/white with navy text. Cool lavender as a neutral in between. No gradients — flat, intentional color blocks.
-
-### Typography
-Two fonts only — kept tight:
-
-| Font | Use | Style |
-|---|---|---|
-| **Bebas Neue** | Display, headings, labels | Condensed all-caps, wide tracking |
-| **JetBrains Mono** | Body, captions, code, sub-headings | Variable weight; italic for emphasis |
-
-The combination of a display serif-adjacent condensed face (Bebas Neue) with a technical monospace (JetBrains Mono) creates the data-journalism tension at the core of Diego's identity.
-
-- **H1/H2:** Bebas Neue, ALL CAPS, tight leading (1.05), wide tracking (0.08em)
-- **H3/H4:** JetBrains Mono Bold Italic / Medium
-- **Body:** JetBrains Mono Regular, generous leading (1.7)
-- **Labels/Captions:** JetBrains Mono, ALL CAPS, extra tracking (0.2em), small size
-- **Code:** JetBrains Mono, navy background, yellow text
-
-### Spacing
-4px base unit grid. Scale: 4, 8, 12, 16, 24, 32, 48, 64, 96, 128px.
-
-### Backgrounds
-- Primary: flat black or navy — no gradients, no textures
-- Light mode: white or cream
-- Decorative brand elements (Ativos) used as background/overlay motifs at low opacity
-
-### Animation & Motion
-- **Easing:** ease-out (`cubic-bezier(0, 0, 0.2, 1)`) as default
-- **Duration:** fast=120ms, base=220ms, slow=380ms
-- **Hover states:** color shift + slight upward translate (2–4px). No opacity tricks.
-- **Press states:** translate back down (1–2px), shadow collapse
-- **Philosophy:** Motion is editorial, not decorative. Fast in, considered out.
-
-### Borders & Shadows
-- **Border radius:** Essentially zero. Sharp corners dominate. Pill shape for tags only.
-- **Shadows:** Offset hard shadows (4px 4px 0px) — yellow, navy, or red. No blur. Brutalist feel.
-- **Borders:** 1–2px solid. Usually lavender on dark, navy on light.
-
-### Cards
-- Sharp corners
-- Hard offset shadow (yellow or dark)
-- Thin solid border
-- Dense information layout — not airy
-
-### Imagery
-- **Color vibe:** High contrast, documentary-style. B&W or desaturated with a color overlay works well.
-- **No stock photos with people smiling**
-- Data visualizations and charts are first-class imagery
-
-### Iconography → see ICONOGRAPHY section below
-
-### Decorative Motifs
-Brand uses 5 geometric line-art "Ativo" elements (see `assets/`):
-- `ativo-9-starburst.svg` — multi-line star/asterisk burst
-- `ativo-11-triangles.svg` — concentric expanding triangular shapes
-- `ativo-12-ovals.svg` — concentric rotating ellipses
-- `ativo-13-snowflake.svg` — complex layered snowflake/star pattern
-- `ativo-14-squares.svg` — nested squares at rotating angles
-
-Used at low opacity as background texture, section dividers, or decorative corners. Never filled — always pure stroke.
-
----
-
-## ICONOGRAPHY
-
-No icon font or CDN icon set is defined in the brand. Recommended approach:
-
-- **Primary decorative icons:** Use the 5 Ativo SVGs (brand-owned geometric motifs)
-- **Functional UI icons:** Use [Lucide](https://lucide.dev) (CDN: `https://unpkg.com/lucide@latest`) — stroke-based, clean, matches the mono/technical aesthetic
-- **Emoji:** Not used in the visual brand
-- **Logo:** Two versions — branco (white, for dark bg) and preto (black, for light bg)
-
-Logo is a geometric "DF" lettermark inside a rectangular border with a diagonal slash — condensed, editorial, unmistakably typographic.
-
----
-
-## FILE INDEX
+## 1. Como o projeto é estruturado
 
 ```
-README.md                  ← This file
-SKILL.md                   ← Agent skill definition
-colors_and_type.css        ← All CSS custom properties + semantic type styles
-
-fonts/
-  BebasNeue-Regular.ttf
-  JetBrainsMono-VariableFont_wght.ttf
-  JetBrainsMono-Italic-VariableFont_wght.ttf
-
-assets/
-  logo-branco.svg          ← White logo (for dark backgrounds)
-  logo-preto.svg           ← Black logo (for light backgrounds)
-  ativo-9-starburst.svg    ← Decorative: star burst
-  ativo-11-triangles.svg   ← Decorative: concentric triangles
-  ativo-12-ovals.svg       ← Decorative: rotating ovals
-  ativo-13-snowflake.svg   ← Decorative: complex snowflake
-  ativo-14-squares.svg     ← Decorative: rotating nested squares
-
-preview/
-  colors-primaries.html
-  colors-tints.html
-  colors-semantic.html
-  type-display.html
-  type-body.html
-  type-scale.html
-  spacing-tokens.html
-  shadows-borders.html
-  components-buttons.html
-  components-tags.html
-  components-cards.html
-  components-code.html
-  brand-logo.html
-  brand-motifs.html
-
-ui_kits/
-  portfolio/
-    README.md
-    index.html
-    Header.jsx
-    Hero.jsx
-    ProjectCard.jsx
-    Footer.jsx
+portfolio/
+├── README.md                    ← VOCÊ ESTÁ AQUI (regras gerais + índice)
+├── IDENTIDADE_VISUAL.md         ← Identidade visual blindada (cores, fontes, motifs)
+├── MANUTENCAO_DO_PORTFOLIO.md   ← Fluxo correto de manutenção (o que fazer / não fazer)
+├── GUIA_DO_PORTFOLIO.md         ← Guia rápido de onde está cada coisa
+├── CHANGELOG.md                 ← Histórico de alterações
+├── colors_and_type.css          ← Tokens canônicos do design system
+├── index.html                   ← Página de entrada (redireciona p/ ui_kits/portfolio)
+├── tweaks-panel.jsx             ← Painel de ajustes em desenvolvimento
+├── .gitignore / .nojekyll
+│
+├── assets/                      ← Logo + motifs geométricos (BLINDADO)
+├── fonts/                       ← BebasNeue + JetBrainsMono (BLINDADO)
+├── preview/                     ← Páginas de referência do design system
+├── ui_kits/                     ← Implementações do site
+│   └── portfolio/               ← Site público (index.html, dados, templates)
+├── uploads/                     ← Material bruto enviado pelo Diego
+└── scraps/                      ← Sketches descartáveis
 ```
+
+> **Nota:** uma pasta `Portfólio/` existia aqui como duplicata histórica. Em 2026-04-25 ela foi **removida** após o Diego confirmar que o conteúdo já estava espelhado nos arquivos canônicos da raiz. Ver `CHANGELOG.md`.
+
+Cada subpasta acima tem um `README.md` próprio. A leitura recomendada é **top-down**: raiz → subpasta → arquivo.
+
+---
+
+## 2. Hierarquia de regras (importante)
+
+As regras descem em cascata. Uma regra do nível superior **sempre** vence uma regra do nível inferior, exceto quando o README local restringe ainda mais.
+
+```
+1. .claude/CLAUDE.md (regras globais do usuário)
+        ↓
+2. README.md (raiz)               ← este arquivo
+        ↓
+3. IDENTIDADE_VISUAL.md           ← veto absoluto sobre estética
+        ↓
+4. README.md de cada subpasta     ← regras locais
+        ↓
+5. Comentários dentro do arquivo  ← orientação por arquivo
+```
+
+> **Em caso de conflito:** o nível **mais alto** vence, exceto sobre identidade visual — onde `IDENTIDADE_VISUAL.md` é **soberano**.
+
+---
+
+## 3. Regras gerais — leia antes de qualquer alteração
+
+### NÃO FAZER
+
+- **Não apagar arquivos.** No limite, mover para uma pasta de arquivamento e avisar o Diego (regra global do usuário).
+- **Não alterar identidade visual** (cores, fontes, motifs, layout, sombras, espaçamento, raio) sem pedido **expresso** do Diego. Ver `IDENTIDADE_VISUAL.md`.
+- **Não reorganizar a hierarquia de navegação** (Home / Projetos / Quem sou) sem aprovação prévia.
+- **Não reativar a interface pública de adicionar projetos.**
+- **Não editar o site publicado** para permitir cadastros de visitantes.
+- **Não introduzir bibliotecas ou fontes novas** sem alinhamento prévio.
+- **Não criar arquivos READMEs paralelos** em locais que já têm um. Editar o existente.
+
+### O QUE É EDITÁVEL LIVREMENTE
+
+- `ui_kits/portfolio/projects-data.js` — projetos, categorias e textos da página "Quem Sou"
+- `ui_kits/portfolio/foto-diego.jpg` — substituir mantendo o mesmo nome
+- `CHANGELOG.md` — sempre que houver mudança, registrar
+- Conteúdo dos READMEs locais quando o conteúdo da pasta mudar
+
+### Antes de QUALQUER edição, conferir
+
+1. Esta mudança está descrita ou autorizada em algum README ou pedido recente do Diego?
+2. Ela respeita `IDENTIDADE_VISUAL.md`?
+3. Ela vai ser registrada em `CHANGELOG.md`?
+
+Se a resposta for **não** para qualquer uma — **pergunte antes de mexer**.
+
+---
+
+## 4. Como o Diego edita o site (modelo "comandos")
+
+O objetivo é editar via **comandos textuais** (no chat com o Claude / no VS Code), não clicando em interfaces. Os comandos canônicos são:
+
+- **"Adicionar projeto"** → Claude edita `ui_kits/portfolio/projects-data.js` adicionando um novo bloco com `id` único e registra no `CHANGELOG.md`.
+- **"Editar projeto X"** → Claude localiza pelo `title` e altera só os campos pedidos.
+- **"Remover projeto X"** → Claude move o bloco para um array `archived` no mesmo arquivo (não deleta) e registra no `CHANGELOG.md`.
+- **"Atualizar Quem Sou"** → Claude edita os campos correspondentes em `projects-data.js`.
+- **"Trocar foto"** → Claude orienta a substituir `foto-diego.jpg` mantendo o nome.
+- **"Mudar cor de categoria"** → **PEDIDO EXPRESSO**. Claude atualiza `IDENTIDADE_VISUAL.md`, `projects-data.js` e `CHANGELOG.md` na mesma operação.
+- **"Mudar fonte / paleta / layout"** → **PEDIDO EXPRESSO E ESPECÍFICO**. Sem isso, recusar e pedir confirmação.
+
+Toda alteração entra obrigatoriamente no `CHANGELOG.md`.
+
+---
+
+## 5. Índice de READMEs e arquivos de regra
+
+| Caminho | Função |
+|---|---|
+| [`README.md`](./README.md) | (este) Regras gerais e índice |
+| [`IDENTIDADE_VISUAL.md`](./IDENTIDADE_VISUAL.md) | Visual blindado — soberano sobre estética |
+| [`MANUTENCAO_DO_PORTFOLIO.md`](./MANUTENCAO_DO_PORTFOLIO.md) | Fluxo de manutenção |
+| [`GUIA_DO_PORTFOLIO.md`](./GUIA_DO_PORTFOLIO.md) | Guia rápido |
+| [`CHANGELOG.md`](./CHANGELOG.md) | Histórico de alterações |
+| [`assets/README.md`](./assets/README.md) | Regras dos motifs e logos |
+| [`fonts/README.md`](./fonts/README.md) | Regras das fontes oficiais |
+| [`preview/README.md`](./preview/README.md) | Regras das páginas de referência |
+| [`ui_kits/README.md`](./ui_kits/README.md) | Regras do diretório de implementações |
+| [`ui_kits/portfolio/README.md`](./ui_kits/portfolio/README.md) | Regras do site público |
+| [`uploads/README.md`](./uploads/README.md) | Regras da pasta de material bruto |
+| [`scraps/README.md`](./scraps/README.md) | Regras de sketches descartáveis |
+
+> O antigo espelho histórico `Portfólio/` foi removido em 2026-04-25 — não existe mais nem dentro do projeto nem fora dele.
+
+---
+
+## 6. Tecnologias
+
+- **HTML + JSX em runtime** — React 18 + Babel Standalone, sem build step
+- **Fontes** — BebasNeue (display) + JetBrainsMono (mono)
+- **Dados editáveis** — `ui_kits/portfolio/projects-data.js`
+- **Estado de navegação** — `localStorage`
+- **Hospedagem** — GitHub Pages (`.nojekyll` na raiz)
+
+---
+
+## 7. Contato
+
+Diego Freitas Furtado
+diegoiribarrem@gmail.com
++351 929 023 731
+Lisboa, Portugal
