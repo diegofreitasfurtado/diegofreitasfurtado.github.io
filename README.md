@@ -12,23 +12,30 @@ Portfólio pessoal de **Diego Freitas Furtado** — Business & Data Analytics Co
 
 ```
 portfolio/
+├── .claude/                     ← Contexto e skills locais para Claude/Codex (nível 1 da hierarquia)
+│   ├── CLAUDE.md                ← Regras globais do repo, soberano sobre AGENTS.md
+│   └── skills/                  ← 4 skills Notion ↔ repo (inventory, notion-to-portfolio, tese-to-content, visual-from-tokens)
 ├── README.md                    ← VOCÊ ESTÁ AQUI (regras gerais + índice)
 ├── IDENTIDADE_VISUAL.md         ← Identidade visual blindada (cores, fontes, motifs)
 ├── MANUTENCAO_DO_PORTFOLIO.md   ← Fluxo correto de manutenção (o que fazer / não fazer)
 ├── GUIA_DO_PORTFOLIO.md         ← Guia rápido de onde está cada coisa
 ├── CHANGELOG.md                 ← Histórico de alterações
+├── AGENTS.md                    ← Executor operacional do Codex (não cria regra; pede aprovação)
+├── SKILL.md                     ← Skill de design para outros agentes (diego-furtado-design)
 ├── colors_and_type.css          ← Tokens canônicos do design system
 ├── index.html                   ← Página de entrada (redireciona p/ ui_kits/portfolio)
 ├── tweaks-panel.jsx             ← Painel de ajustes em desenvolvimento
-├── .gitignore / .nojekyll
+├── .editorconfig / .gitattributes / .gitignore / .nojekyll
 │
 ├── assets/                      ← Logo + motifs geométricos (BLINDADO)
 ├── fonts/                       ← BebasNeue + JetBrainsMono (BLINDADO)
 ├── preview/                     ← Páginas de referência do design system
+├── scripts/                     ← Validadores e utilitários operacionais
 ├── ui_kits/                     ← Implementações do site
 │   └── portfolio/               ← Site público (index.html, dados, templates)
 ├── uploads/                     ← Material bruto enviado pelo Diego
-└── scraps/                      ← Sketches descartáveis
+├── scraps/                      ← Sketches descartáveis
+└── _archived/                   ← Arquivamento não-destrutivo (pastas obsoletas, snapshots, zips)
 ```
 
 > **Nota:** uma pasta `Portfólio/` existia aqui como duplicata histórica. Em 2026-04-25 ela foi **removida** após o Diego confirmar que o conteúdo já estava espelhado nos arquivos canônicos da raiz. Ver `CHANGELOG.md`.
@@ -51,9 +58,13 @@ As regras descem em cascata. Uma regra do nível superior **sempre** vence uma r
 4. README.md de cada subpasta     ← regras locais
         ↓
 5. Comentários dentro do arquivo  ← orientação por arquivo
+        ↓
+6. AGENTS.md                      ← executor operacional (não soberano)
 ```
 
 > **Em caso de conflito:** o nível **mais alto** vence, exceto sobre identidade visual — onde `IDENTIDADE_VISUAL.md` é **soberano**.
+>
+> `AGENTS.md` **não substitui** nenhuma regra acima. Ele só define como o Codex deve executar e pedir aprovação.
 
 ---
 
@@ -68,6 +79,7 @@ As regras descem em cascata. Uma regra do nível superior **sempre** vence uma r
 - **Não editar o site publicado** para permitir cadastros de visitantes.
 - **Não introduzir bibliotecas ou fontes novas** sem alinhamento prévio.
 - **Não criar arquivos READMEs paralelos** em locais que já têm um. Editar o existente.
+- **Não executar mudanças sem aprovação explícita do Diego.** O `AGENTS.md` deve atuar como gate operacional.
 
 ### O QUE É EDITÁVEL LIVREMENTE
 
@@ -79,8 +91,9 @@ As regras descem em cascata. Uma regra do nível superior **sempre** vence uma r
 ### Antes de QUALQUER edição, conferir
 
 1. Esta mudança está descrita ou autorizada em algum README ou pedido recente do Diego?
-2. Ela respeita `IDENTIDADE_VISUAL.md`?
-3. Ela vai ser registrada em `CHANGELOG.md`?
+2. O Diego aprovou explicitamente a execução desta alteração?
+3. Ela respeita `IDENTIDADE_VISUAL.md`?
+4. Ela vai ser registrada em `CHANGELOG.md`?
 
 Se a resposta for **não** para qualquer uma — **pergunte antes de mexer**.
 
@@ -98,6 +111,13 @@ O objetivo é editar via **comandos textuais** (no chat com o Claude / no VS Cod
 - **"Mudar cor de categoria"** → **PEDIDO EXPRESSO**. Claude atualiza `IDENTIDADE_VISUAL.md`, `projects-data.js` e `CHANGELOG.md` na mesma operação.
 - **"Mudar fonte / paleta / layout"** → **PEDIDO EXPRESSO E ESPECÍFICO**. Sem isso, recusar e pedir confirmação.
 
+Antes de executar qualquer um desses comandos, o agente deve:
+
+1. dizer quais arquivos pretende alterar;
+2. resumir o impacto;
+3. pedir aprovação explícita ao Diego;
+4. só então executar.
+
 Toda alteração entra obrigatoriamente no `CHANGELOG.md`.
 
 ---
@@ -106,18 +126,24 @@ Toda alteração entra obrigatoriamente no `CHANGELOG.md`.
 
 | Caminho | Função |
 |---|---|
+| [`.claude/CLAUDE.md`](./.claude/CLAUDE.md) | Contexto e regras globais do repo (nível 1 da hierarquia) |
+| [`.claude/skills/README.md`](./.claude/skills/README.md) | Índice das 4 skills locais (Notion ↔ repo) |
 | [`README.md`](./README.md) | (este) Regras gerais e índice |
 | [`IDENTIDADE_VISUAL.md`](./IDENTIDADE_VISUAL.md) | Visual blindado — soberano sobre estética |
 | [`MANUTENCAO_DO_PORTFOLIO.md`](./MANUTENCAO_DO_PORTFOLIO.md) | Fluxo de manutenção |
 | [`GUIA_DO_PORTFOLIO.md`](./GUIA_DO_PORTFOLIO.md) | Guia rápido |
 | [`CHANGELOG.md`](./CHANGELOG.md) | Histórico de alterações |
+| [`AGENTS.md`](./AGENTS.md) | Executor operacional do Codex, subordinado aos arquivos de regra |
+| [`SKILL.md`](./SKILL.md) | Skill `diego-furtado-design` para agentes externos |
 | [`assets/README.md`](./assets/README.md) | Regras dos motifs e logos |
 | [`fonts/README.md`](./fonts/README.md) | Regras das fontes oficiais |
 | [`preview/README.md`](./preview/README.md) | Regras das páginas de referência |
+| [`scripts/README.md`](./scripts/README.md) | Regras dos validadores e utilitários operacionais |
 | [`ui_kits/README.md`](./ui_kits/README.md) | Regras do diretório de implementações |
 | [`ui_kits/portfolio/README.md`](./ui_kits/portfolio/README.md) | Regras do site público |
 | [`uploads/README.md`](./uploads/README.md) | Regras da pasta de material bruto |
 | [`scraps/README.md`](./scraps/README.md) | Regras de sketches descartáveis |
+| [`_archived/README.md`](./_archived/README.md) | Arquivamento não-destrutivo (pastas obsoletas, snapshots) |
 
 > O antigo espelho histórico `Portfólio/` foi removido em 2026-04-25 — não existe mais nem dentro do projeto nem fora dele.
 

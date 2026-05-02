@@ -11,7 +11,7 @@
 |---|---|---|
 | `index.html` | Aplicação principal — React 18 via Babel Standalone | **NÃO**, só com pedido expresso |
 | `project-templates.jsx` | 6 templates visuais de página de projeto | **NÃO**, só com pedido expresso |
-| `projects-data.js` | **Fonte de dados** — projetos, categorias e textos do "Quem Sou" | **SIM**, via comando |
+| `projects-data.js` | **Fonte de dados** — projetos, categorias, arquivados, config e textos do "Quem Sou" | **SIM**, via comando |
 | `foto-diego.jpg` | Foto de perfil | **SIM**, substituir mantendo nome |
 
 ---
@@ -32,6 +32,7 @@
 - **Atualizar textos do "Quem Sou"** no mesmo arquivo.
 - **Substituir `foto-diego.jpg`** mantendo o nome de arquivo.
 - **Corrigir bugs funcionais** em `index.html` desde que a alteração seja **funcional**, não estética.
+- **Rodar validação local** com `node scripts/validate-portfolio.mjs` após mudanças de conteúdo ou estrutura de dados.
 
 ---
 
@@ -64,6 +65,8 @@ Definidos em `project-templates.jsx`. A escolha do template é feita **pelo dado
 | "Mudar a cor da categoria Tableau" | **EXPRESSO.** Atualiza `IDENTIDADE_VISUAL.md`, `projects-data.js` e `CHANGELOG.md` |
 | "Reformula o layout" | **NÃO FAZER** sem pedido específico item-a-item. Pedir confirmação. |
 
+Antes de executar qualquer comando acima, o agente deve pedir aprovação explícita ao Diego.
+
 ---
 
 ## Categorias de projeto (cores fixas)
@@ -86,6 +89,7 @@ Pesquisa       → --color-lavender
 - **Sem bundler.** O site abre direto via `file://` ou GitHub Pages.
 - **Estado de navegação** persistido em `localStorage` (apenas).
 - **Fontes** carregadas via `../../colors_and_type.css`.
+- **Tokens visuais** devem consumir `../../colors_and_type.css` como fonte canônica.
 
 ---
 

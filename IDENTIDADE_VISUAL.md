@@ -217,6 +217,18 @@ Não introduzir easings ou durations fora dessa lista.
 
 ---
 
+## 7.1. Embeds de terceiros
+
+Quando o site incorporar componentes de terceiros (ex.: Spotify), o layout interno oficial do provedor deve ser preservado.
+
+**Regras:**
+- O container externo pode respeitar a grade, o espaçamento e o fundo do portfólio.
+- O conteúdo interno do embed não deve ser redesenhado, forçado por CSS ou reconstruído manualmente para "imitar" o provedor.
+- Sempre que houver opção entre montar um pseudo-player local e usar o embed oficial, preferir o embed oficial.
+- Ajustes de largura e altura são permitidos apenas como adaptação de container; não como tentativa de alterar a composição interna da interface do provedor.
+
+---
+
 ## 8. Categorias de projeto — cores fixas
 
 Cada categoria do portfólio tem uma cor associada. Essas cores **não mudam por estética**; elas são parte do sistema de leitura.

@@ -1,0 +1,50 @@
+# =========================
+# Tableau
+# =========================
+*.twbx
+*.hyper
+*.tde
+.tableau/
+~$*.twb
+~$*.twbx
+
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+.venv/
+.env
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# =========================
+# Dados pesados / raw
+# =========================
+# Mantém o raw da Camada 1 (martj42) — é leve, garante reprodutibilidade
+# Ignora apenas dados grandes (StatsBomb events, Hyper extracts)
+data/raw/statsbomb/
+data/raw/**/*.zip
+data/raw/**/*.parquet
+data/processed/**/*.parquet
+
+# =========================
+# OS
+# =========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =========================
+# Editor
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
