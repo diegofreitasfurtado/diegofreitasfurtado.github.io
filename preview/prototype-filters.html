@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PROTÓTIPO · Filtros por Interest — Diego Furtado</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  /* ============================================================
+     PROTÓTIPO EM VALIDAÇÃO — não é fonte de verdade ainda.
+     Este ficheiro consome 100% dos tokens de ../colors_and_type.css.
+     Nenhuma cor, fonte, sombra ou raio é definido aqui localmente.
+     ============================================================ */
+
+  /* Cores das 4 Interests (mapeamento default proposto) */
+  :root {
+    --interest-tecnologia:        var(--color-blue);
+    --interest-tecnologia-soft:   var(--color-lavender-lt);
+    --interest-esportes:          var(--color-lavender);
+    --interest-esportes-soft:     var(--color-lavender-lt);
+    --interest-entretenimento:    var(--color-red);
+    --interest-entretenimento-soft: var(--color-red-mid);
+    --interest-experimentos:      var(--color-pink);
+    --interest-experimentos-soft: var(--color-pink-light);
+
+    --chip-neutral-on:            var(--color-lavender-lt);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: var(--space-7);
+    background: var(--bg-primary);
+    color: var(--fg-primary);
+    font-family: var(--font-mono);
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+  }
+
+  /* ===== TEST BANNER ===== */
+  .test-banner {
+    border: 2px dashed var(--color-yellow);
+    background: var(--color-cream);
+    padding: var(--space-4) var(--space-5);
+    margin-bottom: var(--space-7);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-5);
+    flex-wrap: wrap;
+  }
+  .test-banner h1 {
+    margin: 0 0 6px 0;
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-navy);
+  }
+  .test-banner p {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--fg-muted);
+    max-width: 700px;
+  }
+  .test-banner .actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .test-banner button {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wider);
+    padding: 8px 14px;
+    background: var(--color-navy);
+    color: var(--color-yellow);
+    border: 0;
+    cursor: pointer;
+    box-shadow: var(--shadow-sharp);
+    transition: transform var(--duration-fast) var(--ease-default);
+  }
+  .test-banner button:hover { transform: translate(-2px, -2px); }
+  .test-banner button:active { transform: translate(0, 0); }
+
+  /* ===== FILTER SECTION ===== */
+  .section {
+    margin-bottom: var(--space-5);
+    border: 1px solid var(--color-lavender);
+    background: var(--color-white);
+    padding: var(--space-5);
+  }
+  .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: var(--space-4);
+    border-bottom: 2px solid var(--color-navy);
+    padding-bottom: 8px;
+  }
+  .section-title {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wider);
+    color: var(--color-navy);
+  }
+  .section-count {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--fg-muted);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wider);
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* ===== BASE CHIP ===== */
+  .chip {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    user-select: none;
+    background: var(--bg-primary);
+    color: var(--fg-primary);
+    border: 1px solid var(--color-lavender);
+    transition:
+      background var(--duration-fast) var(--ease-default),
+      color var(--duration-fast) var(--ease-default),
+      border-color var(--duration-fast) var(--ease-default);
+  }
+  .chip:hover { border-color: var(--color-navy); }
+
+  /* ===== INTEREST CHIPS — coloridos sempre ===== */
+  .chip-int[data-key="tecnologia"] {
+    color: var(--interest-tecnologia);
+    border-color: var(--interest-tecnologia);
+  }
+  .chip-int[data-key="esportes"] {
+    color: var(--interest-esportes);
+    border-color: var(--interest-esportes);
+  }
+  .chip-int[data-key="entretenimento"] {
+    color: var(--interest-entretenimento);
+    border-color: var(--interest-entretenimento);
+  }
+  .chip-int[data-key="experimentos"] {
+    color: var(--interest-experimentos);
+    border-color: var(--interest-experimentos);
+  }
+
+  /* Interest selecionado — cor cheia (sobretom) */
+  .chip-int.is-on[data-key="tecnologia"] {
+    background: var(--interest-tecnologia);
+    color: var(--color-white);
+  }
+  .chip-int.is-on[data-key="esportes"] {
+    background: var(--interest-esportes);
+    color: var(--color-white);
+  }
+  .chip-int.is-on[data-key="entretenimento"] {
+    background: var(--interest-entretenimento);
+    color: var(--color-white);
+  }
+  .chip-int.is-on[data-key="experimentos"] {
+    background: var(--interest-experimentos);
+    color: var(--color-white);
+  }
+
+  /* ===== TECH & SOLUTION CHIPS — neutros ===== */
+  .chip-tech, .chip-sol {
+    color: var(--fg-primary);
+    border-color: var(--color-lavender);
+  }
+  .chip-tech.is-on, .chip-sol.is-on {
+    background: var(--chip-neutral-on);
+    border-color: var(--chip-neutral-on);
+    color: var(--color-navy);
+    font-weight: 700;
+  }
+
+  /* ===== STATUS BAR ===== */
+  .status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: var(--space-6) 0 var(--space-5);
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--color-lavender);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wider);
+    font-weight: 700;
+  }
+  .clear-btn {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wider);
+    padding: 4px 10px;
+    background: transparent;
+    color: var(--fg-primary);
+    border: 1px solid var(--color-lavender);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+  }
+  .clear-btn:hover {
+    background: var(--color-navy);
+    color: var(--color-yellow);
+    border-color: var(--color-navy);
+  }
+
+  /* ===== PROJECT CARDS ===== */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--space-5);
+  }
+  .card {
+    background: var(--color-white);
+    border: 1px solid rgba(43,48,56,0.1);
+    border-top: 3px solid var(--color-navy);
+    padding: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: box-shadow var(--duration-fast) var(--ease-default), transform var(--duration-fast) var(--ease-default);
+  }
+  .card:hover {
+    box-shadow: var(--shadow-sharp);
+    transform: translate(-2px, -2px);
+  }
+  .card[data-interest="tecnologia"]     { border-top-color: var(--interest-tecnologia); }
+  .card[data-interest="esportes"]       { border-top-color: var(--interest-esportes); }
+  .card[data-interest="entretenimento"] { border-top-color: var(--interest-entretenimento); }
+  .card[data-interest="experimentos"]   { border-top-color: var(--interest-experimentos); }
+
+  .card-int {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+  }
+  .card[data-interest="tecnologia"]     .card-int { color: var(--interest-tecnologia); }
+  .card[data-interest="esportes"]       .card-int { color: var(--interest-esportes); }
+  .card[data-interest="entretenimento"] .card-int { color: var(--interest-entretenimento); }
+  .card[data-interest="experimentos"]   .card-int { color: var(--interest-experimentos); }
+
+  .card-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-navy);
+  }
+  .card-desc {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--fg-primary);
+    opacity: 0.78;
+    line-height: var(--leading-loose);
+  }
+  .mini-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+  }
+  .mini-chip {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border: 1px solid;
+    border-radius: var(--radius-sm);
+    background: transparent;
+  }
+
+  /* mini-chip Technologies — cor cheia da Interest */
+  .card[data-interest="tecnologia"]     .mini-chip-tech { border-color: var(--interest-tecnologia);     color: var(--interest-tecnologia); }
+  .card[data-interest="esportes"]       .mini-chip-tech { border-color: var(--interest-esportes);       color: var(--interest-esportes); }
+  .card[data-interest="entretenimento"] .mini-chip-tech { border-color: var(--interest-entretenimento); color: var(--interest-entretenimento); }
+  .card[data-interest="experimentos"]   .mini-chip-tech { border-color: var(--interest-experimentos);   color: var(--interest-experimentos); }
+
+  /* mini-chip Solution Type — tom leve */
+  .card[data-interest="tecnologia"]     .mini-chip-sol { border-color: var(--interest-tecnologia-soft);     color: var(--interest-tecnologia); }
+  .card[data-interest="esportes"]       .mini-chip-sol { border-color: var(--interest-esportes-soft);       color: var(--color-blue-mid); }
+  .card[data-interest="entretenimento"] .mini-chip-sol { border-color: var(--interest-entretenimento-soft); color: var(--interest-entretenimento-soft); }
+  .card[data-interest="experimentos"]   .mini-chip-sol { border-color: var(--interest-experimentos-soft);   color: var(--interest-experimentos-soft); }
+
+  .empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: var(--space-7);
+    border: 1px dashed var(--color-lavender);
+    color: var(--fg-muted);
+    font-style: italic;
+  }
+
+  /* ===== Tradução PT/EN ===== */
+  body[data-lang-mode="pt"] [data-lang="en"] { display: none; }
+  body[data-lang-mode="en"] [data-lang="pt"] { display: none; }
+</style>
+</head>
+<body data-lang-mode="pt">
+
+<div class="test-banner">
+  <div>
+    <h1>
+      <span data-lang="pt">PROTÓTIPO · FILTROS POR INTEREST</span>
+      <span data-lang="en">PROTOTYPE · FILTER BY INTEREST</span>
+    </h1>
+    <p>
+      <span data-lang="pt">Defaults aplicados: Experimentos = rosa · Idioma = PT · Tech / Solution Type selecionado = cinza-lavanda · Interest selecionada = cor cheia (sobretom). Tudo reversível antes de aplicar no portfólio real.</span>
+      <span data-lang="en">Defaults applied: Experiments = pink · Language = EN · Tech / Solution Type selected = light gray-lavender · Interest selected = full color (overtone). Everything reversible before applying to the real portfolio.</span>
+    </p>
+  </div>
+  <div class="actions">
+    <button id="lang-toggle">PT / EN</button>
+    <button id="reset-all">RESET</button>
+  </div>
+</div>
+
+<!-- Painel 1: Interests -->
+<section class="section">
+  <div class="section-head">
+    <span class="section-title">
+      <span data-lang="pt">INTERESSES // 4</span>
+      <span data-lang="en">INTERESTS // 4</span>
+    </span>
+    <span class="section-count">
+      <span data-lang="pt">cada projeto escolhe 1</span>
+      <span data-lang="en">each project picks one</span>
+    </span>
+  </div>
+  <div class="chips" id="filter-interests"></div>
+</section>
+
+<!-- Painel 2: Technologies -->
+<section class="section">
+  <div class="section-head">
+    <span class="section-title">
+      <span data-lang="pt">TECNOLOGIAS // 12</span>
+      <span data-lang="en">TECHNOLOGIES // 12</span>
+    </span>
+    <span class="section-count">
+      <span data-lang="pt">multi-seleção</span>
+      <span data-lang="en">multi-select</span>
+    </span>
+  </div>
+  <div class="chips" id="filter-techs"></div>
+</section>
+
+<!-- Painel 3: Solution Type -->
+<section class="section">
+  <div class="section-head">
+    <span class="section-title">
+      <span data-lang="pt">TIPO DE SOLUÇÃO // 5</span>
+      <span data-lang="en">SOLUTION TYPE // 5</span>
+    </span>
+    <span class="section-count">
+      <span data-lang="pt">multi-seleção</span>
+      <span data-lang="en">multi-select</span>
+    </span>
+  </div>
+  <div class="chips" id="filter-sols"></div>
+</section>
+
+<!-- Status -->
+<div class="status">
+  <span id="status-count"></span>
+  <button class="clear-btn" id="clear-all">
+    <span data-lang="pt">LIMPAR FILTROS</span>
+    <span data-lang="en">CLEAR ALL</span>
+  </button>
+</div>
+
+<!-- Grid -->
+<div class="grid" id="grid"></div>
+
+<script>
+  // ============================================================
+  // DADOS DE TESTE — projetos fictícios para validar o sistema.
+  // ============================================================
+  const INTERESTS = [
+    { key: 'tecnologia',     pt: 'Tecnologia',      en: 'Technology' },
+    { key: 'esportes',       pt: 'Esportes',        en: 'Sports' },
+    { key: 'entretenimento', pt: 'Entretenimento',  en: 'Entertainment' },
+    { key: 'experimentos',   pt: 'Experimentos',    en: 'Experiments' }
+  ];
+
+  const TECHS = [
+    'Power BI', 'DAX', 'M Language', 'SQL',
+    'Python', 'Pandas', 'Excel', 'Tableau',
+    'Looker', 'spaCy', 'Claude Code', 'CODEX'
+  ];
+
+  const SOLS = [
+    { key: 'data-viz', pt: 'Visualização de Dados', en: 'Data Visualization' },
+    { key: 'data-trt', pt: 'Tratamento de Dados',   en: 'Data Treatment' },
+    { key: 'data-stl', pt: 'Storytelling de Dados', en: 'Data Storytelling' },
+    { key: 'auto',     pt: 'Automação',             en: 'Automation' },
+    { key: 'rsh',      pt: 'Pesquisa',              en: 'Research' }
+  ];
+
+  // 8 projetos fictícios cobrindo as 4 Interests, com mix de techs/sols.
+  const PROJECTS = [
+    {
+      interest: 'tecnologia',
+      pt: { title: 'Pipeline ETL Demo',  desc: 'Pipeline automatizado em Python+SQL para consolidar 5 fontes em SSOT.' },
+      en: { title: 'ETL Pipeline Demo',  desc: 'Automated Python+SQL pipeline consolidating 5 sources into SSOT.' },
+      techs: ['Python', 'Pandas', 'SQL'],
+      sols:  ['data-trt', 'auto']
+    },
+    {
+      interest: 'tecnologia',
+      pt: { title: 'Dashboard Comercial', desc: 'Painel executivo de vendas com DAX e Power Query para liderança comercial.' },
+      en: { title: 'Sales Dashboard',     desc: 'Executive sales dashboard built with DAX and Power Query for commercial leadership.' },
+      techs: ['Power BI', 'DAX', 'M Language'],
+      sols:  ['data-viz', 'data-stl']
+    },
+    {
+      interest: 'esportes',
+      pt: { title: 'Análise de Partidas', desc: 'Estudo de padrões de jogo e xG em ligas europeias usando Tableau.' },
+      en: { title: 'Match Analytics',     desc: 'Pattern and xG analysis across European leagues built in Tableau.' },
+      techs: ['Tableau', 'Python', 'Pandas'],
+      sols:  ['data-viz', 'rsh']
+    },
+    {
+      interest: 'esportes',
+      pt: { title: 'Monitor de Liga',     desc: 'Tracker de standings e jogadores com refresh automático diário.' },
+      en: { title: 'League Tracker',      desc: 'Standings and player tracker with daily automatic refresh.' },
+      techs: ['Power BI', 'SQL', 'Excel'],
+      sols:  ['data-viz', 'auto']
+    },
+    {
+      interest: 'entretenimento',
+      pt: { title: 'NLP em Reviews',      desc: 'Análise de sentimento em reviews de jogos com spaCy e Pandas.' },
+      en: { title: 'Game Reviews NLP',    desc: 'Sentiment analysis on game reviews using spaCy and Pandas.' },
+      techs: ['Python', 'spaCy', 'Pandas'],
+      sols:  ['data-trt', 'rsh']
+    },
+    {
+      interest: 'entretenimento',
+      pt: { title: 'Bilheteria Global',   desc: 'Visualização de bilheteria de filmes por gênero, ano e território.' },
+      en: { title: 'Movie Box Office',    desc: 'Global box office visualization by genre, year and territory.' },
+      techs: ['Tableau', 'Excel'],
+      sols:  ['data-viz', 'data-stl']
+    },
+    {
+      interest: 'experimentos',
+      pt: { title: 'Lab de Código com IA', desc: 'Experimento usando Claude Code e CODEX para automação de pipelines de dados.' },
+      en: { title: 'AI Code Lab',          desc: 'Experiment using Claude Code and CODEX for data pipeline automation.' },
+      techs: ['Claude Code', 'CODEX', 'Python'],
+      sols:  ['auto', 'rsh']
+    },
+    {
+      interest: 'experimentos',
+      pt: { title: 'Arte Generativa',      desc: 'Composições visuais geradas a partir de datasets abertos e mapas semânticos.' },
+      en: { title: 'Data Art',             desc: 'Visual compositions generated from open datasets and semantic maps.' },
+      techs: ['spaCy', 'Looker', 'Python'],
+      sols:  ['data-stl']
+    }
+  ];
+
+  // ============================================================
+  // ESTADO
+  // ============================================================
+  const state = {
+    lang: 'pt',
+    interests: new Set(),
+    techs:     new Set(),
+    sols:      new Set()
+  };
+
+  // ============================================================
+  // RENDER
+  // ============================================================
+  const tInterest = (item) => state.lang === 'pt' ? item.pt : item.en;
+  const tSol      = (item) => state.lang === 'pt' ? item.pt : item.en;
+
+  function renderFilters() {
+    document.getElementById('filter-interests').innerHTML = INTERESTS.map(i => `
+      <button class="chip chip-int${state.interests.has(i.key) ? ' is-on' : ''}"
+              data-key="${i.key}" data-group="int">${tInterest(i)}</button>
+    `).join('');
+
+    document.getElementById('filter-techs').innerHTML = TECHS.map(t => `
+      <button class="chip chip-tech${state.techs.has(t) ? ' is-on' : ''}"
+              data-key="${t}" data-group="tech">${t}</button>
+    `).join('');
+
+    document.getElementById('filter-sols').innerHTML = SOLS.map(s => `
+      <button class="chip chip-sol${state.sols.has(s.key) ? ' is-on' : ''}"
+              data-key="${s.key}" data-group="sol">${tSol(s)}</button>
+    `).join('');
+  }
+
+  function matches(p) {
+    // AND entre grupos, OR dentro do grupo
+    if (state.interests.size > 0 && !state.interests.has(p.interest)) return false;
+    if (state.techs.size > 0     && !p.techs.some(t => state.techs.has(t))) return false;
+    if (state.sols.size > 0      && !p.sols.some(s => state.sols.has(s))) return false;
+    return true;
+  }
+
+  function renderGrid() {
+    const visible = PROJECTS.filter(matches);
+    const grid = document.getElementById('grid');
+
+    if (visible.length === 0) {
+      grid.innerHTML = `<div class="empty">${state.lang === 'pt' ? 'Nenhum projeto bate com esses filtros.' : 'No projects match these filters.'}</div>`;
+    } else {
+      grid.innerHTML = visible.map(p => {
+        const intItem = INTERESTS.find(i => i.key === p.interest);
+        const techsHtml = p.techs.map(t => `<span class="mini-chip mini-chip-tech">${t}</span>`).join('');
+        const solsHtml  = p.sols.map(sKey => {
+          const item = SOLS.find(s => s.key === sKey);
+          return `<span class="mini-chip mini-chip-sol">${tSol(item)}</span>`;
+        }).join('');
+        const text = state.lang === 'pt' ? p.pt : p.en;
+
+        return `
+          <article class="card" data-interest="${p.interest}">
+            <div class="card-int">${tInterest(intItem)}</div>
+            <h3 class="card-title">${text.title}</h3>
+            <p class="card-desc">${text.desc}</p>
+            <div class="mini-chips">${techsHtml}</div>
+            <div class="mini-chips">${solsHtml}</div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    const total = PROJECTS.length;
+    const showing = visible.length;
+    document.getElementById('status-count').textContent = state.lang === 'pt'
+      ? `Mostrando ${showing} de ${total} projetos`
+      : `Showing ${showing} of ${total} projects`;
+  }
+
+  function rerender() {
+    document.body.setAttribute('data-lang-mode', state.lang);
+    renderFilters();
+    renderGrid();
+  }
+
+  // ============================================================
+  // EVENTS
+  // ============================================================
+  document.addEventListener('click', (e) => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    const group = chip.dataset.group;
+    const key   = chip.dataset.key;
+    const set   = group === 'int' ? state.interests
+              : group === 'tech' ? state.techs
+              : state.sols;
+    if (set.has(key)) set.delete(key);
+    else set.add(key);
+    rerender();
+  });
+
+  document.getElementById('clear-all').addEventListener('click', () => {
+    state.interests.clear();
+    state.techs.clear();
+    state.sols.clear();
+    rerender();
+  });
+
+  document.getElementById('reset-all').addEventListener('click', () => {
+    state.interests.clear();
+    state.techs.clear();
+    state.sols.clear();
+    rerender();
+  });
+
+  document.getElementById('lang-toggle').addEventListener('click', () => {
+    state.lang = state.lang === 'pt' ? 'en' : 'pt';
+    rerender();
+  });
+
+  // ============================================================
+  // INIT
+  // ============================================================
+  rerender();
+</script>
+
+</body>
+</html>

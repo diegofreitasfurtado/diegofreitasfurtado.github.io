@@ -77,7 +77,7 @@ const Template1 = ({ project, category, onBack }) => {
       <div style={{background:'var(--cream)',padding:'80px 48px 56px',display:'flex',flexDirection:'column',gap:28,overflowY:'auto'}}>
         {project.embedUrl
           ? <iframe src={project.embedUrl} style={{border:'none',width:'100%',aspectRatio:'16/9',display:'block'}} title={project.title}/>
-          : <ImagePlaceholder color={c} cd={cd} caption={project.imageCaption} motif={category.label==='Tableau'?'squares':'circles'}/>
+          : <ImagePlaceholder color={c} cd={cd} caption={project.imageCaption} motif={project.interest==='esportes'?'squares':project.interest==='entretenimento'?'triangles':'circles'}/>
         }
         <div>
           {project.desc.split('\n').map((p,i)=>p&&<p key={i} style={{fontFamily:'var(--M)',fontSize:12,lineHeight:1.95,color:'rgba(26,26,26,0.65)',marginBottom:14}}>{p}</p>)}
@@ -400,14 +400,20 @@ const Template6 = ({ project, category, onBack }) => {
 };
 
 /* ── Router de templates ── */
-const ProjectPage = ({ projectId, onBack }) => {
+const ProjectPage = ({ projectId, onBack, lang='pt' }) => {
   const data=window.PROJECTS_DATA;
   if(!data) return null;
   const project=data.projects.find(p=>p.id===projectId);
   if(!project) return <div style={{padding:80,fontFamily:'var(--M)',color:'var(--ink)'}}>Projeto não encontrado.</div>;
-  const category=data.categories[project.category];
-  const T={1:Template1,2:Template2,3:Template3,4:Template4,5:Template5,6:Template6}[project.template]||Template1;
-  return <T project={project} category={category} onBack={onBack}/>;
+  const interestData=(data.interests||{})[project.interest]||{};
+  const category={
+    color: interestData.color||'#1B2585',
+    colorDark: interestData.colorDark||'#0C0D2A',
+    colorSoft: interestData.colorSoft||'#C5CCEB',
+    label: lang==='en'?(interestData.en||interestData.pt||project.interest):(interestData.pt||interestData.en||project.interest)
+  };
+  const TComp={1:Template1,2:Template2,3:Template3,4:Template4,5:Template5,6:Template6}[project.template]||Template1;
+  return <TComp project={project} category={category} onBack={onBack}/>;
 };
 
 Object.assign(window, { Template1, Template2, Template3, Template4, Template5, Template6, ProjectPage });

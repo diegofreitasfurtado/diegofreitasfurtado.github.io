@@ -17,6 +17,7 @@
   --blue:var(--color-blue);--lav:var(--color-lavender);--lavlt:var(--color-lavender-lt);
   --red:var(--color-red);--pink:var(--color-pink);
   --yellow:var(--color-yellow);--white:var(--color-white);
+  --plum:#7C1261;
   --D:var(--font-display);--M:var(--font-mono);
 }
 html,body,#root{height:100%;}
@@ -29,13 +30,14 @@ button,input,textarea{font-family:var(--M);}
 <body>
 <div id="root"></div>
 <script type="text/babel" src="project-templates.jsx"></script>
+<script type="text/babel" src="content-templates.jsx"></script>
 <script type="text/babel">
 const { useState, useEffect, useRef } = React;
 
 /* ══ TRANSLATIONS ══════════════════════════════════════════ */
 const T = {
   pt: {
-    nav_home:'Home', nav_projects:'Projetos', nav_about:'Quem Sou', nav_contact:'Contato →', lang_btn:'EN',
+    nav_home:'Home', nav_projects:'Projetos', nav_content:'Conteúdo', nav_about:'Quem Sou', nav_contact:'Contato →', lang_btn:'EN',
     hero_tag:'Data Analytics · Business Intelligence · Lisboa',
     hero_desc:'Analista de dados e jornalista. Transformo dados dispersos em decisões claras — com pipelines automáticos, dashboards KPI e narrativa visual precisa.',
     hero_cta1:'Ver Projetos', hero_cta2:'Quem Sou',
@@ -48,14 +50,16 @@ const T = {
     spotify_empty:'Playlist não configurada',
     spotify_hint:'Abra projects-data.js e preencha spotifyEmbedHtml com o codigo oficial do Spotify. Como fallback, voce pode usar spotifyPlaylistId com o ID da playlist.',
     projects_heading:'Projetos', portfolio_tag:'Portfólio',
-    no_projects:'Nenhum projeto nesta categoria ainda.',
+    no_projects:'Nenhum projeto bate com esses filtros.',
     edit_hint:'Para adicionar projetos, edite projects-data.js no VS Code',
-    cat_experimentos:'Experimentos', cat_pesquisa:'Pesquisa',
-    catdesc_powerbi:'Business Intelligence e visualização executiva com Power BI e DAX.',
-    catdesc_tableau:'Dashboards analíticos e exploração visual de dados com Tableau.',
-    catdesc_python:'Automação, ETL, análise exploratória e engenharia de dados com Python.',
-    catdesc_experimentos:'Projetos com tecnologias emergentes, ideias experimentais e prototipagem.',
-    catdesc_pesquisa:'Ensaios, análises e documentação de pesquisas em dados, mídia e comunicação.',
+    filter_interests:'Interesses', filter_techs:'Tecnologias', filter_sols:'Tipo de Solução',
+    filter_int_hint:'cada projeto escolhe 1', filter_multi_hint:'multi-seleção',
+    filter_clear:'Limpar Filtros',
+    filter_status:(s,t)=>`Mostrando ${s} de ${t} projetos`,
+    content_heading:'Conteúdo', content_tag:'Publicações',
+    no_content:'Nenhum conteúdo bate com esses filtros.',
+    content_status:(s,t)=>`Mostrando ${s} de ${t} publicações`,
+    content_read:'Ler',
     profile_label:'Perfil', about_title:'Quem Sou',
     about_subtitle:'Business & Data Analytics Consultant. Focado em transformar dados em crescimento estratégico e performance de negócio.',
     bio_label:'Bio', bio_name:'Diego Freitas Furtado',
@@ -80,7 +84,7 @@ const T = {
     footer_copy:'© 2026 Diego Furtado · Lisboa',
   },
   en: {
-    nav_home:'Home', nav_projects:'Projects', nav_about:'About', nav_contact:'Contact →', lang_btn:'PT',
+    nav_home:'Home', nav_projects:'Projects', nav_content:'Content', nav_about:'About', nav_contact:'Contact →', lang_btn:'PT',
     hero_tag:'Data Analytics · Business Intelligence · Lisbon',
     hero_desc:'Data analyst and journalist. I transform scattered data into clear decisions — with automated pipelines, KPI dashboards and precise visual storytelling.',
     hero_cta1:'See Projects', hero_cta2:'About Me',
@@ -93,14 +97,16 @@ const T = {
     spotify_empty:'Playlist not configured',
     spotify_hint:'Open projects-data.js and fill in spotifyEmbedHtml with Spotify official embed code. As a fallback, you can use spotifyPlaylistId with the playlist ID.',
     projects_heading:'Projects', portfolio_tag:'Portfolio',
-    no_projects:'No projects in this category yet.',
+    no_projects:'No projects match these filters.',
     edit_hint:'To add projects, edit projects-data.js in VS Code',
-    cat_experimentos:'Experiments', cat_pesquisa:'Research',
-    catdesc_powerbi:'Business Intelligence and executive visualization with Power BI and DAX.',
-    catdesc_tableau:'Analytical dashboards and visual data exploration with Tableau.',
-    catdesc_python:'Automation, ETL, exploratory analysis and data engineering with Python.',
-    catdesc_experimentos:'Projects with emerging technologies, experimental ideas and prototyping.',
-    catdesc_pesquisa:'Essays, analyses and research documentation in data, media and communication.',
+    filter_interests:'Interests', filter_techs:'Technologies', filter_sols:'Solution Type',
+    filter_int_hint:'each project picks one', filter_multi_hint:'multi-select',
+    filter_clear:'Clear Filters',
+    filter_status:(s,t)=>`Showing ${s} of ${t} projects`,
+    content_heading:'Content', content_tag:'Publications',
+    no_content:'No content matches these filters.',
+    content_status:(s,t)=>`Showing ${s} of ${t} posts`,
+    content_read:'Read',
     profile_label:'Profile', about_title:'About Me',
     about_subtitle:'Business & Data Analytics Consultant. Focused on transforming data into strategic growth and business performance.',
     bio_label:'Bio', bio_name:'Diego Freitas Furtado',
@@ -266,8 +272,8 @@ const Header = ({ page, setPage, lang, setLang }) => {
         <span style={{fontFamily:'var(--D)',fontSize:18,letterSpacing:'0.12em',color:'var(--ink)'}}>DIEGO FURTADO</span>
       </button>
       <nav style={{display:'flex',gap:24,alignItems:'center'}}>
-        {[['home',t('nav_home')],['projetos',t('nav_projects')],['sobre',t('nav_about')]].map(([key,label])=>{
-          const active=page===key||(page==='projeto'&&key==='projetos');
+        {[['home',t('nav_home')],['projetos',t('nav_projects')],['conteudo',t('nav_content')],['sobre',t('nav_about')]].map(([key,label])=>{
+          const active=page===key||(page==='projeto'&&key==='projetos')||(page==='conteudo-item'&&key==='conteudo');
           return <button key={key} onClick={()=>setPage(key)} style={{background:'none',border:'none',fontFamily:'var(--M)',fontSize:10,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:active?'var(--ink)':'rgba(26,26,26,0.42)',position:'relative',paddingBottom:2,cursor:'pointer',transition:'color 120ms'}}>
             {label}{active&&<span style={{position:'absolute',bottom:-1,left:0,right:0,height:1,background:'var(--ink)'}}/>}
           </button>;
@@ -306,26 +312,47 @@ const Footer = ({ lang }) => {
   );
 };
 
+/* ══ INTEREST / TECH / SOLUTION HELPERS ═══════════════════ */
+const getInterests = () => (window.PROJECTS_DATA||{}).interests || {};
+const getTechnologies = () => (window.PROJECTS_DATA||{}).technologies || [];
+const getSolutionTypes = () => (window.PROJECTS_DATA||{}).solutionType || {};
+
+const interestLabel = (key, lang) => {
+  const i = getInterests()[key];
+  if (!i) return key;
+  return lang==='en' ? (i.en||i.pt) : (i.pt||i.en);
+};
+const solutionLabel = (key, lang) => {
+  const s = getSolutionTypes()[key];
+  if (!s) return key;
+  return lang==='en' ? (s.en||s.pt) : (s.pt||s.en);
+};
+const projectTitle = (p, lang) => lang==='en' ? (p.titleEn||p.title) : p.title;
+const projectSubtitle = (p, lang) => lang==='en' ? (p.subtitleEn||p.subtitle) : p.subtitle;
+const projectDesc = (p, lang) => lang==='en' ? (p.descEn||p.desc||'') : (p.desc||'');
+
+const visibleProjects = () => ((window.PROJECTS_DATA||{}).projects||[]).filter(p => !p.hidden);
+const visibleContent  = () => ((window.PROJECTS_DATA||{}).content ||[]).filter(c => !c.hidden);
+
 /* ══ HOME PAGE ════════════════════════════════════════════ */
-const HomeProjectCard = ({ project, category, onClick }) => {
+const HomeProjectCard = ({ project, interest, lang, onClick }) => {
   const [hov,setHov]=useState(false);
-  const accent=la(category); // safe on light bg
+  const accent=la(interest); // safe on light bg
   return (
     <div onClick={onClick} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
-      style={{background:hov?category.colorDark:'var(--white)',border:'1px solid rgba(26,26,26,0.1)',borderTop:`3px solid ${accent}`,padding:24,cursor:'pointer',position:'relative',overflow:'hidden',transition:'background 200ms',display:'flex',flexDirection:'column',gap:10}}>
+      style={{background:hov?interest.colorDark:'var(--white)',border:'1px solid rgba(26,26,26,0.1)',borderTop:`3px solid ${accent}`,padding:24,cursor:'pointer',position:'relative',overflow:'hidden',transition:'background 200ms',display:'flex',flexDirection:'column',gap:10}}>
       <Brackets color={hov?`${accent}50`:'rgba(26,26,26,0.14)'}/>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
-        <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:hov?category.color:accent}}>{category.label}</div>
+        <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:hov?interest.color:accent}}>{interestLabel(project.interest, lang)}</div>
         <div style={{opacity:0.35,flexShrink:0}}>
-          {project.category==='powerbi'&&<ConcentricCircles color={hov?category.color:accent} size={50} rings={4}/>}
-          {project.category==='tableau'&&<RotatingSquares color={hov?category.color:accent} size={50} count={4}/>}
-          {project.category==='python'&&<NestedTriangles color={hov?category.color:accent} size={50} count={4}/>}
-          {project.category==='experimentos'&&<OverlappingCircles color={hov?category.color:accent} size={50}/>}
-          {project.category==='pesquisa'&&<ConcentricCircles color={hov?category.color:accent} size={50} rings={4}/>}
+          {project.interest==='tecnologia'    &&<ConcentricCircles  color={hov?interest.color:accent} size={50} rings={4}/>}
+          {project.interest==='esportes'      &&<RotatingSquares    color={hov?interest.color:accent} size={50} count={4}/>}
+          {project.interest==='entretenimento'&&<NestedTriangles    color={hov?interest.color:accent} size={50} count={4}/>}
+          {project.interest==='experimentos'  &&<OverlappingCircles color={hov?interest.color:accent} size={50}/>}
         </div>
       </div>
-      <div style={{fontFamily:'var(--D)',fontSize:24,letterSpacing:'0.04em',textTransform:'uppercase',color:hov?'var(--white)':'var(--ink)',lineHeight:1.1}}>{project.title}</div>
-      <div style={{fontFamily:'var(--M)',fontSize:11,lineHeight:1.75,color:hov?'rgba(255,255,255,0.55)':'rgba(26,26,26,0.5)',flex:1}}>{project.subtitle}</div>
+      <div style={{fontFamily:'var(--D)',fontSize:24,letterSpacing:'0.04em',textTransform:'uppercase',color:hov?'var(--white)':'var(--ink)',lineHeight:1.1}}>{projectTitle(project, lang)}</div>
+      <div style={{fontFamily:'var(--M)',fontSize:11,lineHeight:1.75,color:hov?'rgba(255,255,255,0.55)':'rgba(26,26,26,0.5)',flex:1}}>{projectSubtitle(project, lang)}</div>
       <div style={{fontFamily:'var(--M)',fontSize:9,letterSpacing:'0.12em',textTransform:'uppercase',color:hov?'rgba(255,255,255,0.35)':'rgba(26,26,26,0.28)',borderTop:`1px solid ${hov?'rgba(255,255,255,0.1)':'rgba(26,26,26,0.07)'}`,paddingTop:10,marginTop:4}}>
         {project.year} · {(project.tools||[])[0]||''}
       </div>
@@ -337,8 +364,8 @@ const HomePage = ({ setPage, lang }) => {
   const t=k=>T[lang][k]??T.pt[k]??k;
   const data=getPortfolioData();
   const about=getAboutContent(lang);
-  const cats=data.categories||{};
-  const featured=(data.projects||[]).filter(p=>p.featured && !(cats[p.category]&&cats[p.category].hidden)).slice(0,2);
+  const interests=getInterests();
+  const featured=visibleProjects().filter(p=>p.featured).slice(0,2);
   const cfg=window.SITE_CONFIG||{};
   const spotifyEmbedHtml=(cfg.spotifyEmbedHtml||'').trim();
   return (
@@ -385,10 +412,10 @@ const HomePage = ({ setPage, lang }) => {
           </div>
           <button onClick={()=>setPage('projetos')} style={{background:'none',border:'1px solid rgba(26,26,26,0.2)',fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:'var(--blue)',padding:'8px 14px',cursor:'pointer'}}>{t('see_all')}</button>
         </div>
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
+        <div style={{display:'grid',gridTemplateColumns:featured.length>1?'1fr 1fr':'1fr',gap:12}}>
           {featured.map(p=>{
-            const cat=cats[p.category]||{color:'var(--blue)',label:p.category,colorDark:'var(--navy)'};
-            return <HomeProjectCard key={p.id} project={p} category={cat} onClick={()=>setPage('projetos')}/>;
+            const i=interests[p.interest]||{color:'var(--blue)',colorDark:'var(--navy)'};
+            return <HomeProjectCard key={p.id} project={p} interest={i} lang={lang} onClick={()=>setPage('projetos')}/>;
           })}
         </div>
       </div>
@@ -431,69 +458,130 @@ const HomePage = ({ setPage, lang }) => {
 };
 
 /* ══ PROJETOS PAGE ════════════════════════════════════════ */
-const ProjetoCard = ({ project, category, onClick, isSelected }) => {
+const ProjetoCard = ({ project, interest, lang, onClick, isSelected }) => {
   const [hov,setHov]=useState(false);
-  const accent=la(category);
+  const accent=la(interest);
   // State hierarchy: selected > hover > normal
-  const bgColor = isSelected ? category.color : hov ? category.colorDark : 'var(--white)';
-  const textColor = isSelected
-    ? (category.color==='#FFEE00' ? category.colorDark : '#fff')
-    : hov ? '#fff' : 'var(--ink)';
-  const subColor = isSelected
-    ? (category.color==='#FFEE00' ? `${category.colorDark}cc` : 'rgba(255,255,255,0.6)')
-    : hov ? 'rgba(255,255,255,0.5)' : 'rgba(26,26,26,0.48)';
-  const tagAccent = isSelected ? (category.color==='#FFEE00' ? category.colorDark : '#fff') : hov ? category.color : accent;
+  const bgColor = isSelected ? interest.color : hov ? interest.colorDark : 'var(--white)';
+  const textColor = isSelected ? '#fff' : hov ? '#fff' : 'var(--ink)';
+  const subColor  = isSelected ? 'rgba(255,255,255,0.6)' : hov ? 'rgba(255,255,255,0.5)' : 'rgba(26,26,26,0.48)';
+  const tagAccent = isSelected ? '#fff' : hov ? interest.color : accent;
 
   return (
     <div onClick={onClick} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
-      style={{background:bgColor,border:`1px solid ${isSelected?'transparent':'rgba(26,26,26,0.09)'}`,borderTop:`3px solid ${isSelected?(category.color==='#FFEE00'?category.colorDark:category.color):accent}`,padding:24,cursor:'pointer',position:'relative',overflow:'hidden',transition:'background 160ms,border-color 160ms',display:'flex',flexDirection:'column',gap:12}}>
+      style={{background:bgColor,border:`1px solid ${isSelected?'transparent':'rgba(26,26,26,0.09)'}`,borderTop:`3px solid ${isSelected?interest.color:accent}`,padding:24,cursor:'pointer',position:'relative',overflow:'hidden',transition:'background 160ms,border-color 160ms',display:'flex',flexDirection:'column',gap:12}}>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
         <div style={{flex:1}}>
-          <div style={{fontFamily:'var(--M)',fontSize:8,fontWeight:700,letterSpacing:'0.22em',textTransform:'uppercase',color:tagAccent,marginBottom:10}}>{category.label}</div>
-          <div style={{fontFamily:'var(--D)',fontSize:22,letterSpacing:'0.04em',textTransform:'uppercase',color:textColor,lineHeight:1.05,marginBottom:5}}>{project.title}</div>
-          <div style={{fontFamily:'var(--M)',fontSize:10,fontStyle:'italic',color:subColor}}>{project.subtitle}</div>
+          <div style={{fontFamily:'var(--M)',fontSize:8,fontWeight:700,letterSpacing:'0.22em',textTransform:'uppercase',color:tagAccent,marginBottom:10}}>{interestLabel(project.interest, lang)}</div>
+          <div style={{fontFamily:'var(--D)',fontSize:22,letterSpacing:'0.04em',textTransform:'uppercase',color:textColor,lineHeight:1.05,marginBottom:5}}>{projectTitle(project, lang)}</div>
+          <div style={{fontFamily:'var(--M)',fontSize:10,fontStyle:'italic',color:subColor}}>{projectSubtitle(project, lang)}</div>
         </div>
         <div style={{opacity:0.3,flexShrink:0,marginLeft:12}}>
-          {project.category==='powerbi'&&<ConcentricCircles color={tagAccent} size={46} rings={4}/>}
-          {project.category==='tableau'&&<RotatingSquares color={tagAccent} size={46} count={4}/>}
-          {project.category==='python'&&<NestedTriangles color={tagAccent} size={46} count={4}/>}
-          {project.category==='experimentos'&&<OverlappingCircles color={tagAccent} size={46}/>}
-          {project.category==='pesquisa'&&<ConcentricCircles color={tagAccent} size={46} rings={4}/>}
+          {project.interest==='tecnologia'    &&<ConcentricCircles  color={tagAccent} size={46} rings={4}/>}
+          {project.interest==='esportes'      &&<RotatingSquares    color={tagAccent} size={46} count={4}/>}
+          {project.interest==='entretenimento'&&<NestedTriangles    color={tagAccent} size={46} count={4}/>}
+          {project.interest==='experimentos'  &&<OverlappingCircles color={tagAccent} size={46}/>}
         </div>
       </div>
       <div style={{fontFamily:'var(--M)',fontSize:10,lineHeight:1.75,color:subColor,display:'-webkit-box',WebkitLineClamp:2,WebkitBoxOrient:'vertical',overflow:'hidden'}}>
-        {project.desc.split('\n')[0]}
+        {projectDesc(project, lang).split('\n')[0]}
       </div>
-      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',paddingTop:10,marginTop:'auto',borderTop:`1px solid ${isSelected?'rgba(0,0,0,0.1)':hov?'rgba(255,255,255,0.08)':'rgba(26,26,26,0.07)'}`}}>
+      {/* Mini-chips Technologies — cor cheia da Interest */}
+      {(project.technologies||[]).length>0 && (
         <div style={{display:'flex',flexWrap:'wrap',gap:4}}>
-          {(project.tools||[]).slice(0,3).map(t=>(
-            <span key={t} style={{fontFamily:'var(--M)',fontSize:8,fontWeight:700,letterSpacing:'0.1em',textTransform:'uppercase',background:`${tagAccent}20`,color:tagAccent,border:`1px solid ${tagAccent}40`,padding:'3px 7px'}}>{t}</span>
+          {(project.technologies||[]).slice(0,4).map(t=>(
+            <span key={t} style={{fontFamily:'var(--M)',fontSize:8,fontWeight:700,letterSpacing:'0.1em',textTransform:'uppercase',background:'transparent',color:tagAccent,border:`1px solid ${tagAccent}`,padding:'3px 7px'}}>{t}</span>
           ))}
         </div>
+      )}
+      {/* Mini-chips Solution Type — tom leve da Interest */}
+      {(project.solutionType||[]).length>0 && (
+        <div style={{display:'flex',flexWrap:'wrap',gap:4}}>
+          {(project.solutionType||[]).map(s=>(
+            <span key={s} style={{fontFamily:'var(--M)',fontSize:8,fontWeight:700,letterSpacing:'0.1em',textTransform:'uppercase',background:'transparent',color:isSelected?'rgba(255,255,255,0.7)':interest.colorSoft||tagAccent,border:`1px solid ${isSelected?'rgba(255,255,255,0.4)':interest.colorSoft||tagAccent}`,padding:'3px 7px'}}>{solutionLabel(s, lang)}</span>
+          ))}
+        </div>
+      )}
+      <div style={{display:'flex',justifyContent:'flex-end',alignItems:'center',paddingTop:8,marginTop:'auto',borderTop:`1px solid ${isSelected?'rgba(255,255,255,0.18)':hov?'rgba(255,255,255,0.08)':'rgba(26,26,26,0.07)'}`}}>
         <span style={{fontFamily:'var(--M)',fontSize:8,color:subColor,letterSpacing:'0.1em',textTransform:'uppercase',flexShrink:0}}>{project.year}</span>
       </div>
     </div>
   );
 };
 
+/* ── Filter chip ────────────────────────────────────────── */
+const FilterChip = ({ label, active, onClick, color, soloMode, fullWidth, size='md' }) => {
+  const styleOff = soloMode
+    ? { background: color, color:'var(--cream)', borderColor:'transparent' }
+    : { background:'var(--cream)', color:'var(--ink)', borderColor:'var(--lav)' };
+  const styleOn = soloMode
+    ? { background: color, color:'var(--cream)', borderColor:'rgba(255,255,255,0.5)', fontWeight:800 }
+    : { background:'var(--lavlt)', color:'var(--navy)', borderColor:'var(--lavlt)', fontWeight:700 };
+  const s = active ? styleOn : styleOff;
+  const sz = size==='lg'
+    ? { fontSize:13, fontWeight:700, padding:'9px 14px' }
+    : { fontSize:9,  fontWeight:600, padding:'4px 10px' };
+  return (
+    <button onClick={onClick}
+      style={{fontFamily:'var(--M)',...sz,borderRadius:2,cursor:'pointer',border:`1px solid ${s.borderColor}`,background:s.background,color:s.color,...(s.fontWeight?{fontWeight:s.fontWeight}:{}),transition:'all 120ms',userSelect:'none',...(fullWidth?{display:'block',width:'100%',textAlign:'left'}:{whiteSpace:'nowrap'})}}>
+      {label}
+    </button>
+  );
+};
+
 const ProjetosPage = ({ onProjectClick, lang }) => {
   const t=k=>T[lang][k]??T.pt[k]??k;
-  const data=getPortfolioData();
-  const cats=data.categories||{};
-  const allProjects=data.projects||[];
-  const catKeys=Object.keys(cats).filter(k=>!cats[k].hidden);
-  const [activeTab,setActiveTab]=useState(catKeys[0]||'powerbi');
+  const interests=getInterests();
+  const techs=getTechnologies();
+  const sols=getSolutionTypes();
+  const allProjects=visibleProjects();
+
+  const [selInt,setSelInt]=useState(()=>new Set());
+  const [selTech,setSelTech]=useState(()=>new Set());
+  const [selSol,setSelSol]=useState(()=>new Set());
   const [flashId,setFlashId]=useState(null);
 
-  const filtered=allProjects.filter(p=>p.category===activeTab);
-  const cat=cats[activeTab]||{color:'var(--blue)',label:'',colorDark:'var(--navy)'};
-  const tabAccent=la(cat);
-  const descColor=activeTab==='tableau'?'var(--lavlt)':(cat.textOnColor||'var(--white)');
+  const toggle=(set,setter,key)=>{
+    const next=new Set(set);
+    if(next.has(key)) next.delete(key); else next.add(key);
+    setter(next);
+  };
+  const clearAll=()=>{ setSelInt(new Set()); setSelTech(new Set()); setSelSol(new Set()); };
+
+  // Cascade: tech/sol available = only those used by interest-matched projects
+  const interestMatched = selInt.size>0 ? allProjects.filter(p=>selInt.has(p.interest)) : allProjects;
+  const availableTechs = new Set(interestMatched.flatMap(p=>p.technologies||[]));
+  const availableSols  = new Set(interestMatched.flatMap(p=>p.solutionType||[]));
+
+  // Auto-clear tech/sol selections that disappear when interests change
+  useEffect(()=>{
+    if(selInt.size===0) return;
+    const intF=allProjects.filter(p=>selInt.has(p.interest));
+    const avT=new Set(intF.flatMap(p=>p.technologies||[]));
+    const avS=new Set(intF.flatMap(p=>p.solutionType||[]));
+    setSelTech(prev=>{ const n=new Set([...prev].filter(t=>avT.has(t))); return n.size===prev.size?prev:n; });
+    setSelSol(prev=>{ const n=new Set([...prev].filter(s=>avS.has(s))); return n.size===prev.size?prev:n; });
+  },[selInt]);
+
+  // AND between groups, OR within group
+  const matches=(p)=>{
+    if(selInt.size>0 && !selInt.has(p.interest)) return false;
+    if(selTech.size>0 && !(p.technologies||[]).some(x=>selTech.has(x))) return false;
+    if(selSol.size>0 && !(p.solutionType||[]).some(x=>selSol.has(x))) return false;
+    return true;
+  };
+  const filtered=allProjects.filter(matches);
+  const total=allProjects.length;
+  const hasFilters=selInt.size>0||selTech.size>0||selSol.size>0;
 
   const handleCardClick=(id)=>{
     setFlashId(id);
     setTimeout(()=>{ onProjectClick(id); setFlashId(null); }, 180);
   };
+
+  // Sidebar accent follows single selected interest
+  const singleInt = selInt.size===1 ? [...selInt][0] : null;
+  const sidebarAccent = singleInt ? (interests[singleInt]?.color||'var(--navy)') : 'var(--navy)';
 
   return (
     <div>
@@ -504,38 +592,257 @@ const ProjetosPage = ({ onProjectClick, lang }) => {
         <h1 style={{fontFamily:'var(--D)',fontSize:64,letterSpacing:'0.05em',textTransform:'uppercase',color:'var(--white)',position:'relative',zIndex:1}}>{t('projects_heading')}</h1>
       </div>
 
-      {/* Category tabs */}
-      <div style={{background:'var(--cream-dk)',borderBottom:'1px solid rgba(26,26,26,0.1)',padding:'0 48px',display:'flex',gap:0,overflowX:'auto'}}>
-        {catKeys.map(key=>{
-          const c=cats[key];
-          const isActive=activeTab===key;
-          const tAccent=la(c);
-          const count=allProjects.filter(p=>p.category===key).length;
-          const catLabel=key==='experimentos'?t('cat_experimentos'):key==='pesquisa'?t('cat_pesquisa'):c.label;
-          return (
-            <button key={key} onClick={()=>setActiveTab(key)} style={{background:'none',border:'none',borderBottom:`2px solid ${isActive?tAccent:'transparent'}`,fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:isActive?tAccent:'rgba(26,26,26,0.36)',padding:'18px 16px 16px',cursor:'pointer',transition:'all 150ms',whiteSpace:'nowrap',display:'flex',alignItems:'center',gap:7}}>
-              {catLabel}
-              <span style={{background:isActive?tAccent:'rgba(26,26,26,0.1)',color:isActive?c.colorDark:'rgba(26,26,26,0.38)',fontFamily:'var(--M)',fontSize:8,padding:'2px 6px',letterSpacing:'0.1em',fontWeight:700}}>{count}</span>
-            </button>
-          );
-        })}
-      </div>
+      {/* Two-column layout: grid + sidebar */}
+      <div style={{background:'var(--cream)',display:'grid',gridTemplateColumns:'1fr 264px',alignItems:'start'}}>
 
-      {/* Category desc strip */}
-      <div style={{background:cat.colorDark,padding:'14px 48px',display:'flex',alignItems:'center',gap:10}}>
-        <div style={{width:5,height:5,background:descColor}}/>
-        <span style={{fontFamily:'var(--M)',fontSize:10,color:descColor,letterSpacing:'0.08em'}}>{t('catdesc_'+activeTab)}</span>
-      </div>
-
-      {/* Grid */}
-      <div style={{background:'var(--cream)',padding:'40px 48px 64px'}}>
-        {filtered.length===0 ? (
-          <div style={{padding:'64px 0',textAlign:'center',fontFamily:'var(--M)',fontSize:11,color:'rgba(26,26,26,0.32)',letterSpacing:'0.15em',textTransform:'uppercase'}}>{t('no_projects')}</div>
-        ) : (
-          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
-            {filtered.map(p=><ProjetoCard key={p.id} project={p} category={cats[p.category]||{color:'var(--blue)',label:p.category,colorDark:'var(--navy)'}} onClick={()=>handleCardClick(p.id)} isSelected={flashId===p.id}/>)}
+        {/* LEFT: project grid */}
+        <div style={{padding:'32px 48px 64px',borderRight:'1px solid rgba(26,26,26,0.07)'}}>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:20,paddingBottom:12,borderBottom:'1px solid rgba(26,26,26,0.08)'}}>
+            <span style={{fontFamily:'var(--M)',fontSize:10,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:'rgba(26,26,26,0.45)'}}>
+              {(T[lang].filter_status||T.pt.filter_status)(filtered.length,total)}
+            </span>
+            {hasFilters && (
+              <button onClick={clearAll} style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.18em',textTransform:'uppercase',padding:'4px 10px',background:'transparent',color:'var(--ink)',border:'1px solid rgba(26,26,26,0.2)',cursor:'pointer'}}>
+                {t('filter_clear')}
+              </button>
+            )}
           </div>
-        )}
+          {filtered.length===0 ? (
+            <div style={{padding:'64px 0',textAlign:'center',fontFamily:'var(--M)',fontSize:11,color:'rgba(26,26,26,0.32)',letterSpacing:'0.15em',textTransform:'uppercase',border:'1px dashed var(--lav)'}}>{t('no_projects')}</div>
+          ) : (
+            <div style={{display:'grid',gridTemplateColumns:filtered.length>1?'1fr 1fr':'1fr',gap:12}}>
+              {filtered.map(p=>{
+                const i=interests[p.interest]||{color:'var(--blue)',colorDark:'var(--navy)',colorSoft:'var(--lavlt)'};
+                return <ProjetoCard key={p.id} project={p} interest={i} lang={lang} onClick={()=>handleCardClick(p.id)} isSelected={flashId===p.id}/>;
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* RIGHT: sticky filter sidebar */}
+        <div style={{position:'sticky',top:60,alignSelf:'start',height:'calc(100vh - 60px)',overflowY:'auto',background:'var(--white)',padding:'24px 16px 32px'}}>
+
+          {/* Sidebar header */}
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:18,paddingBottom:10,borderBottom:`2px solid ${sidebarAccent}`,transition:'border-color 300ms'}}>
+            <span style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.25em',textTransform:'uppercase',color:sidebarAccent,transition:'color 300ms'}}>Filtros</span>
+            {hasFilters && (
+              <button onClick={clearAll} style={{fontFamily:'var(--M)',fontSize:8,fontWeight:700,letterSpacing:'0.14em',textTransform:'uppercase',background:'none',border:'none',color:'rgba(26,26,26,0.38)',cursor:'pointer',padding:0}}
+                onMouseEnter={e=>e.target.style.color='var(--ink)'}
+                onMouseLeave={e=>e.target.style.color='rgba(26,26,26,0.38)'}>
+                {t('filter_clear')}
+              </button>
+            )}
+          </div>
+
+          {/* ── Nível 1: Áreas (chips grandes, label pesado) */}
+          <div style={{marginBottom:20}}>
+            <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.25em',textTransform:'uppercase',color:'var(--ink)',paddingBottom:6,borderBottom:'1px solid rgba(26,26,26,0.12)',marginBottom:12}}>{t('filter_interests')}</div>
+            <div style={{display:'flex',flexDirection:'column',gap:6}}>
+              {Object.entries(interests).map(([key,i])=>(
+                <FilterChip key={key} label={lang==='en'?(i.en||i.pt):(i.pt||i.en)}
+                  active={selInt.has(key)} onClick={()=>toggle(selInt,setSelInt,key)}
+                  color={i.color} soloMode={true} fullWidth size='lg'/>
+              ))}
+            </div>
+          </div>
+
+          {/* separador entre níveis */}
+          {(availableTechs.size>0||availableSols.size>0) && (
+            <div style={{height:1,background:'rgba(26,26,26,0.07)',margin:'8px 0 20px'}}/>
+          )}
+
+          {/* ── Nível 2: Tecnologias (chips pequenos, label leve) */}
+          {availableTechs.size>0 && (
+            <div style={{marginBottom:14}}>
+              <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.25em',textTransform:'uppercase',color:'var(--ink)',paddingBottom:6,borderBottom:'1px solid rgba(26,26,26,0.12)',marginBottom:12}}>{t('filter_techs')}</div>
+              <div style={{display:'flex',flexDirection:'column',gap:4}}>
+                {techs.filter(tech=>availableTechs.has(tech)).map(tech=>(
+                  <FilterChip key={tech} label={tech}
+                    active={selTech.has(tech)} onClick={()=>toggle(selTech,setSelTech,tech)}
+                    soloMode={false} fullWidth size='sm'/>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── Nível 2: Tipo de Solução (chips pequenos, label leve) */}
+          {availableSols.size>0 && (
+            <div style={{marginBottom:14}}>
+              <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.25em',textTransform:'uppercase',color:'var(--ink)',paddingBottom:6,borderBottom:'1px solid rgba(26,26,26,0.12)',marginBottom:12}}>{t('filter_sols')}</div>
+              <div style={{display:'flex',flexDirection:'column',gap:4}}>
+                {Object.entries(sols).filter(([key])=>availableSols.has(key)).map(([key,s])=>(
+                  <FilterChip key={key} label={lang==='en'?(s.en||s.pt):(s.pt||s.en)}
+                    active={selSol.has(key)} onClick={()=>toggle(selSol,setSelSol,key)}
+                    soloMode={false} fullWidth size='sm'/>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ══ CONTEÚDO PAGE ════════════════════════════════════════ */
+const ConteudoCard = ({ item, interest, lang, onClick, isSelected }) => {
+  const [hov,setHov]=useState(false);
+  const accent=la(interest);
+  const bgColor = isSelected ? interest.color : hov ? interest.colorDark : 'var(--white)';
+  const textColor = isSelected||hov ? '#fff' : 'var(--ink)';
+  const subColor  = isSelected||hov ? 'rgba(255,255,255,0.55)' : 'rgba(26,26,26,0.48)';
+  const tagAccent = isSelected ? '#fff' : hov ? interest.color : accent;
+  const title  = lang==='en' ? (item.titleEn||item.title)      : item.title;
+  const sub    = lang==='en' ? (item.subtitleEn||item.subtitle) : item.subtitle;
+  return (
+    <div onClick={onClick} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
+      style={{background:bgColor,border:`1px solid ${isSelected?'transparent':'rgba(26,26,26,0.09)'}`,borderTop:`3px solid ${isSelected?interest.color:accent}`,padding:24,cursor:'pointer',position:'relative',overflow:'hidden',transition:'background 160ms',display:'flex',flexDirection:'column',gap:10}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+        <div style={{flex:1}}>
+          <div style={{fontFamily:'var(--M)',fontSize:8,fontWeight:700,letterSpacing:'0.22em',textTransform:'uppercase',color:tagAccent,marginBottom:8}}>{interestLabel(item.interest, lang)}</div>
+          <div style={{fontFamily:'var(--D)',fontSize:20,letterSpacing:'0.04em',textTransform:'uppercase',color:textColor,lineHeight:1.05,marginBottom:5}}>{title}</div>
+          <div style={{fontFamily:'var(--M)',fontSize:10,fontStyle:'italic',color:subColor}}>{sub}</div>
+        </div>
+        <div style={{opacity:0.28,flexShrink:0,marginLeft:12}}>
+          {item.interest==='tecnologia'    &&<ConcentricCircles  color={tagAccent} size={40} rings={3}/>}
+          {item.interest==='esportes'      &&<RotatingSquares    color={tagAccent} size={40} count={3}/>}
+          {item.interest==='entretenimento'&&<NestedTriangles    color={tagAccent} size={40} count={3}/>}
+          {item.interest==='experimentos'  &&<OverlappingCircles color={tagAccent} size={40}/>}
+        </div>
+      </div>
+      <div style={{display:'flex',gap:12,alignItems:'center',paddingTop:8,marginTop:'auto',borderTop:`1px solid ${isSelected?'rgba(255,255,255,0.14)':hov?'rgba(255,255,255,0.08)':'rgba(26,26,26,0.07)'}`}}>
+        <span style={{fontFamily:'var(--M)',fontSize:8,color:tagAccent,letterSpacing:'0.14em',textTransform:'uppercase',fontWeight:700}}>{item.date}</span>
+        <span style={{fontFamily:'var(--M)',fontSize:8,color:subColor,letterSpacing:'0.1em',textTransform:'uppercase'}}>{item.readTime}</span>
+      </div>
+    </div>
+  );
+};
+
+const ConteudoPage = ({ onContentClick, lang }) => {
+  const t=k=>T[lang][k]??T.pt[k]??k;
+  const interests=getInterests();
+  const techs=getTechnologies();
+  const sols=getSolutionTypes();
+  const allContent=visibleContent();
+
+  const [selInt,setSelInt]=useState(()=>new Set());
+  const [selTech,setSelTech]=useState(()=>new Set());
+  const [selSol,setSelSol]=useState(()=>new Set());
+  const [flashId,setFlashId]=useState(null);
+
+  const toggle=(set,setter,key)=>{
+    const next=new Set(set); if(next.has(key)) next.delete(key); else next.add(key); setter(next);
+  };
+  const clearAll=()=>{ setSelInt(new Set()); setSelTech(new Set()); setSelSol(new Set()); };
+
+  const interestMatched = selInt.size>0 ? allContent.filter(c=>selInt.has(c.interest)) : allContent;
+  const availableTechs  = new Set(interestMatched.flatMap(c=>c.technologies||[]));
+  const availableSols   = new Set(interestMatched.flatMap(c=>c.solutionType||[]));
+
+  useEffect(()=>{
+    if(selInt.size===0) return;
+    const intF=allContent.filter(c=>selInt.has(c.interest));
+    const avT=new Set(intF.flatMap(c=>c.technologies||[]));
+    const avS=new Set(intF.flatMap(c=>c.solutionType||[]));
+    setSelTech(prev=>{ const n=new Set([...prev].filter(t=>avT.has(t))); return n.size===prev.size?prev:n; });
+    setSelSol(prev=>{ const n=new Set([...prev].filter(s=>avS.has(s))); return n.size===prev.size?prev:n; });
+  },[selInt]);
+
+  const matches=(c)=>{
+    if(selInt.size>0 && !selInt.has(c.interest)) return false;
+    if(selTech.size>0 && !(c.technologies||[]).some(x=>selTech.has(x))) return false;
+    if(selSol.size>0 && !(c.solutionType||[]).some(x=>selSol.has(x))) return false;
+    return true;
+  };
+  const filtered=allContent.filter(matches);
+  const total=allContent.length;
+  const hasFilters=selInt.size>0||selTech.size>0||selSol.size>0;
+
+  const handleClick=(id)=>{ setFlashId(id); setTimeout(()=>{ onContentClick(id); setFlashId(null); },180); };
+
+  const singleInt = selInt.size===1 ? [...selInt][0] : null;
+  const sidebarAccent = singleInt ? (interests[singleInt]?.color||'var(--navy)') : 'var(--navy)';
+
+  return (
+    <div>
+      <div style={{background:'var(--navy)',padding:'80px 48px 40px',position:'relative',overflow:'hidden'}}>
+        <div style={{position:'absolute',right:48,bottom:-30,opacity:0.07}}><OverlappingCircles color="var(--yellow)" size={260}/></div>
+        <PanelLabel color="rgba(255,255,255,0.38)">{t('content_tag')}</PanelLabel>
+        <h1 style={{fontFamily:'var(--D)',fontSize:64,letterSpacing:'0.05em',textTransform:'uppercase',color:'var(--white)',position:'relative',zIndex:1}}>{t('content_heading')}</h1>
+      </div>
+
+      <div style={{background:'var(--cream)',display:'grid',gridTemplateColumns:'1fr 264px',alignItems:'start'}}>
+
+        {/* LEFT: content grid */}
+        <div style={{padding:'32px 48px 64px',borderRight:'1px solid rgba(26,26,26,0.07)'}}>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:20,paddingBottom:12,borderBottom:'1px solid rgba(26,26,26,0.08)'}}>
+            <span style={{fontFamily:'var(--M)',fontSize:10,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:'rgba(26,26,26,0.45)'}}>
+              {(T[lang].content_status||T.pt.content_status)(filtered.length,total)}
+            </span>
+            {hasFilters && (
+              <button onClick={clearAll} style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.18em',textTransform:'uppercase',padding:'4px 10px',background:'transparent',color:'var(--ink)',border:'1px solid rgba(26,26,26,0.2)',cursor:'pointer'}}>
+                {t('filter_clear')}
+              </button>
+            )}
+          </div>
+          {filtered.length===0 ? (
+            <div style={{padding:'64px 0',textAlign:'center',fontFamily:'var(--M)',fontSize:11,color:'rgba(26,26,26,0.32)',letterSpacing:'0.15em',textTransform:'uppercase',border:'1px dashed var(--lav)'}}>{t('no_content')}</div>
+          ) : (
+            <div style={{display:'grid',gridTemplateColumns:filtered.length>1?'1fr 1fr':'1fr',gap:12}}>
+              {filtered.map(item=>{
+                const i=interests[item.interest]||{color:'var(--blue)',colorDark:'var(--navy)',colorSoft:'var(--lavlt)'};
+                return <ConteudoCard key={item.id} item={item} interest={i} lang={lang} onClick={()=>handleClick(item.id)} isSelected={flashId===item.id}/>;
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* RIGHT: sticky filter sidebar (idêntica aos projetos) */}
+        <div style={{position:'sticky',top:60,alignSelf:'start',height:'calc(100vh - 60px)',overflowY:'auto',background:'var(--white)',padding:'24px 16px 32px'}}>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:18,paddingBottom:10,borderBottom:`2px solid ${sidebarAccent}`,transition:'border-color 300ms'}}>
+            <span style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.25em',textTransform:'uppercase',color:sidebarAccent,transition:'color 300ms'}}>Filtros</span>
+            {hasFilters && (
+              <button onClick={clearAll} style={{fontFamily:'var(--M)',fontSize:8,fontWeight:700,letterSpacing:'0.14em',textTransform:'uppercase',background:'none',border:'none',color:'rgba(26,26,26,0.38)',cursor:'pointer',padding:0}}
+                onMouseEnter={e=>e.target.style.color='var(--ink)'}
+                onMouseLeave={e=>e.target.style.color='rgba(26,26,26,0.38)'}>
+                {t('filter_clear')}
+              </button>
+            )}
+          </div>
+          <div style={{marginBottom:20}}>
+            <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.25em',textTransform:'uppercase',color:'var(--ink)',paddingBottom:6,borderBottom:'1px solid rgba(26,26,26,0.12)',marginBottom:12}}>{t('filter_interests')}</div>
+            <div style={{display:'flex',flexDirection:'column',gap:6}}>
+              {Object.entries(interests).map(([key,i])=>(
+                <FilterChip key={key} label={lang==='en'?(i.en||i.pt):(i.pt||i.en)}
+                  active={selInt.has(key)} onClick={()=>toggle(selInt,setSelInt,key)}
+                  color={i.color} soloMode={true} fullWidth size='lg'/>
+              ))}
+            </div>
+          </div>
+          {(availableTechs.size>0||availableSols.size>0) && (
+            <div style={{height:1,background:'rgba(26,26,26,0.07)',margin:'8px 0 20px'}}/>
+          )}
+          {availableTechs.size>0 && (
+            <div style={{marginBottom:14}}>
+              <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.25em',textTransform:'uppercase',color:'var(--ink)',paddingBottom:6,borderBottom:'1px solid rgba(26,26,26,0.12)',marginBottom:12}}>{t('filter_techs')}</div>
+              <div style={{display:'flex',flexDirection:'column',gap:4}}>
+                {techs.filter(tech=>availableTechs.has(tech)).map(tech=>(
+                  <FilterChip key={tech} label={tech} active={selTech.has(tech)} onClick={()=>toggle(selTech,setSelTech,tech)} soloMode={false} fullWidth size='sm'/>
+                ))}
+              </div>
+            </div>
+          )}
+          {availableSols.size>0 && (
+            <div style={{marginBottom:14}}>
+              <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.25em',textTransform:'uppercase',color:'var(--ink)',paddingBottom:6,borderBottom:'1px solid rgba(26,26,26,0.12)',marginBottom:12}}>{t('filter_sols')}</div>
+              <div style={{display:'flex',flexDirection:'column',gap:4}}>
+                {Object.entries(sols).filter(([key])=>availableSols.has(key)).map(([key,s])=>(
+                  <FilterChip key={key} label={lang==='en'?(s.en||s.pt):(s.pt||s.en)} active={selSol.has(key)} onClick={()=>toggle(selSol,setSelSol,key)} soloMode={false} fullWidth size='sm'/>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -594,8 +901,8 @@ const SobrePage = ({ lang }) => {
         ]).map((exp,i)=>(
           <div key={i} style={{display:'grid',gridTemplateColumns:'200px 1fr',borderTop:'1px solid rgba(26,26,26,0.08)',paddingTop:28,paddingBottom:28}}>
             <div>
-              <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.13em',textTransform:'uppercase',color:exp.accent,marginBottom:6}}>{exp.period}</div>
-              <div style={{fontFamily:'var(--M)',fontSize:9,color:'rgba(26,26,26,0.32)',letterSpacing:'0.06em',textTransform:'uppercase'}}>{exp.location}</div>
+              <div style={{fontFamily:'var(--M)',fontSize:11,fontWeight:700,letterSpacing:'0.1em',textTransform:'uppercase',color:exp.accent,marginBottom:6}}>{exp.period}</div>
+              <div style={{fontFamily:'var(--M)',fontSize:11,fontWeight:600,color:'rgba(26,26,26,0.7)',letterSpacing:'0.05em',textTransform:'uppercase'}}>{exp.location}</div>
             </div>
             <div>
               <div style={{fontFamily:'var(--D)',fontSize:22,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)',marginBottom:4}}>{exp.role}</div>
@@ -626,7 +933,7 @@ const SobrePage = ({ lang }) => {
             <div key={i} style={{paddingBottom:18,marginBottom:18,borderBottom:i<2?'1px solid rgba(26,26,26,0.08)':'none'}}>
               <div style={{fontFamily:'var(--D)',fontSize:17,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)',lineHeight:1.2,marginBottom:5}}>{t(e.tk)}</div>
               <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.14em',textTransform:'uppercase',color:e.accent}}>{e.school} · {e.period}</div>
-              <div style={{fontFamily:'var(--M)',fontSize:9,color:'rgba(26,26,26,0.35)',letterSpacing:'0.1em',textTransform:'uppercase',marginTop:3}}>{t(e.note)}</div>
+              <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:600,color:'rgba(26,26,26,0.65)',letterSpacing:'0.1em',textTransform:'uppercase',marginTop:3}}>{t(e.note)}</div>
             </div>
           ))}
         </div>
@@ -647,7 +954,7 @@ const SobrePage = ({ lang }) => {
                   <div style={{fontFamily:'var(--D)',fontSize:15,letterSpacing:'0.06em',textTransform:'uppercase',color:'var(--ink)'}}>{t(akey)}</div>
                 </div>
                 <div style={{display:'flex',flexWrap:'wrap',gap:5}}>
-                  {resolvedItems.map(item=><span key={item} style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.1em',textTransform:'uppercase',background:'var(--white)',color:accent,border:`1px solid ${accent}33`,padding:'3px 8px'}}>{item}</span>)}
+                  {resolvedItems.map(item=><span key={item} style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.1em',textTransform:'uppercase',background:accent,color:'#fff',padding:'3px 8px'}}>{item}</span>)}
                 </div>
               </div>
             );
@@ -670,10 +977,15 @@ const App = () => {
   const renderPage=()=>{
     if(page==='home') return <HomePage setPage={setPage} lang={lang}/>;
     if(page==='projetos') return <ProjetosPage onProjectClick={handleProjectClick} lang={lang}/>;
+    if(page==='conteudo') return <ConteudoPage onContentClick={(id)=>{ setSelectedId(id); setPage('conteudo-item'); }} lang={lang}/>;
     if(page==='sobre') return <SobrePage lang={lang}/>;
     if(page==='projeto'){
       const ProjPage=window.ProjectPage;
-      return ProjPage?<ProjPage projectId={selectedId} onBack={()=>setPage('projetos')}/>:<div style={{padding:80,fontFamily:'var(--M)'}}>Carregando…</div>;
+      return ProjPage?<ProjPage projectId={selectedId} onBack={()=>setPage('projetos')} lang={lang}/>:<div style={{padding:80,fontFamily:'var(--M)'}}>Carregando…</div>;
+    }
+    if(page==='conteudo-item'){
+      const CP=window.ContentPage;
+      return CP?<CP contentId={selectedId} onBack={()=>setPage('conteudo')} lang={lang}/>:<div style={{padding:80,fontFamily:'var(--M)'}}>Carregando…</div>;
     }
     return <HomePage setPage={setPage} lang={lang}/>;
   };

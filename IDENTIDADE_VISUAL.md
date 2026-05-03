@@ -229,19 +229,35 @@ Quando o site incorporar componentes de terceiros (ex.: Spotify), o layout inter
 
 ---
 
-## 8. Categorias de projeto — cores fixas
+## 8. Interesses de projeto — cores fixas
 
-Cada categoria do portfólio tem uma cor associada. Essas cores **não mudam por estética**; elas são parte do sistema de leitura.
+A partir de **2026-05-03**, o sistema de identidade do portfólio passou de **categorias por ferramenta** para **interesses por área**. Cada projeto escolhe **uma única Interest** (identidade primária, cor única). `technologies` e `solutionType` são tags secundárias que herdam o tom da Interest do projeto.
 
-| Categoria      | Token de cor recomendado |
-|----------------|--------------------------|
-| Power BI       | `--color-yellow`         |
-| Tableau        | `--color-blue`           |
-| Python         | `--color-red`            |
-| Experimentos   | `--color-pink`           |
-| Pesquisa       | `--color-lavender`       |
+### Interesses canônicos (4)
 
-> A vinculação categoria → cor pode ser revista, mas só por pedido expresso. Se mudar, atualizar este arquivo, o `projects-data.js` e o `CHANGELOG.md` na mesma alteração.
+| Interest         | Token de cor (cheio)  | Token tom leve (Solution Type)   |
+|------------------|-----------------------|----------------------------------|
+| Tecnologia       | `--color-blue`        | `--color-lavender-lt`            |
+| Esportes         | `--color-lavender`    | `--color-lavender-lt`            |
+| Entretenimento   | `--color-red`         | `--color-red-mid`                |
+| Experimentos     | `--color-pink`        | `--color-pink-light`             |
+
+### Comportamento dos chips de filtro
+
+- **Interest selecionada** → fundo na cor cheia da Interest, texto branco (sobretom).
+- **Interest não selecionada** → outline na cor da Interest sobre fundo `--bg-primary`.
+- **Technology / Solution Type selecionada** → fundo `--color-lavender-lt` (cinza-lavanda neutro), texto `--color-navy`. **Estes filtros nunca puxam cor da Interest** — a cor pertence sempre ao filtro de Interest.
+- **Technology / Solution Type não selecionada** → outline em `--color-lavender` neutro.
+
+### Cor dentro de cada cartão de projeto
+
+- Linha de topo do cartão (3px) → cor cheia da Interest do projeto.
+- Mini-chips de Technologies → outline na cor cheia da Interest.
+- Mini-chips de Solution Type → outline no tom leve da Interest.
+
+### Regra de manutenção
+
+> A vinculação Interest → cor é blindada. Para alterar, atualizar simultaneamente este arquivo, `ui_kits/portfolio/projects-data.js`, `scripts/validate-portfolio.mjs` e `CHANGELOG.md`. Adicionar uma 5ª Interest exige nova cor única na paleta — pedido expresso obrigatório.
 
 ---
 
@@ -261,6 +277,19 @@ Se alguma resposta for **não**, **não alterar**.
 ## 10. Histórico de alterações expressas
 
 Toda alteração aprovada deste documento (e da identidade visual em geral) entra aqui, em ordem cronológica decrescente.
+
+### [2026-05-03] — Substituição de categorias por interesses
+- §8 reescrita: o sistema de **categorias por ferramenta** (Power BI, Tableau, Python, Experimentos, Pesquisa) foi substituído por **interesses por área** (Tecnologia, Esportes, Entretenimento, Experimentos).
+- Cada projeto agora carrega: `interest` (1 valor obrigatório) + `technologies[]` + `solutionType[]`.
+- `Tecnologias` e `Solution Type` selecionados nos filtros usam `--color-lavender-lt` neutro — a cor das Interests fica reservada ao filtro de identidade.
+- Tons leves (Solution Type dentro do cartão): `--color-lavender-lt`, `--color-red-mid`, `--color-pink-light`.
+- Mapeamento Interest → cor (autorizado por Diego):
+  - Tecnologia → `--color-blue` (#1B2585)
+  - Esportes → `--color-lavender` (#9494C8)
+  - Entretenimento → `--color-red` (#E0003D)
+  - Experimentos → `--color-pink` (#F07090)
+- Autorizado por: Diego Furtado, conversa de 2026-05-03 ("Ok para tudo" + tabela de cores ditada).
+- Arquivos afetados: `IDENTIDADE_VISUAL.md` §8, `ui_kits/portfolio/projects-data.js`, `ui_kits/portfolio/index.html`, `scripts/validate-portfolio.mjs`, `CHANGELOG.md`.
 
 ### [2026-04-25] — Criação do arquivo
 - Documento inicial, congelando o estado da identidade visual conforme `colors_and_type.css` e `assets/`.

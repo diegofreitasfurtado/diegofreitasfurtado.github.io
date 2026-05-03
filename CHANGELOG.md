@@ -23,6 +23,58 @@ Adicione uma entrada neste arquivo sempre que fizer uma mudança, seguindo o for
 
 ## Histórico
 
+### [2026-05-03] — Refinamentos visuais sidebar + nova interest Leituras + fix SobrePage
+- **Chips de interesse**: sempre mostram a cor canônica do interesse como fill e `var(--cream)` como texto (ativo e inativo). Estado ativo distinguido por borda branca + `fontWeight:800`. Lógica `soloMode` no `FilterChip`.
+- **Nova interest "Leituras"** (5.ª): cor `#7C1261` (plum), `colorSoft:#D4A0C8`, `colorDark:#3D0830`. Adicionada em `projects-data.js` após Experimentos. Token `--plum:#7C1261` adicionado ao `:root` canónico em `index.html`.
+- **Labels de secção da sidebar** (Interesses / Tecnologias / Tipo de Solução): passam a `fontSize:9`, cor `var(--ink)` cheia, `letterSpacing:0.25em` e `borderBottom` subtil — mesmo estilo visual do header "Filtros".
+- **Espaçamento sidebar**: `gap:6` entre chips de interesse, `gap:4` entre chips sm, separador entre níveis com margem `8px 0 20px`, `marginBottom:12` nos labels.
+- **SobrePage — habilidades**: etiquetas de skill passam a ter a cor forte da área como `background` e texto branco, em vez de borda.
+- **SobrePage — educação**: notas como "Aprovado com louvor" ganham `color:rgba(26,26,26,0.65), fontWeight:600` para melhor contraste.
+- **SobrePage — experiência**: datas e localização passam a `fontSize:11` e cor `rgba(26,26,26,0.7)` para maior legibilidade.
+- Arquivo(s) alterado(s): `ui_kits/portfolio/index.html`, `ui_kits/portfolio/projects-data.js`, `CHANGELOG.md`.
+- Motivo: pedido do Diego em 2026-05-03 — identidade visual coerente nos filtros, nova área de conteúdo "Leituras", melhor contraste na página Sobre.
+- Reversível por: histórico do Git.
+
+### [2026-05-03] — Nova secção Conteúdo com templates e ligação a projetos
+- **Nova secção "Conteúdo"** acessível via nav. Mesmo modelo visual de Projetos: header navy + grid + sidebar sticky com filtros em cascata por interesse.
+- **4 templates de conteúdo** em `content-templates.jsx`, cada um baseado num template de projeto: CT1=Editorial Split (← T1), CT2=Long Read (← T3), CT3=Magazine (← T4), CT4=Opinion/Tese (← T5). Cada template suporta `body`, `pullQuote`, `keyPoints` e `relatedProjects`.
+- **`relatedProjects`**: lista de IDs de projetos. Na página de conteúdo, os projetos relacionados são renderizados como cartões com a cor do respetivo interesse.
+- **`ConteudoCard`**: cartão de conteúdo no grid — mesmo design dos cartões de projeto mas com data + tempo de leitura em vez de tools.
+- **Filtros em cascata idênticos aos de Projetos**: mesmos interests, technologies e solutionType. Selecionar "Esportes" filtra os conteúdos e ajusta as tecnologias/tipo disponíveis na sidebar.
+- **`content` array em `projects-data.js`**: 1 item de exemplo (id=1, "Como construí a visualização das Copas do Mundo", template=2, interest=esportes, relatedProjects=[7]).
+- Arquivo(s) criado(s): `ui_kits/portfolio/content-templates.jsx`. Arquivo(s) alterado(s): `ui_kits/portfolio/index.html`, `ui_kits/portfolio/projects-data.js`, `CHANGELOG.md`.
+- Motivo: pedido do Diego em 2026-05-03 — criar secção de conteúdo conectada ao vocabulário de tags dos projetos.
+- Reversível por: histórico do Git.
+
+### [2026-05-03] — Filtros movidos para barra lateral + cascade por interesse + fix ProjectPage
+- **Layout da página Projetos reestruturado**: filtros saíram da área superior (full-width) e passaram para uma barra lateral sticky à direita (264 px), com scroll independente. O grid de projetos ocupa o restante.
+- **Cascade de filtros**: Tecnologias e Tipo de Solução na sidebar mostram apenas as opções que existem em projetos do(s) interesse(s) selecionado(s). Ao mudar o interesse, chips de tech/sol que ficarem fora do scope são auto-desmarcados.
+- **Sidebar accent**: a barra de título "Filtros" muda de cor para seguir o único interesse ativo (quando exatamente um está selecionado), usando a cor canônica daquele interesse.
+- **Fix crítico `ProjectPage`**: o router de templates usava `data.categories[project.category]` (campo inexistente), causando crash ao abrir qualquer projeto. Corrigido para `data.interests[project.interest]` — agora passes a cor, colorDark, colorSoft e label corretos ao template.
+- **Copa do Mundo usa cor de Esportes em toda a página**: Template1 (Dashboard Split) recebe `#9494C8` (lavender) como cor primária, `#0C0D2A` como fundo escuro, e "Esportes" como label da categoria.
+- **Motif do placeholder adaptativo**: Template1 agora usa `squares` para esportes, `triangles` para entretenimento e `circles` para os demais, coerente com os ícones geométricos de cada interesse.
+- **`lang` propagado ao ProjectPage**: o App passa o idioma atual ao abrir um projeto, para que o label da categoria apareça no idioma certo.
+- Arquivo(s) alterado(s): `ui_kits/portfolio/index.html`, `ui_kits/portfolio/project-templates.jsx`, `CHANGELOG.md`.
+- Motivo: pedido do Diego em 2026-05-03 — mover filtros para sidebar, filtro cascata por interesse, cor de Esportes no projeto Copa do Mundo.
+- Reversível por: histórico do Git.
+
+### [2026-05-03] — Reestruturação: categorias → interesses + filtros multi-tag
+- **Arquitetura de identidade dos projetos**: substituição do modelo `category` única (Power BI / Tableau / Python / Experimentos / Pesquisa) pelo modelo `interest` única + `technologies[]` + `solutionType[]`.
+- **4 Interests canônicos** com cor blindada: Tecnologia (`--color-blue`), Esportes (`--color-lavender`), Entretenimento (`--color-red`), Experimentos (`--color-pink`).
+- **12 Technologies** canônicas: Power BI, DAX, M Language, SQL, Python, Pandas, Excel, Tableau, Looker, spaCy, Claude Code, CODEX.
+- **5 Solution Types** canônicos: Visualização de Dados, Tratamento de Dados, Storytelling de Dados, Automação, Pesquisa.
+- **UI da página Projetos refeita**: tabs únicas substituídas por 3 painéis de chips multi-seleção (estilo Tech Stack); lógica de filtro AND-entre-grupos + OR-dentro-do-grupo; status bar "Mostrando X de Y projetos" + botão Limpar Filtros.
+- **Cartões de projeto**: cor de topo + mini-chips Technologies herdam cor cheia da Interest; mini-chips Solution Type herdam tom leve.
+- **Comportamento dos filtros**: chips de Interest selecionados → cor cheia; chips de Tech/Solution selecionados → cinza-lavanda neutro (`--color-lavender-lt`).
+- **Conteúdo do site**: dos 7 projetos no array `projects`, apenas o novo **id 7 — Visualização Copa do Mundo** (Esportes; Tableau + Python + Pandas + Excel) está visível. Os outros 6 ficaram com `hidden: true` (não foram apagados nem arquivados — preservados para retomada futura).
+- **Novo projeto id 7 — Visualização Copa do Mundo / Data Viz World Cup**: Interest=Esportes, Technologies=[Tableau, Python, Pandas, Excel], Solution Type=[Data Visualization, Data Treatment, Data Storytelling, Research], featured=true. Conteúdo derivado do material em `_archived/Portfolio_duplicado_2026-05-02/__SETUP-viz-copas-do-mundo/`.
+- **Validador atualizado**: `scripts/validate-portfolio.mjs` reescrito para validar o schema novo (interests, technologies canônica, solutionType, references válidas). Roda verde.
+- **IDENTIDADE_VISUAL.md §8 reescrita** + entrada datada na seção "Histórico de alterações expressas".
+- **Protótipo isolado** em `preview/prototype-filters.html` foi usado para validar o sistema antes da aplicação.
+- Arquivo(s) alterado(s): `ui_kits/portfolio/projects-data.js`, `ui_kits/portfolio/index.html`, `scripts/validate-portfolio.mjs`, `IDENTIDADE_VISUAL.md`, `CHANGELOG.md`. Arquivo criado: `preview/prototype-filters.html`.
+- Motivo: pedido expresso do Diego em 2026-05-03 ("Ok para tudo") após múltiplas iterações de design e validação visual via protótipo. O modelo antigo (categoria por ferramenta) misturava identidade temática com tecnologia; o novo modelo separa as duas dimensões.
+- Reversível por: histórico do Git.
+
 ### [2026-05-02] — Ressincronização do espelho `Portfólio/` para `_archived`
 - Arquivada a pasta `Portfólio/`, que tinha ressurgido na raiz com materiais de setup do projeto `viz-copas-do-mundo`, para `_archived/Portfolio_duplicado_2026-05-02/`.
 - Mantido o princípio de não-destrutividade: nada foi apagado; o conteúdo saiu apenas da raiz canónica do repositório.
