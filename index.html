@@ -1,18 +1,1050 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-PT">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Diego Furtado</title>
-  <meta http-equiv="refresh" content="0; url=./ui_kits/portfolio/">
-  <script>
-    window.location.replace(new URL("./ui_kits/portfolio/", window.location.href).toString());
-  </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diego Furtado</title>
+<link rel="stylesheet" href="./colors_and_type.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="projects-data.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --cream:var(--bg-primary);--cream-dk:var(--bg-tint);
+  --ink:var(--fg-primary);--navy:var(--color-navy);
+  --blue:var(--color-blue);--lav:var(--color-lavender);--lavlt:var(--color-lavender-lt);
+  --red:var(--color-red);--pink:var(--color-pink);
+  --yellow:var(--color-yellow);--white:var(--color-white);
+  --plum:#7C1261;
+  --D:var(--font-display);--M:var(--font-mono);
+}
+html,body,#root{height:100%;}
+body{background:var(--cream);color:var(--ink);font-family:var(--M);overflow-x:hidden;}
+button,input,textarea{font-family:var(--M);}
+::placeholder{color:rgba(26,26,26,0.35);}
+*{scrollbar-width:thin;scrollbar-color:var(--lav) var(--cream);}
+</style>
 </head>
 <body>
-  <main style="font-family: sans-serif; padding: 2rem;">
-    <p>Redirecting to the portfolio...</p>
-    <p><a href="./ui_kits/portfolio/">Open site</a></p>
-  </main>
+<div id="root"></div>
+<script type="text/babel" src="project-templates.jsx"></script>
+<script type="text/babel" src="content-templates.jsx"></script>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+/* ══ TRANSLATIONS ══════════════════════════════════════════ */
+const T = {
+  pt: {
+    nav_home:'Home', nav_projects:'Projetos', nav_content:'Conteúdo', nav_about:'Quem Sou', nav_contact:'Contato →', lang_btn:'EN',
+    hero_tag:'Data Analytics · Business Intelligence · Lisboa',
+    hero_desc:'Analista de dados e jornalista. Transformo dados dispersos em decisões claras — com pipelines automáticos, dashboards KPI e narrativa visual precisa.',
+    hero_cta1:'Ver Projetos', hero_cta2:'Quem Sou',
+    stat1:'Redução de refresh Power BI', stat2:'Economizadas/mês via automação', stat3:'Mais velocidade em propostas',
+    portfolio_label:'Portfólio', featured_heading:'Projetos em destaque', see_all:'Ver todos →',
+    about_label:'Quem sou',
+    about_quote:'Analista de dados sênior em Lisboa. Mestre em Mídia e Tecnologias Visuais. Background em jornalismo investigativo.',
+    read_more:'Leia mais',
+    spotify_label:'O que estou ouvindo',
+    spotify_empty:'Playlist não configurada',
+    spotify_hint:'Abra projects-data.js e preencha spotifyEmbedHtml com o codigo oficial do Spotify. Como fallback, voce pode usar spotifyPlaylistId com o ID da playlist.',
+    projects_heading:'Projetos', portfolio_tag:'Portfólio',
+    no_projects:'Nenhum projeto bate com esses filtros.',
+    edit_hint:'Para adicionar projetos, edite projects-data.js no VS Code',
+    filter_interests:'Interesses', filter_techs:'Tecnologias', filter_sols:'Tipo de Solução',
+    filter_int_hint:'cada projeto escolhe 1', filter_multi_hint:'multi-seleção',
+    filter_clear:'Limpar Filtros',
+    filter_status:(s,t)=>`Mostrando ${s} de ${t} projetos`,
+    content_heading:'Conteúdo', content_tag:'Publicações',
+    no_content:'Nenhum conteúdo bate com esses filtros.',
+    content_status:(s,t)=>`Mostrando ${s} de ${t} publicações`,
+    content_read:'Ler',
+    profile_label:'Perfil', about_title:'Quem Sou',
+    about_subtitle:'Business & Data Analytics Consultant. Focado em transformar dados em crescimento estratégico e performance de negócio.',
+    bio_label:'Bio', bio_name:'Diego Freitas Furtado',
+    bio_p1:'Analista de dados e consultor baseado em Lisboa, Portugal. Formação em Jornalismo e pós-graduação em Ciência de Dados e IA pela PUCRS — uma combinação que me permite transformar análises técnicas em narrativas claras para tomadores de decisão.',
+    bio_p2:'Atualmente na MOP (Multimédia Outdoors Portugal), unificando fontes de dados em SSOT, automatizando pipelines ETL e construindo dashboards executivos para Vendas, Marketing, Operações e Financeiro.',
+    bio_p3:'Acredito que todo dado é uma declaração sobre o mundo — e que a diferença entre um relatório e uma decisão está em como você conta a história.',
+    contact_label:'Contato',
+    f_email:'Email', f_tel:'Tel.', f_city:'Cidade', f_linkedin:'LinkedIn',
+    exp_label:'Trajetória', exp_heading:'Experiência',
+    exp1_role:'Business Development Consultant', exp1_co:'MOP — Multimédia Outdoors Portugal', exp1_period:'Abr 2024 – Presente', exp1_loc:'Lisboa, Portugal',
+    exp1_b:['Unificação de dados SQL, Excel e API em SSOT — melhorando qualidade e alinhamento','Automação ETL com Python e Power Query (M) — economia de ~30h/mês','Redução de 4× no tempo de refresh do dashboard Power BI comercial','Dashboards de KPI para lideranças de Vendas e Marketing','Ferramentas de proposta com 50% mais velocidade de entrega','Mapeamento end-to-end de processos em Vendas, Operações e Financeiro'],
+    exp2_role:'Assistente de Comunicação & Social Media Insights', exp2_co:'PUCRS — Pontifícia Universidade Católica do RS', exp2_period:'Mai 2017 – Out 2023', exp2_loc:'Porto Alegre, Brasil',
+    exp2_b:['Análise de alcance, engajamento e performance em canais institucionais','Dashboards e KPI para planejamento de conteúdo e campanhas','Consolidação de relatórios multiplataforma em dashboard único','Apoio a aumento de 3× no orçamento de mídias sociais','Progressão: Estagiário (2017) → Assistente (2019) → Associado (2021)'],
+    edu_label:'Formação', edu_heading:'Educação',
+    edu1:'Mestrado em Mídia, Cultura e Tecnologias Visuais', edu1_note:'Aprovado com louvor',
+    edu2:'Pós-graduação em Ciência de Dados e IA', edu2_note:'Bolsa por mérito acadêmico',
+    edu3:'Bacharelado em Jornalismo', edu3_note:'Porto Alegre, Brasil',
+    skills_label:'Ferramentas & Competências', skills_heading:'Habilidades',
+    sk1:'BI & Visualização', sk2:'Dados & Engenharia', sk3:'Estratégia', sk4:'Idiomas',
+    sk3_items:['KPI Design','Análise competitiva','Data Storytelling','Automação de processos'],
+    sk4_items:['Português (nativo)','Inglês (profissional)'],
+    footer_copy:'© 2026 Diego Furtado · Lisboa',
+  },
+  en: {
+    nav_home:'Home', nav_projects:'Projects', nav_content:'Content', nav_about:'About', nav_contact:'Contact →', lang_btn:'PT',
+    hero_tag:'Data Analytics · Business Intelligence · Lisbon',
+    hero_desc:'Data analyst and journalist. I transform scattered data into clear decisions — with automated pipelines, KPI dashboards and precise visual storytelling.',
+    hero_cta1:'See Projects', hero_cta2:'About Me',
+    stat1:'Power BI refresh reduction', stat2:'Hours saved/month via automation', stat3:'Faster proposal delivery',
+    portfolio_label:'Portfolio', featured_heading:'Featured Projects', see_all:'See all →',
+    about_label:'About me',
+    about_quote:'Senior data analyst based in Lisbon. Master\'s in Media and Visual Technologies. Background in investigative journalism.',
+    read_more:'Read more',
+    spotify_label:'What I\'m listening to',
+    spotify_empty:'Playlist not configured',
+    spotify_hint:'Open projects-data.js and fill in spotifyEmbedHtml with Spotify official embed code. As a fallback, you can use spotifyPlaylistId with the playlist ID.',
+    projects_heading:'Projects', portfolio_tag:'Portfolio',
+    no_projects:'No projects match these filters.',
+    edit_hint:'To add projects, edit projects-data.js in VS Code',
+    filter_interests:'Interests', filter_techs:'Technologies', filter_sols:'Solution Type',
+    filter_int_hint:'each project picks one', filter_multi_hint:'multi-select',
+    filter_clear:'Clear Filters',
+    filter_status:(s,t)=>`Showing ${s} of ${t} projects`,
+    content_heading:'Content', content_tag:'Publications',
+    no_content:'No content matches these filters.',
+    content_status:(s,t)=>`Showing ${s} of ${t} posts`,
+    content_read:'Read',
+    profile_label:'Profile', about_title:'About Me',
+    about_subtitle:'Business & Data Analytics Consultant. Focused on transforming data into strategic growth and business performance.',
+    bio_label:'Bio', bio_name:'Diego Freitas Furtado',
+    bio_p1:'Data analyst and consultant based in Lisbon, Portugal. Background in Journalism and postgraduate degree in Data Science and AI from PUCRS — a combination that allows me to transform technical analyses into clear narratives for decision-makers.',
+    bio_p2:'Currently at MOP (Multimédia Outdoors Portugal), unifying data sources into a SSOT, automating ETL pipelines and building executive dashboards for Sales, Marketing, Operations and Finance.',
+    bio_p3:'I believe every data point is a statement about the world — and that the difference between a report and a decision lies in how you tell the story.',
+    contact_label:'Contact',
+    f_email:'Email', f_tel:'Phone', f_city:'Location', f_linkedin:'LinkedIn',
+    exp_label:'Career', exp_heading:'Experience',
+    exp1_role:'Business Development Consultant', exp1_co:'MOP — Multimédia Outdoors Portugal', exp1_period:'Apr 2024 – Present', exp1_loc:'Lisbon, Portugal',
+    exp1_b:['Unified SQL, Excel and API data into a SSOT — improving quality and alignment','ETL automation with Python and Power Query (M) — ~30h/month saved','4× reduction in commercial Power BI dashboard refresh time','KPI dashboards for Sales and Marketing leadership','Proposal tools with 50% faster delivery speed','End-to-end process mapping across Sales, Operations and Finance'],
+    exp2_role:'Communication & Social Media Insights Assistant', exp2_co:'PUCRS — Pontifical Catholic University of RS', exp2_period:'May 2017 – Oct 2023', exp2_loc:'Porto Alegre, Brazil',
+    exp2_b:['Analysis of reach, engagement and performance on institutional channels','KPI dashboards to guide content planning and campaign decisions','Consolidated multi-platform reporting into a single SSOT dashboard','Supported a 3× increase in social media budget based on results delivered','Career progression: Intern (2017) → Assistant (2019) → Communication Associate (2021)'],
+    edu_label:'Education', edu_heading:'Education',
+    edu1:'Master\'s in Media, Culture and Visual Technologies', edu1_note:'Approved with honors',
+    edu2:'Postgraduate in Data Science and AI', edu2_note:'Merit-based scholarship',
+    edu3:'Bachelor\'s in Journalism', edu3_note:'Porto Alegre, Brazil',
+    skills_label:'Tools & Skills', skills_heading:'Skills',
+    sk1:'BI & Visualization', sk2:'Data & Engineering', sk3:'Strategy', sk4:'Languages',
+    sk3_items:['KPI Design','Competitive analysis','Data Storytelling','Process automation'],
+    sk4_items:['Portuguese (native)','English (professional)'],
+    footer_copy:'© 2026 Diego Furtado · Lisbon',
+  }
+};
+
+/* ── helper: accent safe on light bg (yellow → navy) ── */
+const getPortfolioData = () => window.PROJECTS_DATA || {};
+const getAboutContent = (lang) => {
+  const data = getPortfolioData();
+  const about = data.about || {};
+  return about[lang] || about.pt || {
+    quote: '',
+    subtitle: '',
+    bioName: '',
+    bio: [],
+    experience: [],
+    education: [],
+    skills: [],
+    footerCopy: ''
+  };
+};
+
+const hydrateTranslationsFromData = () => {
+  ['pt', 'en'].forEach((lang) => {
+    const about = getAboutContent(lang);
+    if (!T[lang]) return;
+
+    T[lang].about_quote = about.quote || T[lang].about_quote;
+    T[lang].about_subtitle = about.subtitle || T[lang].about_subtitle;
+    T[lang].bio_name = about.bioName || T[lang].bio_name;
+    T[lang].footer_copy = about.footerCopy || T[lang].footer_copy;
+
+    (about.bio || []).forEach((paragraph, index) => {
+      T[lang][`bio_p${index + 1}`] = paragraph;
+    });
+
+    (about.experience || []).forEach((experience, index) => {
+      const expIndex = index + 1;
+      T[lang][`exp${expIndex}_role`] = experience.role || T[lang][`exp${expIndex}_role`];
+      T[lang][`exp${expIndex}_co`] = experience.company || T[lang][`exp${expIndex}_co`];
+      T[lang][`exp${expIndex}_period`] = experience.period || T[lang][`exp${expIndex}_period`];
+      T[lang][`exp${expIndex}_loc`] = experience.location || T[lang][`exp${expIndex}_loc`];
+      T[lang][`exp${expIndex}_b`] = experience.bullets || T[lang][`exp${expIndex}_b`];
+    });
+
+    (about.education || []).forEach((education, index) => {
+      const eduIndex = index + 1;
+      T[lang][`edu${eduIndex}`] = education.title || T[lang][`edu${eduIndex}`];
+      T[lang][`edu${eduIndex}_note`] = education.note || T[lang][`edu${eduIndex}_note`];
+    });
+
+    (about.skills || []).forEach((skill, index) => {
+      const skillIndex = index + 1;
+      T[lang][`sk${skillIndex}`] = skill.title || T[lang][`sk${skillIndex}`];
+      if (skillIndex >= 3) {
+        T[lang][`sk${skillIndex}_items`] = skill.items || T[lang][`sk${skillIndex}_items`];
+      }
+    });
+  });
+};
+
+hydrateTranslationsFromData();
+
+const la = (cat) => cat?.color === '#FFEE00' ? cat.colorDark : cat.color;
+
+/* ══ GEOMETRIC COMPONENTS ════════════════════════════════ */
+const ConcentricCircles = ({ color='#1B2585', size=120, rings=5 }) => {
+  const cx=size/2,cy=size/2,maxR=size/2-4;
+  return <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{display:'block'}}>
+    {Array.from({length:rings},(_,i)=><circle key={i} cx={cx} cy={cy} r={maxR*((rings-i)/rings)} fill="none" stroke={color} strokeWidth="1"/>)}
+    <circle cx={cx} cy={cy} r={3} fill={color}/>
+  </svg>;
+};
+const NestedTriangles = ({ color='#E0003D', size=120, count=5 }) => {
+  const tris=Array.from({length:count},(_,i)=>{
+    const scale=(count-i)/count,h=(size-12)*scale,cx=size/2;
+    const base=size-6-(size-12)*(1-scale)/2-(size-12)*(1-scale);
+    return `${cx-h/2},${base} ${cx+h/2},${base} ${cx},${base-h}`;
+  });
+  return <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{display:'block'}}>
+    {tris.map((pts,i)=><polygon key={i} points={pts} fill="none" stroke={color} strokeWidth="1"/>)}
+  </svg>;
+};
+const OverlappingCircles = ({ color='#9494C8', size=120 }) => {
+  const r=size*0.28,cx=size/2,cy=size/2,o=r*0.6;
+  return <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{display:'block'}}>
+    <circle cx={cx-o/2} cy={cy-o*0.4} r={r} fill="none" stroke={color} strokeWidth="1"/>
+    <circle cx={cx+o/2} cy={cy-o*0.4} r={r} fill="none" stroke={color} strokeWidth="1"/>
+    <circle cx={cx} cy={cy+o*0.5} r={r} fill="none" stroke={color} strokeWidth="1"/>
+  </svg>;
+};
+const RotatingSquares = ({ color='#FFEE00', size=120, count=5 }) => {
+  const cx=size/2,cy=size/2;
+  return <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{display:'block'}}>
+    {Array.from({length:count},(_,i)=>{const s=(size-8)*((count-i)/count);return(
+      <rect key={i} x={cx-s/2} y={cy-s/2} width={s} height={s} fill="none" stroke={color} strokeWidth="1" transform={`rotate(${i*8} ${cx} ${cy})`}/>
+    );})}
+  </svg>;
+};
+const LineGrid = ({ color='#1A1A1A', size=120, lines=6, opacity=0.12 }) => (
+  <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{display:'block'}}>
+    {Array.from({length:lines},(_,i)=>[
+      <line key={`h${i}`} x1="0" y1={size/(lines-1)*i} x2={size} y2={size/(lines-1)*i} stroke={color} strokeWidth="1" opacity={opacity}/>,
+      <line key={`v${i}`} x1={size/(lines-1)*i} y1="0" x2={size/(lines-1)*i} y2={size} stroke={color} strokeWidth="1" opacity={opacity}/>
+    ])}
+  </svg>
+);
+const Brackets = ({ color='#1A1A1A', size=12, opacity=0.4 }) => <>
+  <div style={{position:'absolute',top:6,left:6,width:size,height:size,borderTop:`1px solid ${color}`,borderLeft:`1px solid ${color}`,opacity,pointerEvents:'none'}}/>
+  <div style={{position:'absolute',top:6,right:6,width:size,height:size,borderTop:`1px solid ${color}`,borderRight:`1px solid ${color}`,opacity,pointerEvents:'none'}}/>
+  <div style={{position:'absolute',bottom:6,left:6,width:size,height:size,borderBottom:`1px solid ${color}`,borderLeft:`1px solid ${color}`,opacity,pointerEvents:'none'}}/>
+  <div style={{position:'absolute',bottom:6,right:6,width:size,height:size,borderBottom:`1px solid ${color}`,borderRight:`1px solid ${color}`,opacity,pointerEvents:'none'}}/>
+</>;
+const Logo = ({ color='#1A1A1A', size=38 }) => (
+  <svg width={size*(48.43/71.95)} height={size} viewBox="0 0 48.43 71.95">
+    <path fill={color} d="m48.43,71.95H0V0h48.43v71.95Zm-46.06-2.18h43.69V2.18H2.37v67.6Z"/>
+    <path fill={color} d="m31.55,47.78h4.91v3h-4.91v8.68h-3.8v-21.02h10.06v3h-6.26v6.34Z"/>
+    <path fill={color} d="m10.62,12.49h5.22c3.3,0,4.92,1.83,4.92,5.19v10.63c0,3.36-1.62,5.19-4.92,5.19h-5.22V12.49Zm3.3,3v15.01h1.86c1.05,0,1.68-.54,1.68-2.04v-10.93c0-1.5-.63-2.04-1.68-2.04h-1.86Z"/>
+    <path fill={color} d="m12.92,59.46l-1.92-1.39L35.51,12.49l1.92,1.39L12.92,59.46Z"/>
+  </svg>
+);
+const PanelLabel = ({ children, color='var(--ink)' }) => (
+  <div style={{display:'inline-flex',alignItems:'center',gap:6,marginBottom:16}}>
+    <div style={{width:6,height:6,background:color}}/>
+    <span style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.25em',textTransform:'uppercase',color}}>{children}</span>
+  </div>
+);
+
+/* ══ HEADER ═══════════════════════════════════════════════ */
+const Header = ({ page, setPage, lang, setLang }) => {
+  const t=k=>T[lang][k]??T.pt[k]??k;
+  const [scrolled,setScrolled]=useState(false);
+  useEffect(()=>{
+    const el=document.getElementById('scroll-root');
+    const fn=()=>setScrolled((el?.scrollTop||0)>20);
+    el?.addEventListener('scroll',fn);
+    return()=>el?.removeEventListener('scroll',fn);
+  },[]);
+  return (
+    <header style={{position:'fixed',top:0,left:0,right:0,zIndex:200,background:`rgba(245,240,232,${scrolled?0.97:0.92})`,borderBottom:`1px solid rgba(26,26,26,${scrolled?0.14:0.07})`,backdropFilter:'blur(12px)',padding:'0 40px',height:60,display:'flex',alignItems:'center',justifyContent:'space-between',transition:'border-color 200ms'}}>
+      <button onClick={()=>setPage('home')} style={{background:'none',border:'none',display:'flex',alignItems:'center',gap:10,cursor:'pointer'}}>
+        <Logo color="var(--ink)" size={34}/>
+        <span style={{fontFamily:'var(--D)',fontSize:18,letterSpacing:'0.12em',color:'var(--ink)'}}>DIEGO FURTADO</span>
+      </button>
+      <nav style={{display:'flex',gap:24,alignItems:'center'}}>
+        {[['home',t('nav_home')],['projetos',t('nav_projects')],['conteudo',t('nav_content')],['sobre',t('nav_about')]].map(([key,label])=>{
+          const active=page===key||(page==='projeto'&&key==='projetos')||(page==='conteudo-item'&&key==='conteudo');
+          return <button key={key} onClick={()=>setPage(key)} style={{background:'none',border:'none',fontFamily:'var(--M)',fontSize:10,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:active?'var(--ink)':'rgba(26,26,26,0.42)',position:'relative',paddingBottom:2,cursor:'pointer',transition:'color 120ms'}}>
+            {label}{active&&<span style={{position:'absolute',bottom:-1,left:0,right:0,height:1,background:'var(--ink)'}}/>}
+          </button>;
+        })}
+        {/* Lang toggle */}
+        <button onClick={()=>setLang(l=>l==='pt'?'en':'pt')} style={{background:'none',border:'1px solid rgba(26,26,26,0.22)',fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.18em',textTransform:'uppercase',color:'rgba(26,26,26,0.55)',padding:'5px 10px',cursor:'pointer',transition:'all 120ms'}}
+          onMouseEnter={e=>{e.currentTarget.style.background='var(--ink)';e.currentTarget.style.color='var(--cream)';}}
+          onMouseLeave={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color='rgba(26,26,26,0.55)';}}>
+          {t('lang_btn')}
+        </button>
+        <a href="mailto:diegoiribarrem@gmail.com" style={{background:'var(--ink)',color:'var(--cream)',fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',padding:'7px 14px',textDecoration:'none'}}>{t('nav_contact')}</a>
+      </nav>
+    </header>
+  );
+};
+
+/* ══ FOOTER ═══════════════════════════════════════════════ */
+const Footer = ({ lang }) => {
+  const t=k=>T[lang][k]??T.pt[k]??k;
+  const about=getAboutContent(lang);
+  return (
+    <footer style={{background:'var(--navy)',padding:'36px 48px',display:'flex',justifyContent:'space-between',alignItems:'center',borderTop:'2px solid var(--yellow)'}}>
+      <div style={{display:'flex',alignItems:'center',gap:10}}>
+        <Logo color="var(--yellow)" size={30}/>
+        <span style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:'rgba(255,255,255,0.28)'}}>{about.footerCopy||t('footer_copy')}</span>
+      </div>
+      <div style={{opacity:0.09}}><LineGrid color="var(--yellow)" size={80} lines={5} opacity={1}/></div>
+      <div style={{display:'flex',gap:24}}>
+        {[['LinkedIn','https://linkedin.com/in/diegofreitasfurtado'],['GitHub','#'],['Medium','#']].map(([l,h])=>(
+          <a key={l} href={h} target="_blank" rel="noopener noreferrer" style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.18em',textTransform:'uppercase',color:'rgba(255,255,255,0.28)',textDecoration:'none',transition:'color 120ms'}}
+            onMouseEnter={e=>e.target.style.color='var(--yellow)'}
+            onMouseLeave={e=>e.target.style.color='rgba(255,255,255,0.28)'}>{l}</a>
+        ))}
+      </div>
+    </footer>
+  );
+};
+
+/* ══ INTEREST / TECH / SOLUTION HELPERS ═══════════════════ */
+const getInterests = () => (window.PROJECTS_DATA||{}).interests || {};
+const getTechnologies = () => (window.PROJECTS_DATA||{}).technologies || [];
+const getSolutionTypes = () => (window.PROJECTS_DATA||{}).solutionType || {};
+
+const interestLabel = (key, lang) => {
+  const i = getInterests()[key];
+  if (!i) return key;
+  return lang==='en' ? (i.en||i.pt) : (i.pt||i.en);
+};
+const solutionLabel = (key, lang) => {
+  const s = getSolutionTypes()[key];
+  if (!s) return key;
+  return lang==='en' ? (s.en||s.pt) : (s.pt||s.en);
+};
+const projectTitle = (p, lang) => lang==='en' ? (p.titleEn||p.title) : p.title;
+const projectSubtitle = (p, lang) => lang==='en' ? (p.subtitleEn||p.subtitle) : p.subtitle;
+const projectDesc = (p, lang) => lang==='en' ? (p.descEn||p.desc||'') : (p.desc||'');
+
+const visibleProjects = () => ((window.PROJECTS_DATA||{}).projects||[]).filter(p => !p.hidden);
+const visibleContent  = () => ((window.PROJECTS_DATA||{}).content ||[]).filter(c => !c.hidden);
+
+/* ══ HOME PAGE ════════════════════════════════════════════ */
+const HomeProjectCard = ({ project, interest, lang, onClick }) => {
+  const [hov,setHov]=useState(false);
+  const accent=la(interest); // safe on light bg
+  return (
+    <div onClick={onClick} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
+      style={{background:hov?interest.colorDark:'var(--white)',border:'1px solid rgba(26,26,26,0.1)',borderTop:`3px solid ${accent}`,padding:24,cursor:'pointer',position:'relative',overflow:'hidden',transition:'background 200ms',display:'flex',flexDirection:'column',gap:10}}>
+      <Brackets color={hov?`${accent}50`:'rgba(26,26,26,0.14)'}/>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+        <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:hov?interest.color:accent}}>{interestLabel(project.interest, lang)}</div>
+        <div style={{opacity:0.35,flexShrink:0}}>
+          {project.interest==='tecnologia'    &&<ConcentricCircles  color={hov?interest.color:accent} size={50} rings={4}/>}
+          {project.interest==='esportes'      &&<RotatingSquares    color={hov?interest.color:accent} size={50} count={4}/>}
+          {project.interest==='entretenimento'&&<NestedTriangles    color={hov?interest.color:accent} size={50} count={4}/>}
+          {project.interest==='experimentos'  &&<OverlappingCircles color={hov?interest.color:accent} size={50}/>}
+        </div>
+      </div>
+      <div style={{fontFamily:'var(--D)',fontSize:24,letterSpacing:'0.04em',textTransform:'uppercase',color:hov?'var(--white)':'var(--ink)',lineHeight:1.1}}>{projectTitle(project, lang)}</div>
+      <div style={{fontFamily:'var(--M)',fontSize:11,lineHeight:1.75,color:hov?'rgba(255,255,255,0.55)':'rgba(26,26,26,0.5)',flex:1}}>{projectSubtitle(project, lang)}</div>
+      <div style={{fontFamily:'var(--M)',fontSize:9,letterSpacing:'0.12em',textTransform:'uppercase',color:hov?'rgba(255,255,255,0.35)':'rgba(26,26,26,0.28)',borderTop:`1px solid ${hov?'rgba(255,255,255,0.1)':'rgba(26,26,26,0.07)'}`,paddingTop:10,marginTop:4}}>
+        {project.year} · {(project.tools||[])[0]||''}
+      </div>
+    </div>
+  );
+};
+
+const HomePage = ({ setPage, lang }) => {
+  const t=k=>T[lang][k]??T.pt[k]??k;
+  const data=getPortfolioData();
+  const about=getAboutContent(lang);
+  const interests=getInterests();
+  const featured=visibleProjects().filter(p=>p.featured).slice(0,2);
+  const cfg=window.SITE_CONFIG||{};
+  const spotifyEmbedHtml=(cfg.spotifyEmbedHtml||'').trim();
+  return (
+    <div>
+      {/* HERO */}
+      <div style={{background:'var(--navy)',minHeight:'100vh',display:'flex',alignItems:'center',position:'relative',overflow:'hidden',padding:'80px 48px 60px'}}>
+        <div style={{position:'absolute',inset:0,opacity:0.03}}><LineGrid color="#fff" size={900} lines={18} opacity={1}/></div>
+        <div style={{position:'absolute',right:80,top:'50%',transform:'translateY(-50%)',opacity:0.08}}><ConcentricCircles color="var(--yellow)" size={340} rings={8}/></div>
+        <div style={{position:'absolute',right:340,bottom:60,opacity:0.05}}><NestedTriangles color="var(--yellow)" size={180} count={6}/></div>
+        <div style={{maxWidth:780,position:'relative',zIndex:1}}>
+          <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:24}}>
+            <div style={{width:24,height:1,background:'var(--yellow)'}}/>
+            <span style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.32em',textTransform:'uppercase',color:'var(--yellow)'}}>{t('hero_tag')}</span>
+          </div>
+          <h1 style={{fontFamily:'var(--D)',fontSize:'clamp(72px,9vw,128px)',letterSpacing:'0.03em',textTransform:'uppercase',lineHeight:0.92,color:'var(--white)',marginBottom:28}}>
+            Diego<br/><span style={{color:'var(--yellow)'}}>Furtado</span>
+          </h1>
+          <p style={{fontFamily:'var(--M)',fontSize:13,lineHeight:1.85,color:'rgba(255,255,255,0.5)',maxWidth:480,marginBottom:40}}>{t('hero_desc')}</p>
+          <div style={{display:'flex',gap:12,marginBottom:60}}>
+            <button onClick={()=>setPage('projetos')} style={{background:'var(--yellow)',color:'var(--navy)',border:'none',padding:'12px 28px',fontFamily:'var(--D)',fontSize:18,letterSpacing:'0.1em',textTransform:'uppercase',cursor:'pointer',fontWeight:700}}>{t('hero_cta1')}</button>
+            <button onClick={()=>setPage('sobre')} style={{background:'transparent',color:'rgba(255,255,255,0.55)',border:'1px solid rgba(255,255,255,0.2)',padding:'11px 28px',fontFamily:'var(--D)',fontSize:18,letterSpacing:'0.1em',textTransform:'uppercase',cursor:'pointer',transition:'all 150ms'}}
+              onMouseEnter={e=>{e.currentTarget.style.color='#fff';e.currentTarget.style.borderColor='rgba(255,255,255,0.5)';}}
+              onMouseLeave={e=>{e.currentTarget.style.color='rgba(255,255,255,0.55)';e.currentTarget.style.borderColor='rgba(255,255,255,0.2)';}}>
+              {t('hero_cta2')}
+            </button>
+          </div>
+          <div style={{display:'flex',gap:40,paddingTop:32,borderTop:'1px solid rgba(255,255,255,0.07)'}}>
+            {[['4×','stat1'],['~30h','stat2'],['50%','stat3']].map(([n,sk])=>(
+              <div key={sk}>
+                <div style={{fontFamily:'var(--D)',fontSize:36,color:'var(--yellow)',lineHeight:1}}>{n}</div>
+                <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.14em',textTransform:'uppercase',color:'rgba(255,255,255,0.28)',marginTop:4,maxWidth:130,lineHeight:1.5}}>{t(sk)}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* FEATURED PROJECTS */}
+      <div style={{background:'var(--cream)',padding:'72px 48px'}}>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline',marginBottom:40}}>
+          <div>
+            <PanelLabel color="var(--blue)">{t('portfolio_label')}</PanelLabel>
+            <h2 style={{fontFamily:'var(--D)',fontSize:48,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)'}}>{t('featured_heading')}</h2>
+          </div>
+          <button onClick={()=>setPage('projetos')} style={{background:'none',border:'1px solid rgba(26,26,26,0.2)',fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:'var(--blue)',padding:'8px 14px',cursor:'pointer'}}>{t('see_all')}</button>
+        </div>
+        <div style={{display:'grid',gridTemplateColumns:featured.length>1?'1fr 1fr':'1fr',gap:12}}>
+          {featured.map(p=>{
+            const i=interests[p.interest]||{color:'var(--blue)',colorDark:'var(--navy)'};
+            return <HomeProjectCard key={p.id} project={p} interest={i} lang={lang} onClick={()=>setPage('projetos')}/>;
+          })}
+        </div>
+      </div>
+
+      {/* ABOUT STRIP */}
+      <div style={{borderTop:'1px solid rgba(26,26,26,0.08)',borderBottom:'1px solid rgba(26,26,26,0.08)',padding:'56px 48px',display:'flex',gap:64,alignItems:'center',background:'var(--cream-dk)'}}>
+        <div style={{flex:'0 0 130px',opacity:0.5}}><OverlappingCircles color="var(--lav)" size={130}/></div>
+        <div style={{flex:1}}>
+          <PanelLabel color="var(--lav)">{t('about_label')}</PanelLabel>
+          <p style={{fontFamily:'var(--D)',fontSize:28,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)',lineHeight:1.15,maxWidth:560}}>{about.quote||t('about_quote')}</p>
+        </div>
+        <button onClick={()=>setPage('sobre')} style={{background:'var(--lav)',color:'var(--white)',border:'none',padding:'12px 20px',fontFamily:'var(--D)',fontSize:16,letterSpacing:'0.1em',textTransform:'uppercase',flexShrink:0,cursor:'pointer'}}>{t('read_more')}</button>
+      </div>
+
+      {/* SPOTIFY */}
+      <div style={{background:'var(--navy)',padding:'64px 48px'}}>
+        <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:28}}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" stroke="#1DB954" strokeWidth="1.5"/><path d="M7 9.5c2.8-1 6.2-1 9 .5M7.5 12c2.4-.9 5.4-.9 8 .5M8 14.5c2-.7 4.4-.7 6.5.5" stroke="#1DB954" strokeWidth="1.5" strokeLinecap="round"/></svg>
+          <PanelLabel color="rgba(255,255,255,0.38)">{t('spotify_label')}</PanelLabel>
+        </div>
+        {spotifyEmbedHtml ? (
+          <div
+            style={{display:'block',width:'100%'}}
+            dangerouslySetInnerHTML={{__html:spotifyEmbedHtml}}
+          />
+        ) : cfg.spotifyPlaylistId ? (
+          <iframe src={`https://open.spotify.com/embed/playlist/${cfg.spotifyPlaylistId}?utm_source=generator&theme=0`} width="100%" height="152" frameBorder="0" allow="autoplay;clipboard-write;encrypted-media;fullscreen;picture-in-picture" style={{display:'block'}} title="Spotify"/>
+        ) : (
+          <div style={{border:'1px solid rgba(255,255,255,0.07)',padding:'28px 24px',display:'flex',alignItems:'center',gap:20,maxWidth:600}}>
+            <svg width="36" height="36" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="19" stroke="#1DB954" strokeWidth="1"/><path d="M12 16c4.7-1.7 10.3-1.7 15 0M12.8 20c4-1.4 9-1.4 13.8 0M13.7 24c3.2-1.1 7.4-1.1 11.1 0" stroke="#1DB954" strokeWidth="1.5" strokeLinecap="round"/></svg>
+            <div>
+              <div style={{fontFamily:'var(--D)',fontSize:18,color:'rgba(255,255,255,0.4)',letterSpacing:'0.08em',textTransform:'uppercase',marginBottom:5}}>{t('spotify_empty')}</div>
+              <div style={{fontFamily:'var(--M)',fontSize:10,color:'rgba(255,255,255,0.22)',lineHeight:1.6}}>{t('spotify_hint')}</div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+/* ══ PROJETOS PAGE ════════════════════════════════════════ */
+const ProjetoCard = ({ project, interest, lang, onClick, isSelected }) => {
+  const [hov,setHov]=useState(false);
+  const accent=la(interest);
+  // State hierarchy: selected > hover > normal
+  const bgColor = isSelected ? interest.color : hov ? interest.colorDark : 'var(--white)';
+  const textColor = isSelected ? '#fff' : hov ? '#fff' : 'var(--ink)';
+  const subColor  = isSelected ? 'rgba(255,255,255,0.6)' : hov ? 'rgba(255,255,255,0.5)' : 'rgba(26,26,26,0.48)';
+  const tagAccent = isSelected ? '#fff' : hov ? interest.color : accent;
+
+  return (
+    <div onClick={onClick} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
+      style={{background:bgColor,border:`1px solid ${isSelected?'transparent':'rgba(26,26,26,0.09)'}`,borderTop:`3px solid ${isSelected?interest.color:accent}`,padding:24,cursor:'pointer',position:'relative',overflow:'hidden',transition:'background 160ms,border-color 160ms',display:'flex',flexDirection:'column',gap:12}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+        <div style={{flex:1}}>
+          <div style={{fontFamily:'var(--M)',fontSize:8,fontWeight:700,letterSpacing:'0.22em',textTransform:'uppercase',color:tagAccent,marginBottom:10}}>{interestLabel(project.interest, lang)}</div>
+          <div style={{fontFamily:'var(--D)',fontSize:22,letterSpacing:'0.04em',textTransform:'uppercase',color:textColor,lineHeight:1.05,marginBottom:5}}>{projectTitle(project, lang)}</div>
+          <div style={{fontFamily:'var(--M)',fontSize:10,fontStyle:'italic',color:subColor}}>{projectSubtitle(project, lang)}</div>
+        </div>
+        <div style={{opacity:0.3,flexShrink:0,marginLeft:12}}>
+          {project.interest==='tecnologia'    &&<ConcentricCircles  color={tagAccent} size={46} rings={4}/>}
+          {project.interest==='esportes'      &&<RotatingSquares    color={tagAccent} size={46} count={4}/>}
+          {project.interest==='entretenimento'&&<NestedTriangles    color={tagAccent} size={46} count={4}/>}
+          {project.interest==='experimentos'  &&<OverlappingCircles color={tagAccent} size={46}/>}
+        </div>
+      </div>
+      <div style={{fontFamily:'var(--M)',fontSize:10,lineHeight:1.75,color:subColor,display:'-webkit-box',WebkitLineClamp:2,WebkitBoxOrient:'vertical',overflow:'hidden'}}>
+        {projectDesc(project, lang).split('\n')[0]}
+      </div>
+      {/* Mini-chips Technologies — cor cheia da Interest */}
+      {(project.technologies||[]).length>0 && (
+        <div style={{display:'flex',flexWrap:'wrap',gap:4}}>
+          {(project.technologies||[]).slice(0,4).map(t=>(
+            <span key={t} style={{fontFamily:'var(--M)',fontSize:8,fontWeight:700,letterSpacing:'0.1em',textTransform:'uppercase',background:'transparent',color:tagAccent,border:`1px solid ${tagAccent}`,padding:'3px 7px'}}>{t}</span>
+          ))}
+        </div>
+      )}
+      {/* Mini-chips Solution Type — tom leve da Interest */}
+      {(project.solutionType||[]).length>0 && (
+        <div style={{display:'flex',flexWrap:'wrap',gap:4}}>
+          {(project.solutionType||[]).map(s=>(
+            <span key={s} style={{fontFamily:'var(--M)',fontSize:8,fontWeight:700,letterSpacing:'0.1em',textTransform:'uppercase',background:'transparent',color:isSelected?'rgba(255,255,255,0.7)':interest.colorSoft||tagAccent,border:`1px solid ${isSelected?'rgba(255,255,255,0.4)':interest.colorSoft||tagAccent}`,padding:'3px 7px'}}>{solutionLabel(s, lang)}</span>
+          ))}
+        </div>
+      )}
+      <div style={{display:'flex',justifyContent:'flex-end',alignItems:'center',paddingTop:8,marginTop:'auto',borderTop:`1px solid ${isSelected?'rgba(255,255,255,0.18)':hov?'rgba(255,255,255,0.08)':'rgba(26,26,26,0.07)'}`}}>
+        <span style={{fontFamily:'var(--M)',fontSize:8,color:subColor,letterSpacing:'0.1em',textTransform:'uppercase',flexShrink:0}}>{project.year}</span>
+      </div>
+    </div>
+  );
+};
+
+/* ── Filter chip ────────────────────────────────────────── */
+const FilterChip = ({ label, active, onClick, color, soloMode, fullWidth, size='md' }) => {
+  const styleOff = soloMode
+    ? { background: color, color:'var(--cream)', borderColor:'transparent' }
+    : { background:'var(--cream)', color:'var(--ink)', borderColor:'var(--lav)' };
+  const styleOn = soloMode
+    ? { background: color, color:'var(--cream)', borderColor:'rgba(255,255,255,0.5)', fontWeight:800 }
+    : { background:'var(--lavlt)', color:'var(--navy)', borderColor:'var(--lavlt)', fontWeight:700 };
+  const s = active ? styleOn : styleOff;
+  const sz = size==='lg'
+    ? { fontSize:13, fontWeight:700, padding:'9px 14px' }
+    : { fontSize:9,  fontWeight:600, padding:'4px 10px' };
+  return (
+    <button onClick={onClick}
+      style={{fontFamily:'var(--M)',...sz,borderRadius:2,cursor:'pointer',border:`1px solid ${s.borderColor}`,background:s.background,color:s.color,...(s.fontWeight?{fontWeight:s.fontWeight}:{}),transition:'all 120ms',userSelect:'none',...(fullWidth?{display:'block',width:'100%',textAlign:'left'}:{whiteSpace:'nowrap'})}}>
+      {label}
+    </button>
+  );
+};
+
+const ProjetosPage = ({ onProjectClick, lang }) => {
+  const t=k=>T[lang][k]??T.pt[k]??k;
+  const interests=getInterests();
+  const techs=getTechnologies();
+  const sols=getSolutionTypes();
+  const allProjects=visibleProjects();
+
+  const [selInt,setSelInt]=useState(()=>new Set());
+  const [selTech,setSelTech]=useState(()=>new Set());
+  const [selSol,setSelSol]=useState(()=>new Set());
+  const [flashId,setFlashId]=useState(null);
+
+  const toggle=(set,setter,key)=>{
+    const next=new Set(set);
+    if(next.has(key)) next.delete(key); else next.add(key);
+    setter(next);
+  };
+  const clearAll=()=>{ setSelInt(new Set()); setSelTech(new Set()); setSelSol(new Set()); };
+
+  // Cascade: tech/sol available = only those used by interest-matched projects
+  const interestMatched = selInt.size>0 ? allProjects.filter(p=>selInt.has(p.interest)) : allProjects;
+  const availableTechs = new Set(interestMatched.flatMap(p=>p.technologies||[]));
+  const availableSols  = new Set(interestMatched.flatMap(p=>p.solutionType||[]));
+
+  // Auto-clear tech/sol selections that disappear when interests change
+  useEffect(()=>{
+    if(selInt.size===0) return;
+    const intF=allProjects.filter(p=>selInt.has(p.interest));
+    const avT=new Set(intF.flatMap(p=>p.technologies||[]));
+    const avS=new Set(intF.flatMap(p=>p.solutionType||[]));
+    setSelTech(prev=>{ const n=new Set([...prev].filter(t=>avT.has(t))); return n.size===prev.size?prev:n; });
+    setSelSol(prev=>{ const n=new Set([...prev].filter(s=>avS.has(s))); return n.size===prev.size?prev:n; });
+  },[selInt]);
+
+  // AND between groups, OR within group
+  const matches=(p)=>{
+    if(selInt.size>0 && !selInt.has(p.interest)) return false;
+    if(selTech.size>0 && !(p.technologies||[]).some(x=>selTech.has(x))) return false;
+    if(selSol.size>0 && !(p.solutionType||[]).some(x=>selSol.has(x))) return false;
+    return true;
+  };
+  const filtered=allProjects.filter(matches);
+  const total=allProjects.length;
+  const hasFilters=selInt.size>0||selTech.size>0||selSol.size>0;
+
+  const handleCardClick=(id)=>{
+    setFlashId(id);
+    setTimeout(()=>{ onProjectClick(id); setFlashId(null); }, 180);
+  };
+
+  // Sidebar accent follows single selected interest
+  const singleInt = selInt.size===1 ? [...selInt][0] : null;
+  const sidebarAccent = singleInt ? (interests[singleInt]?.color||'var(--navy)') : 'var(--navy)';
+
+  return (
+    <div>
+      {/* Header */}
+      <div style={{background:'var(--navy)',padding:'80px 48px 40px',position:'relative',overflow:'hidden'}}>
+        <div style={{position:'absolute',right:48,bottom:-30,opacity:0.07}}><RotatingSquares color="var(--yellow)" size={260} count={7}/></div>
+        <PanelLabel color="rgba(255,255,255,0.38)">{t('portfolio_tag')}</PanelLabel>
+        <h1 style={{fontFamily:'var(--D)',fontSize:64,letterSpacing:'0.05em',textTransform:'uppercase',color:'var(--white)',position:'relative',zIndex:1}}>{t('projects_heading')}</h1>
+      </div>
+
+      {/* Two-column layout: grid + sidebar */}
+      <div style={{background:'var(--cream)',display:'grid',gridTemplateColumns:'1fr 264px',alignItems:'start'}}>
+
+        {/* LEFT: project grid */}
+        <div style={{padding:'32px 48px 64px',borderRight:'1px solid rgba(26,26,26,0.07)'}}>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:20,paddingBottom:12,borderBottom:'1px solid rgba(26,26,26,0.08)'}}>
+            <span style={{fontFamily:'var(--M)',fontSize:10,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:'rgba(26,26,26,0.45)'}}>
+              {(T[lang].filter_status||T.pt.filter_status)(filtered.length,total)}
+            </span>
+            {hasFilters && (
+              <button onClick={clearAll} style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.18em',textTransform:'uppercase',padding:'4px 10px',background:'transparent',color:'var(--ink)',border:'1px solid rgba(26,26,26,0.2)',cursor:'pointer'}}>
+                {t('filter_clear')}
+              </button>
+            )}
+          </div>
+          {filtered.length===0 ? (
+            <div style={{padding:'64px 0',textAlign:'center',fontFamily:'var(--M)',fontSize:11,color:'rgba(26,26,26,0.32)',letterSpacing:'0.15em',textTransform:'uppercase',border:'1px dashed var(--lav)'}}>{t('no_projects')}</div>
+          ) : (
+            <div style={{display:'grid',gridTemplateColumns:filtered.length>1?'1fr 1fr':'1fr',gap:12}}>
+              {filtered.map(p=>{
+                const i=interests[p.interest]||{color:'var(--blue)',colorDark:'var(--navy)',colorSoft:'var(--lavlt)'};
+                return <ProjetoCard key={p.id} project={p} interest={i} lang={lang} onClick={()=>handleCardClick(p.id)} isSelected={flashId===p.id}/>;
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* RIGHT: sticky filter sidebar */}
+        <div style={{position:'sticky',top:60,alignSelf:'start',height:'calc(100vh - 60px)',overflowY:'auto',background:'var(--white)',padding:'24px 16px 32px'}}>
+
+          {/* Sidebar header */}
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:18,paddingBottom:10,borderBottom:`2px solid ${sidebarAccent}`,transition:'border-color 300ms'}}>
+            <span style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.25em',textTransform:'uppercase',color:sidebarAccent,transition:'color 300ms'}}>Filtros</span>
+            {hasFilters && (
+              <button onClick={clearAll} style={{fontFamily:'var(--M)',fontSize:8,fontWeight:700,letterSpacing:'0.14em',textTransform:'uppercase',background:'none',border:'none',color:'rgba(26,26,26,0.38)',cursor:'pointer',padding:0}}
+                onMouseEnter={e=>e.target.style.color='var(--ink)'}
+                onMouseLeave={e=>e.target.style.color='rgba(26,26,26,0.38)'}>
+                {t('filter_clear')}
+              </button>
+            )}
+          </div>
+
+          {/* ── Nível 1: Áreas (chips grandes, label pesado) */}
+          <div style={{marginBottom:20}}>
+            <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.25em',textTransform:'uppercase',color:'var(--ink)',paddingBottom:6,borderBottom:'1px solid rgba(26,26,26,0.12)',marginBottom:12}}>{t('filter_interests')}</div>
+            <div style={{display:'flex',flexDirection:'column',gap:6}}>
+              {Object.entries(interests).map(([key,i])=>(
+                <FilterChip key={key} label={lang==='en'?(i.en||i.pt):(i.pt||i.en)}
+                  active={selInt.has(key)} onClick={()=>toggle(selInt,setSelInt,key)}
+                  color={i.color} soloMode={true} fullWidth size='lg'/>
+              ))}
+            </div>
+          </div>
+
+          {/* separador entre níveis */}
+          {(availableTechs.size>0||availableSols.size>0) && (
+            <div style={{height:1,background:'rgba(26,26,26,0.07)',margin:'8px 0 20px'}}/>
+          )}
+
+          {/* ── Nível 2: Tecnologias (chips pequenos, label leve) */}
+          {availableTechs.size>0 && (
+            <div style={{marginBottom:14}}>
+              <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.25em',textTransform:'uppercase',color:'var(--ink)',paddingBottom:6,borderBottom:'1px solid rgba(26,26,26,0.12)',marginBottom:12}}>{t('filter_techs')}</div>
+              <div style={{display:'flex',flexDirection:'column',gap:4}}>
+                {techs.filter(tech=>availableTechs.has(tech)).map(tech=>(
+                  <FilterChip key={tech} label={tech}
+                    active={selTech.has(tech)} onClick={()=>toggle(selTech,setSelTech,tech)}
+                    soloMode={false} fullWidth size='sm'/>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── Nível 2: Tipo de Solução (chips pequenos, label leve) */}
+          {availableSols.size>0 && (
+            <div style={{marginBottom:14}}>
+              <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.25em',textTransform:'uppercase',color:'var(--ink)',paddingBottom:6,borderBottom:'1px solid rgba(26,26,26,0.12)',marginBottom:12}}>{t('filter_sols')}</div>
+              <div style={{display:'flex',flexDirection:'column',gap:4}}>
+                {Object.entries(sols).filter(([key])=>availableSols.has(key)).map(([key,s])=>(
+                  <FilterChip key={key} label={lang==='en'?(s.en||s.pt):(s.pt||s.en)}
+                    active={selSol.has(key)} onClick={()=>toggle(selSol,setSelSol,key)}
+                    soloMode={false} fullWidth size='sm'/>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ══ CONTEÚDO PAGE ════════════════════════════════════════ */
+const ConteudoCard = ({ item, interest, lang, onClick, isSelected }) => {
+  const [hov,setHov]=useState(false);
+  const accent=la(interest);
+  const bgColor = isSelected ? interest.color : hov ? interest.colorDark : 'var(--white)';
+  const textColor = isSelected||hov ? '#fff' : 'var(--ink)';
+  const subColor  = isSelected||hov ? 'rgba(255,255,255,0.55)' : 'rgba(26,26,26,0.48)';
+  const tagAccent = isSelected ? '#fff' : hov ? interest.color : accent;
+  const title  = lang==='en' ? (item.titleEn||item.title)      : item.title;
+  const sub    = lang==='en' ? (item.subtitleEn||item.subtitle) : item.subtitle;
+  return (
+    <div onClick={onClick} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
+      style={{background:bgColor,border:`1px solid ${isSelected?'transparent':'rgba(26,26,26,0.09)'}`,borderTop:`3px solid ${isSelected?interest.color:accent}`,padding:24,cursor:'pointer',position:'relative',overflow:'hidden',transition:'background 160ms',display:'flex',flexDirection:'column',gap:10}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+        <div style={{flex:1}}>
+          <div style={{fontFamily:'var(--M)',fontSize:8,fontWeight:700,letterSpacing:'0.22em',textTransform:'uppercase',color:tagAccent,marginBottom:8}}>{interestLabel(item.interest, lang)}</div>
+          <div style={{fontFamily:'var(--D)',fontSize:20,letterSpacing:'0.04em',textTransform:'uppercase',color:textColor,lineHeight:1.05,marginBottom:5}}>{title}</div>
+          <div style={{fontFamily:'var(--M)',fontSize:10,fontStyle:'italic',color:subColor}}>{sub}</div>
+        </div>
+        <div style={{opacity:0.28,flexShrink:0,marginLeft:12}}>
+          {item.interest==='tecnologia'    &&<ConcentricCircles  color={tagAccent} size={40} rings={3}/>}
+          {item.interest==='esportes'      &&<RotatingSquares    color={tagAccent} size={40} count={3}/>}
+          {item.interest==='entretenimento'&&<NestedTriangles    color={tagAccent} size={40} count={3}/>}
+          {item.interest==='experimentos'  &&<OverlappingCircles color={tagAccent} size={40}/>}
+        </div>
+      </div>
+      <div style={{display:'flex',gap:12,alignItems:'center',paddingTop:8,marginTop:'auto',borderTop:`1px solid ${isSelected?'rgba(255,255,255,0.14)':hov?'rgba(255,255,255,0.08)':'rgba(26,26,26,0.07)'}`}}>
+        <span style={{fontFamily:'var(--M)',fontSize:8,color:tagAccent,letterSpacing:'0.14em',textTransform:'uppercase',fontWeight:700}}>{item.date}</span>
+        <span style={{fontFamily:'var(--M)',fontSize:8,color:subColor,letterSpacing:'0.1em',textTransform:'uppercase'}}>{item.readTime}</span>
+      </div>
+    </div>
+  );
+};
+
+const ConteudoPage = ({ onContentClick, lang }) => {
+  const t=k=>T[lang][k]??T.pt[k]??k;
+  const interests=getInterests();
+  const techs=getTechnologies();
+  const sols=getSolutionTypes();
+  const allContent=visibleContent();
+
+  const [selInt,setSelInt]=useState(()=>new Set());
+  const [selTech,setSelTech]=useState(()=>new Set());
+  const [selSol,setSelSol]=useState(()=>new Set());
+  const [flashId,setFlashId]=useState(null);
+
+  const toggle=(set,setter,key)=>{
+    const next=new Set(set); if(next.has(key)) next.delete(key); else next.add(key); setter(next);
+  };
+  const clearAll=()=>{ setSelInt(new Set()); setSelTech(new Set()); setSelSol(new Set()); };
+
+  const interestMatched = selInt.size>0 ? allContent.filter(c=>selInt.has(c.interest)) : allContent;
+  const availableTechs  = new Set(interestMatched.flatMap(c=>c.technologies||[]));
+  const availableSols   = new Set(interestMatched.flatMap(c=>c.solutionType||[]));
+
+  useEffect(()=>{
+    if(selInt.size===0) return;
+    const intF=allContent.filter(c=>selInt.has(c.interest));
+    const avT=new Set(intF.flatMap(c=>c.technologies||[]));
+    const avS=new Set(intF.flatMap(c=>c.solutionType||[]));
+    setSelTech(prev=>{ const n=new Set([...prev].filter(t=>avT.has(t))); return n.size===prev.size?prev:n; });
+    setSelSol(prev=>{ const n=new Set([...prev].filter(s=>avS.has(s))); return n.size===prev.size?prev:n; });
+  },[selInt]);
+
+  const matches=(c)=>{
+    if(selInt.size>0 && !selInt.has(c.interest)) return false;
+    if(selTech.size>0 && !(c.technologies||[]).some(x=>selTech.has(x))) return false;
+    if(selSol.size>0 && !(c.solutionType||[]).some(x=>selSol.has(x))) return false;
+    return true;
+  };
+  const filtered=allContent.filter(matches);
+  const total=allContent.length;
+  const hasFilters=selInt.size>0||selTech.size>0||selSol.size>0;
+
+  const handleClick=(id)=>{ setFlashId(id); setTimeout(()=>{ onContentClick(id); setFlashId(null); },180); };
+
+  const singleInt = selInt.size===1 ? [...selInt][0] : null;
+  const sidebarAccent = singleInt ? (interests[singleInt]?.color||'var(--navy)') : 'var(--navy)';
+
+  return (
+    <div>
+      <div style={{background:'var(--navy)',padding:'80px 48px 40px',position:'relative',overflow:'hidden'}}>
+        <div style={{position:'absolute',right:48,bottom:-30,opacity:0.07}}><OverlappingCircles color="var(--yellow)" size={260}/></div>
+        <PanelLabel color="rgba(255,255,255,0.38)">{t('content_tag')}</PanelLabel>
+        <h1 style={{fontFamily:'var(--D)',fontSize:64,letterSpacing:'0.05em',textTransform:'uppercase',color:'var(--white)',position:'relative',zIndex:1}}>{t('content_heading')}</h1>
+      </div>
+
+      <div style={{background:'var(--cream)',display:'grid',gridTemplateColumns:'1fr 264px',alignItems:'start'}}>
+
+        {/* LEFT: content grid */}
+        <div style={{padding:'32px 48px 64px',borderRight:'1px solid rgba(26,26,26,0.07)'}}>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:20,paddingBottom:12,borderBottom:'1px solid rgba(26,26,26,0.08)'}}>
+            <span style={{fontFamily:'var(--M)',fontSize:10,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',color:'rgba(26,26,26,0.45)'}}>
+              {(T[lang].content_status||T.pt.content_status)(filtered.length,total)}
+            </span>
+            {hasFilters && (
+              <button onClick={clearAll} style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.18em',textTransform:'uppercase',padding:'4px 10px',background:'transparent',color:'var(--ink)',border:'1px solid rgba(26,26,26,0.2)',cursor:'pointer'}}>
+                {t('filter_clear')}
+              </button>
+            )}
+          </div>
+          {filtered.length===0 ? (
+            <div style={{padding:'64px 0',textAlign:'center',fontFamily:'var(--M)',fontSize:11,color:'rgba(26,26,26,0.32)',letterSpacing:'0.15em',textTransform:'uppercase',border:'1px dashed var(--lav)'}}>{t('no_content')}</div>
+          ) : (
+            <div style={{display:'grid',gridTemplateColumns:filtered.length>1?'1fr 1fr':'1fr',gap:12}}>
+              {filtered.map(item=>{
+                const i=interests[item.interest]||{color:'var(--blue)',colorDark:'var(--navy)',colorSoft:'var(--lavlt)'};
+                return <ConteudoCard key={item.id} item={item} interest={i} lang={lang} onClick={()=>handleClick(item.id)} isSelected={flashId===item.id}/>;
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* RIGHT: sticky filter sidebar (idêntica aos projetos) */}
+        <div style={{position:'sticky',top:60,alignSelf:'start',height:'calc(100vh - 60px)',overflowY:'auto',background:'var(--white)',padding:'24px 16px 32px'}}>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:18,paddingBottom:10,borderBottom:`2px solid ${sidebarAccent}`,transition:'border-color 300ms'}}>
+            <span style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.25em',textTransform:'uppercase',color:sidebarAccent,transition:'color 300ms'}}>Filtros</span>
+            {hasFilters && (
+              <button onClick={clearAll} style={{fontFamily:'var(--M)',fontSize:8,fontWeight:700,letterSpacing:'0.14em',textTransform:'uppercase',background:'none',border:'none',color:'rgba(26,26,26,0.38)',cursor:'pointer',padding:0}}
+                onMouseEnter={e=>e.target.style.color='var(--ink)'}
+                onMouseLeave={e=>e.target.style.color='rgba(26,26,26,0.38)'}>
+                {t('filter_clear')}
+              </button>
+            )}
+          </div>
+          <div style={{marginBottom:20}}>
+            <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.25em',textTransform:'uppercase',color:'var(--ink)',paddingBottom:6,borderBottom:'1px solid rgba(26,26,26,0.12)',marginBottom:12}}>{t('filter_interests')}</div>
+            <div style={{display:'flex',flexDirection:'column',gap:6}}>
+              {Object.entries(interests).map(([key,i])=>(
+                <FilterChip key={key} label={lang==='en'?(i.en||i.pt):(i.pt||i.en)}
+                  active={selInt.has(key)} onClick={()=>toggle(selInt,setSelInt,key)}
+                  color={i.color} soloMode={true} fullWidth size='lg'/>
+              ))}
+            </div>
+          </div>
+          {(availableTechs.size>0||availableSols.size>0) && (
+            <div style={{height:1,background:'rgba(26,26,26,0.07)',margin:'8px 0 20px'}}/>
+          )}
+          {availableTechs.size>0 && (
+            <div style={{marginBottom:14}}>
+              <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.25em',textTransform:'uppercase',color:'var(--ink)',paddingBottom:6,borderBottom:'1px solid rgba(26,26,26,0.12)',marginBottom:12}}>{t('filter_techs')}</div>
+              <div style={{display:'flex',flexDirection:'column',gap:4}}>
+                {techs.filter(tech=>availableTechs.has(tech)).map(tech=>(
+                  <FilterChip key={tech} label={tech} active={selTech.has(tech)} onClick={()=>toggle(selTech,setSelTech,tech)} soloMode={false} fullWidth size='sm'/>
+                ))}
+              </div>
+            </div>
+          )}
+          {availableSols.size>0 && (
+            <div style={{marginBottom:14}}>
+              <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.25em',textTransform:'uppercase',color:'var(--ink)',paddingBottom:6,borderBottom:'1px solid rgba(26,26,26,0.12)',marginBottom:12}}>{t('filter_sols')}</div>
+              <div style={{display:'flex',flexDirection:'column',gap:4}}>
+                {Object.entries(sols).filter(([key])=>availableSols.has(key)).map(([key,s])=>(
+                  <FilterChip key={key} label={lang==='en'?(s.en||s.pt):(s.pt||s.en)} active={selSol.has(key)} onClick={()=>toggle(selSol,setSelSol,key)} soloMode={false} fullWidth size='sm'/>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ══ QUEM SOU PAGE ════════════════════════════════════════ */
+const SobrePage = ({ lang }) => {
+  const t=k=>T[lang][k]??T.pt[k]??k;
+  const about=getAboutContent(lang);
+  return (
+    <div>
+      {/* Header */}
+      <div style={{background:'var(--navy)',padding:'80px 48px 48px',position:'relative',overflow:'hidden'}}>
+        <div style={{position:'absolute',right:60,top:'50%',transform:'translateY(-50%)',opacity:0.06}}><OverlappingCircles color="var(--lav)" size={300}/></div>
+        <div style={{position:'absolute',right:280,bottom:10,opacity:0.035}}><NestedTriangles color="var(--yellow)" size={160} count={5}/></div>
+        <PanelLabel color="rgba(255,255,255,0.35)">{t('profile_label')}</PanelLabel>
+        <h1 style={{fontFamily:'var(--D)',fontSize:64,letterSpacing:'0.05em',textTransform:'uppercase',color:'var(--white)',position:'relative',zIndex:1,marginBottom:14}}>{t('about_title')}</h1>
+        <p style={{fontFamily:'var(--M)',fontSize:12,lineHeight:1.85,color:'rgba(255,255,255,0.4)',maxWidth:540,position:'relative',zIndex:1}}>{about.subtitle||t('about_subtitle')}</p>
+      </div>
+
+      {/* BIO + FOTO + CONTATO */}
+      <div style={{background:'var(--cream)',borderBottom:'1px solid rgba(26,26,26,0.08)'}}>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 320px'}}>
+          <div style={{padding:'56px 48px',borderRight:'1px solid rgba(26,26,26,0.08)'}}>
+            <PanelLabel color="var(--blue)">{t('bio_label')}</PanelLabel>
+            <h2 style={{fontFamily:'var(--D)',fontSize:40,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)',marginBottom:20}}>{about.bioName||t('bio_name')}</h2>
+            {(about.bio?.length ? about.bio : ['bio_p1','bio_p2','bio_p3'].map(k=>t(k))).map((paragraph,index)=><p key={index} style={{fontFamily:'var(--M)',fontSize:12,lineHeight:1.95,color:'rgba(26,26,26,0.63)',marginBottom:16}}>{paragraph}</p>)}
+          </div>
+          <div style={{background:'var(--cream-dk)',padding:'56px 32px',display:'flex',flexDirection:'column',gap:0}}>
+            <div style={{position:'relative',marginBottom:24}}>
+              <div style={{position:'absolute',top:-5,left:-5,right:-5,bottom:-5,border:'1px solid var(--lav)',opacity:0.35,pointerEvents:'none'}}/>
+              <img src="foto-diego.jpg" alt="Diego Furtado" style={{width:'100%',aspectRatio:'3/4',objectFit:'cover',objectPosition:'center top',display:'block'}}
+                onError={e=>{e.currentTarget.style.display='none';e.currentTarget.nextSibling&&(e.currentTarget.nextSibling.style.display='flex');}}/>
+              <div style={{display:'none',width:'100%',aspectRatio:'3/4',background:'var(--lav)',alignItems:'center',justifyContent:'center'}}>
+                <span style={{fontFamily:'var(--D)',fontSize:48,color:'rgba(255,255,255,0.4)',letterSpacing:'0.1em'}}>DF</span>
+              </div>
+            </div>
+            <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.22em',textTransform:'uppercase',color:'rgba(26,26,26,0.3)',marginBottom:14}}>{t('contact_label')}</div>
+            {[['f_email','diegoiribarrem@gmail.com'],['f_tel','+351 929 023 731'],['f_city','Lisboa, Portugal'],['f_linkedin','/diegofreitasfurtado']].map(([lk,val])=>(
+              <div key={lk} style={{paddingBottom:13,marginBottom:13,borderBottom:'1px solid rgba(26,26,26,0.08)'}}>
+                <div style={{fontFamily:'var(--M)',fontSize:8,fontWeight:700,letterSpacing:'0.22em',textTransform:'uppercase',color:'rgba(26,26,26,0.32)',marginBottom:2}}>{t(lk)}</div>
+                <div style={{fontFamily:'var(--M)',fontSize:10,color:'var(--ink)',wordBreak:'break-all'}}>{val}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* EXPERIÊNCIA */}
+      <div style={{background:'var(--cream)',padding:'56px 48px',borderBottom:'1px solid rgba(26,26,26,0.08)'}}>
+        <PanelLabel color="var(--red)">{t('exp_label')}</PanelLabel>
+        <h2 style={{fontFamily:'var(--D)',fontSize:40,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)',marginBottom:36}}>{t('exp_heading')}</h2>
+        {(about.experience?.length ? about.experience : [
+          {role:t('exp1_role'), company:t('exp1_co'), period:t('exp1_period'), location:t('exp1_loc'), bullets:T[lang].exp1_b||T.pt.exp1_b||[], accent:'var(--blue)'},
+          {role:t('exp2_role'), company:t('exp2_co'), period:t('exp2_period'), location:t('exp2_loc'), bullets:T[lang].exp2_b||T.pt.exp2_b||[], accent:'var(--lav)'},
+        ]).map((exp,i)=>(
+          <div key={i} style={{display:'grid',gridTemplateColumns:'200px 1fr',borderTop:'1px solid rgba(26,26,26,0.08)',paddingTop:28,paddingBottom:28}}>
+            <div>
+              <div style={{fontFamily:'var(--M)',fontSize:11,fontWeight:700,letterSpacing:'0.1em',textTransform:'uppercase',color:exp.accent,marginBottom:6}}>{exp.period}</div>
+              <div style={{fontFamily:'var(--M)',fontSize:11,fontWeight:600,color:'rgba(26,26,26,0.7)',letterSpacing:'0.05em',textTransform:'uppercase'}}>{exp.location}</div>
+            </div>
+            <div>
+              <div style={{fontFamily:'var(--D)',fontSize:22,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)',marginBottom:4}}>{exp.role}</div>
+              <div style={{fontFamily:'var(--M)',fontSize:10,fontWeight:700,color:'rgba(26,26,26,0.42)',letterSpacing:'0.1em',textTransform:'uppercase',marginBottom:16}}>{exp.company}</div>
+              <div style={{display:'flex',flexDirection:'column',gap:7}}>
+                {(exp.bullets||[]).map((b,j)=>(
+                  <div key={j} style={{display:'flex',gap:10,alignItems:'flex-start'}}>
+                    <span style={{width:4,height:4,background:exp.accent,display:'inline-block',flexShrink:0,marginTop:5}}/>
+                    <span style={{fontFamily:'var(--M)',fontSize:11,lineHeight:1.75,color:'rgba(26,26,26,0.6)'}}>{b}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* FORMAÇÃO + HABILIDADES */}
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',background:'var(--cream-dk)'}}>
+        <div style={{padding:'56px 48px',borderRight:'1px solid rgba(26,26,26,0.08)'}}>
+          <PanelLabel color="var(--lav)">{t('edu_label')}</PanelLabel>
+          <h3 style={{fontFamily:'var(--D)',fontSize:32,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)',marginBottom:28}}>{t('edu_heading')}</h3>
+          {[
+            {tk:'edu1',note:'edu1_note',school:'PUCRS',period:'2020–2022',accent:'var(--lav)'},
+            {tk:'edu2',note:'edu2_note',school:'PUCRS',period:'2021–2022',accent:'var(--blue)'},
+            {tk:'edu3',note:'edu3_note',school:'PUCRS',period:'2015–2019',accent:'var(--red)'},
+          ].map((e,i)=>(
+            <div key={i} style={{paddingBottom:18,marginBottom:18,borderBottom:i<2?'1px solid rgba(26,26,26,0.08)':'none'}}>
+              <div style={{fontFamily:'var(--D)',fontSize:17,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)',lineHeight:1.2,marginBottom:5}}>{t(e.tk)}</div>
+              <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.14em',textTransform:'uppercase',color:e.accent}}>{e.school} · {e.period}</div>
+              <div style={{fontFamily:'var(--M)',fontSize:9,fontWeight:600,color:'rgba(26,26,26,0.65)',letterSpacing:'0.1em',textTransform:'uppercase',marginTop:3}}>{t(e.note)}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{padding:'56px 48px'}}>
+          <PanelLabel color="var(--blue)">{t('skills_label')}</PanelLabel>
+          <h3 style={{fontFamily:'var(--D)',fontSize:32,letterSpacing:'0.04em',textTransform:'uppercase',color:'var(--ink)',marginBottom:28}}>{t('skills_heading')}</h3>
+          {[
+            {akey:'sk1',items:['Power BI (DAX, M)','Tableau','Looker','Excel avançado'],accent:'var(--blue)'},
+            {akey:'sk2',items:['SQL · BigQuery','Python · Pandas','ETL · Power Query','Integração multifonte'],accent:'var(--red)'},
+            {akey:'sk3',itemsKey:'sk3_items',accent:'var(--lav)'},
+            {akey:'sk4',itemsKey:'sk4_items',accent:'var(--pink)'},
+          ].map(({akey,items,itemsKey,accent})=>{
+            const resolvedItems=itemsKey?(T[lang][itemsKey]||T.pt[itemsKey]||[]):items;
+            return (
+              <div key={akey} style={{marginBottom:18}}>
+                <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:7}}>
+                  <div style={{width:16,height:1,background:accent}}/>
+                  <div style={{fontFamily:'var(--D)',fontSize:15,letterSpacing:'0.06em',textTransform:'uppercase',color:'var(--ink)'}}>{t(akey)}</div>
+                </div>
+                <div style={{display:'flex',flexWrap:'wrap',gap:5}}>
+                  {resolvedItems.map(item=><span key={item} style={{fontFamily:'var(--M)',fontSize:9,fontWeight:700,letterSpacing:'0.1em',textTransform:'uppercase',background:accent,color:'#fff',padding:'3px 8px'}}>{item}</span>)}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ── hash routing ──────────────────────────────────────── */
+const parseHash = () => {
+  const h = window.location.hash.replace(/^#\/?/,'');
+  if (!h) return {page:'home',id:null};
+  const [seg,...rest] = h.split('/');
+  const id = rest.length ? decodeURIComponent(rest.join('/')) : null;
+  if (seg==='projetos' && id) return {page:'projeto',id};
+  if (seg==='projetos') return {page:'projetos',id:null};
+  if (seg==='conteudo' && id) return {page:'conteudo-item',id};
+  if (seg==='conteudo') return {page:'conteudo',id:null};
+  if (seg==='sobre') return {page:'sobre',id:null};
+  return {page:'home',id:null};
+};
+const toHash = (page,id) => {
+  if (page==='projeto' && id) return `#/projetos/${encodeURIComponent(id)}`;
+  if (page==='conteudo-item' && id) return `#/conteudo/${encodeURIComponent(id)}`;
+  return {home:'#/',projetos:'#/projetos',conteudo:'#/conteudo',sobre:'#/sobre'}[page]||'#/';
+};
+const PAGE_TITLES = {
+  home:'D/F',
+  projetos:'Projetos — D/F',
+  projeto:'Projetos — D/F',
+  conteudo:'Conteúdo — D/F',
+  'conteudo-item':'Conteúdo — D/F',
+  sobre:'Quem Sou — D/F',
+};
+
+/* ══ APP ══════════════════════════════════════════════════ */
+const App = () => {
+  const init = parseHash();
+  const [page,_setPage] = useState(init.page);
+  const [selectedId,setSelectedId] = useState(init.id);
+  const [lang,setLang] = useState('pt');
+  const ref = useRef(null);
+
+  const navigate = (newPage, id) => {
+    const rid = id !== undefined ? id : selectedId;
+    history.pushState({page:newPage,id:rid}, '', toHash(newPage, rid));
+    _setPage(newPage);
+    if (id !== undefined) setSelectedId(id);
+  };
+
+  useEffect(() => {
+    const onPop = () => { const {page:p,id} = parseHash(); _setPage(p); setSelectedId(id); };
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, []);
+
+  useEffect(() => { document.title = PAGE_TITLES[page] || 'Diego Furtado'; }, [page]);
+  useEffect(() => { if(ref.current) ref.current.scrollTop=0; }, [page]);
+
+  const handleProjectClick = (id) => navigate('projeto', id);
+  const setPage = navigate;
+
+  const renderPage = () => {
+    if(page==='home') return <HomePage setPage={setPage} lang={lang}/>;
+    if(page==='projetos') return <ProjetosPage onProjectClick={handleProjectClick} lang={lang}/>;
+    if(page==='conteudo') return <ConteudoPage onContentClick={(id)=>navigate('conteudo-item',id)} lang={lang}/>;
+    if(page==='sobre') return <SobrePage lang={lang}/>;
+    if(page==='projeto'){
+      const ProjPage=window.ProjectPage;
+      return ProjPage?<ProjPage projectId={selectedId} onBack={()=>navigate('projetos')} lang={lang}/>:<div style={{padding:80,fontFamily:'var(--M)'}}>Carregando…</div>;
+    }
+    if(page==='conteudo-item'){
+      const CP=window.ContentPage;
+      return CP?<CP contentId={selectedId} onBack={()=>navigate('conteudo')} lang={lang}/>:<div style={{padding:80,fontFamily:'var(--M)'}}>Carregando…</div>;
+    }
+    return <HomePage setPage={setPage} lang={lang}/>;
+  };
+
+  return (
+    <div id="scroll-root" style={{height:'100vh',overflowY:'auto'}} ref={ref}>
+      <Header page={page} setPage={setPage} lang={lang} setLang={setLang}/>
+      <main style={{paddingTop:60}}>{renderPage()}</main>
+      <Footer lang={lang}/>
+    </div>
+  );
+};
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
 </body>
 </html>
