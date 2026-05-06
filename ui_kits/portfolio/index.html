@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -965,27 +965,72 @@ const SobrePage = ({ lang }) => {
   );
 };
 
+/* ── hash routing ──────────────────────────────────────── */
+const parseHash = () => {
+  const h = window.location.hash.replace(/^#\/?/,'');
+  if (!h) return {page:'home',id:null};
+  const [seg,...rest] = h.split('/');
+  const id = rest.length ? decodeURIComponent(rest.join('/')) : null;
+  if (seg==='projetos' && id) return {page:'projeto',id};
+  if (seg==='projetos') return {page:'projetos',id:null};
+  if (seg==='conteudo' && id) return {page:'conteudo-item',id};
+  if (seg==='conteudo') return {page:'conteudo',id:null};
+  if (seg==='sobre') return {page:'sobre',id:null};
+  return {page:'home',id:null};
+};
+const toHash = (page,id) => {
+  if (page==='projeto' && id) return `#/projetos/${encodeURIComponent(id)}`;
+  if (page==='conteudo-item' && id) return `#/conteudo/${encodeURIComponent(id)}`;
+  return {home:'#/',projetos:'#/projetos',conteudo:'#/conteudo',sobre:'#/sobre'}[page]||'#/';
+};
+const PAGE_TITLES = {
+  home:'D/F',
+  projetos:'Projetos — D/F',
+  projeto:'Projetos — D/F',
+  conteudo:'Conteúdo — D/F',
+  'conteudo-item':'Conteúdo — D/F',
+  sobre:'Quem Sou — D/F',
+};
+
 /* ══ APP ══════════════════════════════════════════════════ */
 const App = () => {
-  const [page,setPage]=useState('home');
-  const [selectedId,setSelectedId]=useState(null);
-  const [lang,setLang]=useState('pt');
-  const ref=useRef(null);
-  useEffect(()=>{ if(ref.current) ref.current.scrollTop=0; },[page]);
-  const handleProjectClick=(id)=>{ setSelectedId(id); setPage('projeto'); };
+  const init = parseHash();
+  const [page,_setPage] = useState(init.page);
+  const [selectedId,setSelectedId] = useState(init.id);
+  const [lang,setLang] = useState('pt');
+  const ref = useRef(null);
 
-  const renderPage=()=>{
+  const navigate = (newPage, id) => {
+    const rid = id !== undefined ? id : selectedId;
+    history.pushState({page:newPage,id:rid}, '', toHash(newPage, rid));
+    _setPage(newPage);
+    if (id !== undefined) setSelectedId(id);
+  };
+
+  useEffect(() => {
+    const onPop = () => { const {page:p,id} = parseHash(); _setPage(p); setSelectedId(id); };
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, []);
+
+  useEffect(() => { document.title = PAGE_TITLES[page] || 'Diego Furtado'; }, [page]);
+  useEffect(() => { if(ref.current) ref.current.scrollTop=0; }, [page]);
+
+  const handleProjectClick = (id) => navigate('projeto', id);
+  const setPage = navigate;
+
+  const renderPage = () => {
     if(page==='home') return <HomePage setPage={setPage} lang={lang}/>;
     if(page==='projetos') return <ProjetosPage onProjectClick={handleProjectClick} lang={lang}/>;
-    if(page==='conteudo') return <ConteudoPage onContentClick={(id)=>{ setSelectedId(id); setPage('conteudo-item'); }} lang={lang}/>;
+    if(page==='conteudo') return <ConteudoPage onContentClick={(id)=>navigate('conteudo-item',id)} lang={lang}/>;
     if(page==='sobre') return <SobrePage lang={lang}/>;
     if(page==='projeto'){
       const ProjPage=window.ProjectPage;
-      return ProjPage?<ProjPage projectId={selectedId} onBack={()=>setPage('projetos')} lang={lang}/>:<div style={{padding:80,fontFamily:'var(--M)'}}>Carregando…</div>;
+      return ProjPage?<ProjPage projectId={selectedId} onBack={()=>navigate('projetos')} lang={lang}/>:<div style={{padding:80,fontFamily:'var(--M)'}}>Carregando…</div>;
     }
     if(page==='conteudo-item'){
       const CP=window.ContentPage;
-      return CP?<CP contentId={selectedId} onBack={()=>setPage('conteudo')} lang={lang}/>:<div style={{padding:80,fontFamily:'var(--M)'}}>Carregando…</div>;
+      return CP?<CP contentId={selectedId} onBack={()=>navigate('conteudo')} lang={lang}/>:<div style={{padding:80,fontFamily:'var(--M)'}}>Carregando…</div>;
     }
     return <HomePage setPage={setPage} lang={lang}/>;
   };
