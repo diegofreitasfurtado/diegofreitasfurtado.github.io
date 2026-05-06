@@ -965,11 +965,15 @@ const SobrePage = ({ lang }) => {
   );
 };
 
-/* ── hash routing ──────────────────────────────────────── */
-const parseHash = () => {
-  const h = window.location.hash.replace(/^#\/?/,'');
-  if (!h) return {page:'home',id:null};
-  const [seg,...rest] = h.split('/');
+/* ── path routing (404.html trick for GitHub Pages) ───── */
+(()=>{
+  const r = sessionStorage.getItem('__spa_redirect');
+  if (r) { sessionStorage.removeItem('__spa_redirect'); history.replaceState(null,'',r); }
+})();
+const parsePath = () => {
+  const p = window.location.pathname.replace(/\/$/,'').replace(/^\//,'');
+  if (!p) return {page:'home',id:null};
+  const [seg,...rest] = p.split('/');
   const id = rest.length ? decodeURIComponent(rest.join('/')) : null;
   if (seg==='projetos' && id) return {page:'projeto',id};
   if (seg==='projetos') return {page:'projetos',id:null};
@@ -978,10 +982,10 @@ const parseHash = () => {
   if (seg==='sobre') return {page:'sobre',id:null};
   return {page:'home',id:null};
 };
-const toHash = (page,id) => {
-  if (page==='projeto' && id) return `#/projetos/${encodeURIComponent(id)}`;
-  if (page==='conteudo-item' && id) return `#/conteudo/${encodeURIComponent(id)}`;
-  return {home:'#/',projetos:'#/projetos',conteudo:'#/conteudo',sobre:'#/sobre'}[page]||'#/';
+const toPath = (page,id) => {
+  if (page==='projeto' && id) return `/projetos/${encodeURIComponent(id)}`;
+  if (page==='conteudo-item' && id) return `/conteudo/${encodeURIComponent(id)}`;
+  return {home:'/',projetos:'/projetos',conteudo:'/conteudo',sobre:'/sobre'}[page]||'/';
 };
 const PAGE_TITLES = {
   home:'D/F',
@@ -994,7 +998,7 @@ const PAGE_TITLES = {
 
 /* ══ APP ══════════════════════════════════════════════════ */
 const App = () => {
-  const init = parseHash();
+  const init = parsePath();
   const [page,_setPage] = useState(init.page);
   const [selectedId,setSelectedId] = useState(init.id);
   const [lang,setLang] = useState('pt');
@@ -1002,13 +1006,13 @@ const App = () => {
 
   const navigate = (newPage, id) => {
     const rid = id !== undefined ? id : selectedId;
-    history.pushState({page:newPage,id:rid}, '', toHash(newPage, rid));
+    history.pushState({page:newPage,id:rid}, '', toPath(newPage, rid));
     _setPage(newPage);
     if (id !== undefined) setSelectedId(id);
   };
 
   useEffect(() => {
-    const onPop = () => { const {page:p,id} = parseHash(); _setPage(p); setSelectedId(id); };
+    const onPop = () => { const {page:p,id} = parsePath(); _setPage(p); setSelectedId(id); };
     window.addEventListener('popstate', onPop);
     return () => window.removeEventListener('popstate', onPop);
   }, []);
